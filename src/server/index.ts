@@ -1,78 +1,80 @@
 // src/server/index.ts
 
-import Fastify, { FastifyInstance, FastifyRequest, FastifyReply } from 'fastify';
-import fastifyStatic from '@fastify/static';
+import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import path from 'path';
 import fs from 'fs/promises';
+import loadRoutes from './utils/routeLoader.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 async function createServer() {
-    const app: FastifyInstance = Fastify();
+    const app = express();
     const vite = await createViteServer({
         server: { middlewareMode: true },
         appType: 'custom',
     });
 
-    await app.register(import('@fastify/middie'));
-    await app.use(vite.middlewares);
+    // Use Vite's connect instance as middleware
+    app.use(vite.middlewares);
 
     // Serve static files
-    await app.register(fastifyStatic, {
-        root: resolve(__dirname, '../../dist/client/assets'),
-        prefix: '/assets/',
-    });
+    app.use('/assets', express.static(path.join(__dirname, '../../dist/client/assets')));
 
-    // Register API routes
-    await app.register(import('./routes/api'), { prefix: '/api' });
+    // Dynamically load API routes
+    const apiRoutes = await loadRoutes(path.join(__dirname, 'routes', 'api'));
 
-    // Register page routes
-    await app.register(import('./routes/pages'));
+    // Add a debugging middleware for API routes
+    app.use('/api', (req, res, next) => {
+        console.log(`API request received: ${req.method} ${req.originalUrl}`);
+        next();
+    }, apiRoutes);
 
-    // Register not found handler
-    app.register(async (fastify) => {
-        fastify.setNotFoundHandler(async (request: FastifyRequest, reply: FastifyReply) => {
-            const url = request.url;
+    // Catch-all route for the React app
+    app.use('*', async (req, res, next) => {
+        const url = req.originalUrl;
 
-            try {
-                // 1. Read index.html
-                let template = await fs.readFile(
-                    resolve(__dirname, '../../index.html'),
-                    'utf-8'
-                );
+        console.log(`Handling React app route: ${url}`);
 
-                // 2. Apply Vite HTML transforms
-                template = await vite.transformIndexHtml(url, template);
+        // Skip SSR for API routes
+        if (url.startsWith('/api')) {
+            console.log(`Skipping SSR for API route: ${url}`);
+            return next();
+        }
 
-                // 3. Load the server entry
-                const { render } = await vite.ssrLoadModule('/src/entry-server.tsx');
+        try {
+            // 1. Read index.html
+            let template = await fs.readFile(
+                path.join(__dirname, '../../index.html'),
+                'utf-8'
+            );
 
-                // 4. Render the app HTML
-                const appHtml = await render(url);
+            // 2. Apply Vite HTML transforms
+            template = await vite.transformIndexHtml(url, template);
 
-                // 5. Inject the app-rendered HTML into the template.
-                const html = template.replace('<!--app-html-->', appHtml);
+            // 3. Load the server entry
+            const { render } = await vite.ssrLoadModule('/src/entry-server.tsx');
 
-                // 6. Send the rendered HTML back.
-                reply.type('text/html').send(html);
-            } catch (e) {
-                if (e instanceof Error) {
-                    vite.ssrFixStacktrace(e);
-                    console.error(e);
-                    reply.status(500).send(e.stack);
-                } else {
-                    console.error('An unknown error occurred');
-                    reply.status(500).send('Internal Server Error');
-                }
-            }
-        });
+            // 4. Render the app HTML
+            const appHtml = await render(url);
+
+            // 5. Inject the app-rendered HTML into the template.
+            const html = template.replace('<!--app-html-->', appHtml);
+
+            // 6. Send the rendered HTML back.
+            res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+        } catch (e) {
+            vite.ssrFixStacktrace(e as Error);
+            next(e);
+        }
     });
 
     const port = process.env.PORT || 3000;
-    await app.listen({ port: Number(port), host: '0.0.0.0' });
-    console.log(`Server running at http://localhost:${port}`);
+    app.listen(port, () => {
+        console.log(`Server running at http://localhost:${port}`);
+    });
 }
 
 createServer();

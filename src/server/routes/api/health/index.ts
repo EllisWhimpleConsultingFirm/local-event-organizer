@@ -1,9 +1,10 @@
-import { FastifyPluginAsync } from 'fastify';
+import { Router } from 'express';
 
-const health: FastifyPluginAsync = async (fastify) => {
-    fastify.get('/', async (request, reply) => {
-        return { status: 'OK' };
-    });
-};
+const router = Router();
 
-export default health;
+router.get('/', (req, res) => {
+    console.log('Health check endpoint hit');
+    res.json({ status: 'OK' });
+});
+
+export default router;
