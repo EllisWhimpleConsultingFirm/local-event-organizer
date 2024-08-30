@@ -12,4 +12,7 @@ export default defineConfig({
     build: {
         minify: false,
     },
+    ssr: {
+        noExternal: ['react-dom/server', 'react-router-dom'],
+    },
 });
