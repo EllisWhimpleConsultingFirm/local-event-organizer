@@ -24,7 +24,7 @@ async function generateCodeChallenge(codeVerifier: string) {
         .replace(/\//g, '_');
 }
 
-const LoginPage: React.FC = () => {
+const Login: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -104,4 +104,4 @@ const LoginPage: React.FC = () => {
     );
 };
 
-export default LoginPage;
+export default Login;
