@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Cookies from 'js-cookie';
-import {userInfo} from "os";
 
 export function useAuth() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -21,7 +20,7 @@ export function useAuth() {
         checkAuth();
     }, []);
 
-    return { isAuthenticated, isLoading };
+    return { isAuthenticated, isLoading, isAdmin };
 }
 
 async function validateTokenWithServer() : Promise<boolean> {

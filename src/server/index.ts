@@ -1,5 +1,3 @@
-// src/server/index.ts
-
 import express from 'express';
 import { createServer as createViteServer } from 'vite';
 import { fileURLToPath } from 'url';
