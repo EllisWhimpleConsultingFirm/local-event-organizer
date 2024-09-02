@@ -27,6 +27,7 @@ router.get('/', async (req, res) => {
         scope: scope as string,
         code_challenge: code_challenge as string,
         code_challenge_method: code_challenge_method as string,
+        redirect_uri
     });
 
     const redirectUrl = new URL(redirect_uri as string);

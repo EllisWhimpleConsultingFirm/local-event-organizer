@@ -1,5 +1,9 @@
 // In a real application, you'd use a database for this
 const clients: { [key: string]: any } = {};
+clients['your_client_id'] = {
+    name: 'SSR APP',
+    redirect_uris: ['http://localhost:3000/login']
+}
 
 export async function saveClient(client: any) {
     clients[client.client_id] = client;

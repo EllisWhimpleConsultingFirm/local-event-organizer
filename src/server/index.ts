@@ -21,8 +21,11 @@ async function createServer() {
     // Use Vite's connect instance as middleware
     app.use(vite.middlewares);
 
-    //Use Express body middleware
-    app.use(express.json())
+    // Parse URL-encoded bodies (as sent by HTML forms)
+    app.use(express.urlencoded({ extended: true }));
+
+    // Parse JSON bodies (as sent by API clients)
+    app.use(express.json());
 
     app.get('/.well-known/openid-configuration', (req, res) => {
         const baseUrl = `${req.protocol}://${req.get('host')}`;
