@@ -25,6 +25,20 @@ async function createServer() {
     // Parse JSON bodies (as sent by API clients)
     app.use(express.json());
 
+    // Set the view engine to EJS
+    app.set('view engine', 'ejs');
+
+// Set the directory for the views
+    app.set('views', path.join(__dirname, 'views'));
+
+    // TODO check to see if it would be better to handle authorization things in a session
+    // app.use(session({
+    //     secret: 'your-secret-key',
+    //     resave: false,
+    //     saveUninitialized: true,
+    //     cookie: { secure: process.env.NODE_ENV === 'production' }
+    // }));
+
     app.get('/.well-known/openid-configuration', (req, res) => {
         const baseUrl = `${req.protocol}://${req.get('host')}`;
         res.json({

@@ -2,7 +2,7 @@
 const clients: { [key: string]: any } = {};
 clients['your_client_id'] = {
     name: 'SSR APP',
-    redirect_uris: ['http://localhost:3000/login']
+    redirect_uris: ['http://localhost:3000/login', 'http://localhost:3000']
 }
 
 export async function saveClient(client: any) {
