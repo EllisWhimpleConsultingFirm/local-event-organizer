@@ -1,26 +1,47 @@
 import { Router } from 'express';
-import { generateTokens } from '../../../../utils/auth/tokenUtils.js';
-import { saveRefreshToken } from '../../../../utils/auth/tokenStore.js';
+import { userStore } from '../../../../utils/auth/userStore.js';
 
 const router = Router();
 
+router.get('/', (req, res) => {
+    const { client_id, redirect_uri, state, code_challenge, code_challenge_method } = req.query;
+
+    res.render('login', {
+        client_id,
+        redirect_uri,
+        state,
+        code_challenge,
+        code_challenge_method
+    });
+});
+
 router.post('/', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, client_id, redirect_uri, state, code_challenge, code_challenge_method } = req.body;
 
-    // TODO: Implement actual user authentication
-    if (username && password) {
-        const { accessToken, refreshToken } = await generateTokens(username);
-        await saveRefreshToken(username, refreshToken);
+    const user = await userStore.validateCredentials(username, password);
 
-        res.json({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            token_type: 'Bearer',
-            expires_in: 3600 // 1 hour
+    if (!user) {
+        return res.render('login', {
+            error: 'Invalid credentials',
+            client_id,
+            redirect_uri,
+            state,
+            code_challenge,
+            code_challenge_method
         });
-    } else {
-        res.status(400).json({ error: 'Invalid credentials' });
     }
+
+    // Redirect to the authorize endpoint with user information
+    const authorizeUrl = new URL(`${req.protocol}://${req.get('host')}/api/auth/authorize`);
+    authorizeUrl.searchParams.append('client_id', client_id as string);
+    authorizeUrl.searchParams.append('redirect_uri', redirect_uri as string);
+    authorizeUrl.searchParams.append('response_type', 'code');
+    authorizeUrl.searchParams.append('state', state as string);
+    authorizeUrl.searchParams.append('code_challenge', code_challenge as string);
+    authorizeUrl.searchParams.append('code_challenge_method', code_challenge_method as string);
+    authorizeUrl.searchParams.append('user_id', user.id);
+
+    res.redirect(authorizeUrl.toString());
 });
 
 export default router;

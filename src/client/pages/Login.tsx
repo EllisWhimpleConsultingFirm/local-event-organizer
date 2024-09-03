@@ -1,10 +1,11 @@
 import React, { useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
+import {useAuth} from "../components/auth/useAuth.js";
 
 // You might want to store these in an environment variable or configuration file
 const CLIENT_ID = 'your_client_id';
-const REDIRECT_URI = 'http://localhost:3000/login'; // Should match your app's URL
+const REDIRECT_URI = 'http://localhost:3000/login'; // Changed this to a dedicated callback route
 const AUTH_SERVER_URL = 'http://localhost:3000/api';
 
 function generateRandomString(length: number) {
@@ -27,6 +28,7 @@ async function generateCodeChallenge(codeVerifier: string) {
 const Login: React.FC = () => {
     const location = useLocation();
     const navigate = useNavigate();
+    const { updateAuthState } = useAuth();
 
     useEffect(() => {
         const urlParams = new URLSearchParams(location.search);
@@ -44,15 +46,15 @@ const Login: React.FC = () => {
         // Store code verifier in local storage (you might want to use a more secure method in production)
         localStorage.setItem('code_verifier', codeVerifier);
 
-        const authUrl = new URL(`${AUTH_SERVER_URL}/auth/authorize`);
-        authUrl.searchParams.append('client_id', CLIENT_ID);
-        authUrl.searchParams.append('redirect_uri', REDIRECT_URI);
-        authUrl.searchParams.append('response_type', 'code');
-        authUrl.searchParams.append('code_challenge', codeChallenge);
-        authUrl.searchParams.append('code_challenge_method', 'S256');
+        const loginUrl = new URL(`${AUTH_SERVER_URL}/auth/login`);
+        loginUrl.searchParams.append('client_id', CLIENT_ID);
+        loginUrl.searchParams.append('redirect_uri', REDIRECT_URI);
+        loginUrl.searchParams.append('response_type', 'code');
+        loginUrl.searchParams.append('code_challenge', codeChallenge);
+        loginUrl.searchParams.append('code_challenge_method', 'S256');
 
-        // Redirect to authorization server
-        window.location.href = authUrl.toString();
+        // Redirect to login page on authorization server
+        window.location.href = loginUrl.toString();
     };
 
     const exchangeCodeForToken = async (code: string) => {
@@ -87,6 +89,10 @@ const Login: React.FC = () => {
 
             // Clear code verifier from storage
             localStorage.removeItem('code_verifier');
+
+            // Update the user info after login
+            //TODO may change this so that it doesn't have to re-call the validate endpoint
+            await updateAuthState();
 
             // Redirect to home page or dashboard
             navigate('/');

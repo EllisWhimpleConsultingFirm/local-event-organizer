@@ -1,21 +1,61 @@
-// File: src/server/utils/tokenUtils.ts
 import jwt from 'jsonwebtoken';
 import { generateKeyPair } from 'crypto';
 import { v4 as uuidv4 } from 'uuid';
+import fs from 'fs/promises';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 let privateKey: string;
 let publicKey: string;
 
-// Generate RSA key pair
-generateKeyPair('rsa', {
-    modulusLength: 4096,
-    publicKeyEncoding: { type: 'spki', format: 'pem' },
-    privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
-}, (err, publicK, privateK) => {
-    if (err) throw err;
-    publicKey = publicK;
-    privateKey = privateK;
-});
+const CRED_FOLDER = path.join(__dirname, '..', '..', 'cred');
+const PRIVATE_KEY_PATH = path.join(CRED_FOLDER, 'private.pem');
+const PUBLIC_KEY_PATH = path.join(CRED_FOLDER, 'public.pem');
+
+async function ensureCredFolder() {
+    try {
+        await fs.access(CRED_FOLDER);
+    } catch (error) {
+        await fs.mkdir(CRED_FOLDER, { recursive: true });
+    }
+}
+
+async function loadOrGenerateKeys() {
+    await ensureCredFolder();
+
+    try {
+        // Try to load existing keys
+        privateKey = await fs.readFile(PRIVATE_KEY_PATH, 'utf8');
+        publicKey = await fs.readFile(PUBLIC_KEY_PATH, 'utf8');
+        console.log('Loaded existing keys from cred folder');
+    } catch (error) {
+        // If keys don't exist, generate new ones
+        console.log('Generating new keys...');
+        await new Promise<void>((resolve, reject) => {
+            generateKeyPair('rsa', {
+                modulusLength: 4096,
+                publicKeyEncoding: { type: 'spki', format: 'pem' },
+                privateKeyEncoding: { type: 'pkcs8', format: 'pem' },
+            }, async (err, publicK, privateK) => {
+                if (err) reject(err);
+                publicKey = publicK;
+                privateKey = privateK;
+
+                // Save the new keys
+                await fs.writeFile(PRIVATE_KEY_PATH, privateKey);
+                await fs.writeFile(PUBLIC_KEY_PATH, publicKey);
+                console.log('New keys generated and saved to cred folder');
+                resolve();
+            });
+        });
+    }
+}
+
+// Initialize keys
+loadOrGenerateKeys().catch(console.error);
 
 export function getPublicKey() {
     return publicKey;
@@ -32,7 +72,6 @@ export async function generateTokens(username: string) {
     return { accessToken, refreshToken };
 }
 
-// TODO rename this fucntion????
 export async function getAccessToken(token: string): Promise<TokenPayload> {
     const payload = jwt.verify(token, publicKey) as TokenPayload;
     if (typeof payload === 'string' || !payload.username) {
@@ -57,36 +96,4 @@ export async function verifyAuthorizationCode(code: string) {
     // In a real implementation, you'd verify the code against stored codes
     // For now, we'll just return true
     return true;
-}
-
-// File: src/server/utils/clientStore.ts
-// In a real application, you'd use a database for this
-const clients: { [key: string]: any } = {};
-
-export async function saveClient(client: any) {
-    clients[client.client_id] = client;
-}
-
-export async function getClient(clientId: string) {
-    return clients[clientId];
-}
-
-export async function getAllClients() {
-    return Object.values(clients);
-}
-
-export async function updateClient(clientId: string, updates: any) {
-    if (clients[clientId]) {
-        clients[clientId] = { ...clients[clientId], ...updates };
-        return clients[clientId];
-    }
-    return null;
-}
-
-export async function deleteClient(clientId: string) {
-    if (clients[clientId]) {
-        delete clients[clientId];
-        return true;
-    }
-    return false;
 }
