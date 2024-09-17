@@ -9,6 +9,8 @@ const pages: { [key: string]: React.ComponentType } = {
     About,
 };
 
+
+
 export function render(url: string, componentName: string) {
     const PageComponent = pages[componentName] || App;
 
