@@ -3,6 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import Sidebar from "@/components/sidebar/Sidebar";
 import {cookies} from "next/headers";
+import Footer from "@/components/footer/Footer";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -27,7 +28,7 @@ export default function RootLayout({
 }>) {
     const cookieStore = cookies();
     const isExpanded = cookieStore.get('sidebarExpanded')?.value === 'true';
-    const isAuthorized = false
+    const isAuthorized = true
     return (
     <html lang="en">
       <body
@@ -36,6 +37,7 @@ export default function RootLayout({
       <div>
           <Sidebar isExpanded={isExpanded} isAuthorized={isAuthorized} />
           {children}
+          <Footer />
       </div>
       </body>
     </html>
