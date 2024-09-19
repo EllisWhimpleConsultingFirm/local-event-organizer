@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import Sidebar from "@/components/sidebar/Sidebar";
+import {cookies} from "next/headers";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -23,12 +25,18 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  return (
+    const cookieStore = cookies();
+    const isExpanded = cookieStore.get('sidebarExpanded')?.value === 'true';
+    const isAuthorized = false
+    return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+      <div>
+          <Sidebar isExpanded={isExpanded} isAuthorized={isAuthorized} />
+          {children}
+      </div>
       </body>
     </html>
   );
