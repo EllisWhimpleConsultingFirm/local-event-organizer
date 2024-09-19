@@ -18,7 +18,7 @@ const NavItem: React.FC<{ href: string; icon: React.ReactNode; label: string; is
 
 const Sidebar: React.FC<SidebarProps> = ({ isExpanded, isAuthorized }) => {
     return (
-        <aside className={`fixed left-0 top-0 bg-gray-800 text-white h-screen transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'} flex flex-col z-10`}>
+        <aside className={`bg-gray-800 text-white h-screen transition-all duration-300 ${isExpanded ? 'w-64' : 'w-20'} flex flex-col`}>
             <div className="flex justify-end p-4">
                 <SidebarToggle isExpanded={isExpanded} />
             </div>

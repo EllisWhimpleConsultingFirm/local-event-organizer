@@ -22,24 +22,29 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
+                                       children,
+                                   }: Readonly<{
+    children: React.ReactNode;
 }>) {
     const cookieStore = cookies();
     const isExpanded = cookieStore.get('sidebarExpanded')?.value === 'true';
-    const isAuthorized = true
+    const isAuthorized = true;
+
     return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-      <div>
-          <Sidebar isExpanded={isExpanded} isAuthorized={isAuthorized} />
-          {children}
-          <Footer />
-      </div>
-      </body>
-    </html>
-  );
+        <html lang="en">
+        <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        >
+        <div className="flex flex-grow">
+            <Sidebar isExpanded={isExpanded} isAuthorized={isAuthorized} />
+            <div className="flex flex-col flex-grow">
+                <main className="flex-grow p-4">
+                    {children}
+                </main>
+                <Footer />
+            </div>
+        </div>
+        </body>
+        </html>
+    );
 }
