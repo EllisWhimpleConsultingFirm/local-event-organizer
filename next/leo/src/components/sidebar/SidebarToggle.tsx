@@ -14,7 +14,7 @@ export const SidebarToggle: React.FC<SidebarToggleProps> = ({ isExpanded }) => {
         Cookies.set('sidebarExpanded', newExpandedState.toString(), { expires: 365 }); // Set cookie to expire in 1 year
 
         // Force a re-render of the page to reflect the new state
-        window.location.reload();
+        // window.location.reload();
     };
 
     return (
