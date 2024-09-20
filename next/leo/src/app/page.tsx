@@ -2,8 +2,8 @@ import { Calendar, Users, Repeat } from 'lucide-react';
 
 export default function Home() {
   return (
-      <div className="flex flex-col min-h-screen">
-        <main className="flex-grow">
+      <div className="flex flex-col">
+        <div className="flex-grow">
           <div className="container mx-auto px-4 py-12">
             <h1 className="text-4xl font-bold text-center mb-8">LEO</h1>
 
@@ -35,7 +35,7 @@ export default function Home() {
               </button>
             </div>
           </div>
-        </main>
+        </div>
       </div>
   );
 };

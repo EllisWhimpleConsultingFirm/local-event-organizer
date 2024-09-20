@@ -1,0 +1,71 @@
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    transition: width 0.3s ease;
+    width: 4.5rem; /* 80px - collapsed state */
+    z-index: 1000;
+}
+
+.sidebar.expanded,
+.sidebar.hovered {
+    width: 16rem; /* 256px - expanded state */
+}
+
+.sidebar-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-icon {
+    min-width: 24px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.sidebar-label {
+    transition: opacity 0.3s ease, max-width 0.3s ease, margin-left 0.3s ease;
+    opacity: 0;
+    max-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.sidebar.expanded .sidebar-label,
+.sidebar.hovered .sidebar-label {
+    opacity: 1;
+    max-width: 200px; /* Adjust based on your longest label */
+    margin-left: 0.75rem;
+    transition-delay: 0.1s; /* Delay the appearance of text */
+}
+
+/* Ensure consistent spacing in collapsed state */
+.sidebar:not(.expanded):not(.hovered) .sidebar-item {
+    justify-content: left;
+}
+
+/* Adjust main content based on sidebar state */
+body[data-sidebar-state="collapsed"] main {
+    margin-left: 5rem;
+    transition: margin-left 0.3s ease;
+}
+
+body[data-sidebar-state="expanded"] main {
+    margin-left: 16rem;
+    transition: margin-left 0.3s ease;
+}
+
+body[data-sidebar-state="hovered"] main {
+    margin-left: 5rem;
+    transition: margin-left 0.3s ease;
+}
