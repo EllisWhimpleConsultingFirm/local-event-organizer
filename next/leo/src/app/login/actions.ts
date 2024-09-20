@@ -3,6 +3,7 @@
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
 import {createClient} from "@/utils/supabase/server";
+import {CredentialResponse} from "google-one-tap";
 
 
 export async function login(formData: FormData) {
@@ -43,4 +44,11 @@ export async function signup(formData: FormData) {
 
     revalidatePath('/', 'layout')
     redirect('/')
+}
+
+export async function handleSignInWithGoogle(response: CredentialResponse) {
+    const { data, error } = await createClient().auth.signInWithIdToken({
+        provider: 'google',
+        token: response.credential,
+    })
 }
