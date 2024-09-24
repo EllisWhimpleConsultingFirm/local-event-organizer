@@ -13,6 +13,7 @@ interface SidebarProps {
 const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     const { isExpanded, toggleSidebar } = useSidebar();
     const [isHovered, setIsHovered] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => {
@@ -22,14 +23,22 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     };
 
     useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
         document.body.dataset.sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
     }, [isExpanded, isHovered]);
 
     const sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
 
+    if (!isMounted) {
+        return null; // Prevent rendering until mounted
+    }
+
     return (
         <aside
-            className={`sidebar ${sidebarState} bg-gray-800 text-white h-screen flex flex-col`}
+            className={`sidebar ${sidebarState} bg-superlightgr text-black h-screen flex flex-col`}
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
@@ -41,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
             <nav className="flex-grow overflow-y-auto">
                 <ul className="space-y-3 pl-3">
                     <SidebarItem href="/" icon={<Home size={24} />} label="Home" />
-                    <SidebarItem href="/events" icon={<Calendar size={24} />} label="Events" />
+                    <SidebarItem href="/events" icon={<Calendar size={24} />} label="EventsDAO" />
                     <SidebarItem href="/vendors" icon={<Users size={24} />} label="Vendors" />
                     {isAuthorized && (
                         <>
