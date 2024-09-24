@@ -11,17 +11,11 @@ interface SidebarContextType {
 const SidebarContext = createContext<SidebarContextType | undefined>(undefined);
 
 export const SidebarProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-    const [isExpanded, setIsExpanded] = useState(() => {
-        if (typeof window !== 'undefined') {
-            return Cookies.get('sidebarExpanded') === 'true';
-        }
-        return false;
-    });
+    const [isExpanded, setIsExpanded] = useState(false)
 
     const toggleSidebar = () => {
         const newExpandedState = !isExpanded;
         setIsExpanded(newExpandedState);
-        Cookies.set('sidebarExpanded', newExpandedState.toString(), { expires: 365 });
     };
 
     useEffect(() => {
