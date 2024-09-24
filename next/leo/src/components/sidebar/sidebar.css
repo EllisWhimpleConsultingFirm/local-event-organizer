@@ -22,8 +22,18 @@
     transition: background-color 0.3s ease;
 }
 
+.chevron {
+    transition: background-color 0.3s ease;
+    padding: 0.3rem;
+    border-radius: 0.5rem;
+}
+
+.chevron:hover {
+    background-color: rgba(255, 255, 255, 0.7);
+}
+
 .sidebar-item:hover {
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.5);
 }
 
 .sidebar-icon {
@@ -68,4 +78,19 @@ body[data-sidebar-state="expanded"] main {
 body[data-sidebar-state="hovered"] main {
     margin-left: 4.5rem;
     transition: margin-left 0.3s ease;
+}
+
+.logo {
+    transition: all 0.3s ease;
+}
+
+.logo.expanded img,
+.logo.hovered img {
+    width: 72px;
+    height: 72px;
+}
+
+.logo.collapsed img {
+    width: 48px;
+    height: 48px;
 }

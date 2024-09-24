@@ -21,12 +21,10 @@ export const metadata: Metadata = {
     description: "Local Event Organizer",
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
+export default function RootLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
-    const isAuthorized = true; // This should be determined by your auth logic
+    const isAuthorized = false; // This should be determined by your auth logic
 
     return (
         <html lang="en">
