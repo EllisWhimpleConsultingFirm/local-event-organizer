@@ -26,7 +26,7 @@ const Home: React.FC = () => {
                         />
                         <FeatureCard
                             icon={<Repeat className="w-12 h-12 text-blue-500" />}
-                            title="Recurring Events"
+                            title="Recurring EventsDAO"
                             description="Set up weekly, monthly, or custom recurring events in just a few clicks."
                         />
                     </div>

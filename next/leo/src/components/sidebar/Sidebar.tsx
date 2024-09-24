@@ -23,6 +23,7 @@ const solway = Solway({weight:"400", subsets: ['latin']})
 const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     const { isExpanded, toggleSidebar } = useSidebar();
     const [isHovered, setIsHovered] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => {
@@ -32,10 +33,18 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     };
 
     useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
         document.body.dataset.sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
     }, [isExpanded, isHovered]);
 
     const sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
+
+    if (!isMounted) {
+        return null; // Prevent rendering until mounted
+    }
 
     return (
         <aside
@@ -61,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
             <nav className="flex-grow overflow-y-auto">
                 <ul className="space-y-3 pl-3">
                     <SidebarItem href="/" icon={<Image src={homeIcon} alt={'Home Icon'} />} label="Home" />
-                    <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="Events" />
+                    <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="EventsDAO" />
                     <SidebarItem href="/vendors" icon={<Image src={vendorIcon} alt={'Vendor Icon'} />} label="Vendors" />
                     {isAuthorized && (
                         <>
