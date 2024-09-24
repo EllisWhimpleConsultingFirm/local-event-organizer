@@ -9,10 +9,8 @@ export default function LoginPage() {
 
     const handleSignInWithGoogle = async (response: CredentialResponse) => {
         try {
-            // Implement your login logic here, e.g., using Supabase or your auth system
             console.log('Google Credential Response:', response);
 
-            // After successful login
             router.push('/dashboard');
         } catch (error) {
             console.error('Error during sign-in:', error);
