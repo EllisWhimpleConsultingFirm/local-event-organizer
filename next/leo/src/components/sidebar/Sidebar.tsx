@@ -52,12 +52,12 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
         >
-            <div className="flex justify-end p-5">
+            <div className="flex justify-end p-3">
                 <button onClick={toggleSidebar} className="chevron text-black-300 hover:bg-black">
                     {isExpanded ? <ChevronLeft size={24} /> : <ChevronRight size={24} />}
                 </button>
             </div>
-            <div className="flex justify-center" style={{height: "75px"}}>
+            <div className="flex justify-center mt-1" style={{height: "80px"}}>
                 <div className={`logo ${sidebarState} text-5xl`}>
                     <div className={solway.className}>
                         <Link href={"/home"} className="flex items-center p-2 rounded-lg">
