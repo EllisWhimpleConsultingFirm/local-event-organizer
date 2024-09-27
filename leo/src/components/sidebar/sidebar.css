@@ -4,7 +4,7 @@
     left: 0;
     bottom: 0;
     transition: width 0.3s ease;
-    width: 4.5rem; /* 80px - collapsed state */
+    width: 4.5rem; /* 72px - collapsed state */
     z-index: 1000;
 }
 
@@ -65,19 +65,18 @@
 }
 
 /* Adjust main content based on sidebar state */
-body[data-sidebar-state="collapsed"] main {
-    margin-left: 4.5rem;
-    transition: margin-left 0.3s ease;
+body {
+    padding-left: 4.5rem; /* Match the collapsed sidebar width */
+    transition: padding-left 0.3s ease;
 }
 
-body[data-sidebar-state="expanded"] main {
-    margin-left: 16rem;
-    transition: margin-left 0.3s ease;
+body[data-sidebar-state="expanded"] {
+    padding-left: 16rem; /* Match the expanded sidebar width */
 }
 
-body[data-sidebar-state="hovered"] main {
-    margin-left: 4.5rem;
-    transition: margin-left 0.3s ease;
+main {
+    width: 100%;
+    transition: width 0.3s ease;
 }
 
 .logo {

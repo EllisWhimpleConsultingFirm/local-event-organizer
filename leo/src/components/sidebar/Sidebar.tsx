@@ -3,16 +3,15 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Home, Calendar, Users, Settings, LogIn, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import {LogoWithText} from '../../public/logo-with-text'
 import { useSidebar } from './SidebarContext';
 import './sidebar.css'
+import Image from "next/image";
+import { Solway } from 'next/font/google'
 import homeIcon from '../../public/home-icon.svg'
 import vendorIcon from '../../public/vendors-icon.svg'
 import eventIcon from '../../public/events.svg'
 import loginIcon from '../../public/briefcase-icon.svg'
 import logoIcon from '../../public/logo.svg'
-import Image from "next/image";
-import { Solway } from 'next/font/google'
 
 interface SidebarProps {
     isAuthorized: boolean;
@@ -23,7 +22,6 @@ const solway = Solway({weight:"400", subsets: ['latin']})
 const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     const { isExpanded, toggleSidebar } = useSidebar();
     const [isHovered, setIsHovered] = useState(false);
-    const [isMounted, setIsMounted] = useState(false);
 
     const handleMouseEnter = () => setIsHovered(true);
     const handleMouseLeave = () => {
@@ -33,18 +31,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     };
 
     useEffect(() => {
-        setIsMounted(true);
-    }, []);
-
-    useEffect(() => {
         document.body.dataset.sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
     }, [isExpanded, isHovered]);
 
     const sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
-
-    if (!isMounted) {
-        return null; // Prevent rendering until mounted
-    }
 
     return (
         <aside
