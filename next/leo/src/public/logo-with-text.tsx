@@ -1,7 +1,7 @@
 export const LogoWithText = ({width, height}: {width: number, height: number}) => {
     return (
         <svg width={width} height={height} viewBox="0 0 463 247" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <mask id="mask0_3_32" maskType="mask-type:luminance" maskUnits="userSpaceOnUse" x="122" y="49" width="130"
+            <mask id="mask0_3_32" maskUnits="userSpaceOnUse" x="122" y="49" width="130"
                   height="149">
                 <path d="M122.264 49H251.258V198H122.264V49Z" fill="white"/>
             </mask>
@@ -10,7 +10,7 @@ export const LogoWithText = ({width, height}: {width: number, height: number}) =
                     d="M216.677 49.0113H157.224C138.201 49.0113 122.79 64.3241 122.79 83.2078V164.315C122.79 183.205 138.201 198.512 157.218 198.512H216.671C235.689 198.512 251.099 183.205 251.099 164.315V83.2078C251.105 64.3241 235.694 49.0113 216.677 49.0113Z"
                     fill="#B4DBDC"/>
             </g>
-            <mask id="mask1_3_32" maskType="mask-type:luminance" maskUnits="userSpaceOnUse" x="48" y="58" width="150"
+            <mask id="mask1_3_32" maskUnits="userSpaceOnUse" x="48" y="58" width="150"
                   height="132">
                 <path d="M48 58.1944H197.631V189.199H48V58.1944Z" fill="white"/>
             </mask>
