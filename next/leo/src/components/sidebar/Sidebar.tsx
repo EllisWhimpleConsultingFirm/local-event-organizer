@@ -3,14 +3,14 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Home, Calendar, Users, Settings, LogIn, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import {LogoWithText} from '../../../../assets/logo-with-text'
+import {LogoWithText} from '../../public/logo-with-text'
 import { useSidebar } from './SidebarContext';
 import './sidebar.css'
-import homeIcon from '../../../../assets/home-icon.svg'
-import vendorIcon from '../../../../assets/vendors-icon.svg'
-import eventIcon from '../../../../assets/events.svg'
-import loginIcon from '../../../../assets/briefcase-icon.svg'
-import logoIcon from '../../../../assets/logo.svg'
+import homeIcon from '../../public/home-icon.svg'
+import vendorIcon from '../../public/vendors-icon.svg'
+import eventIcon from '../../public/events.svg'
+import loginIcon from '../../public/briefcase-icon.svg'
+import logoIcon from '../../public/logo.svg'
 import Image from "next/image";
 import { Solway } from 'next/font/google'
 
