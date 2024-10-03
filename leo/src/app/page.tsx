@@ -5,6 +5,7 @@ import {EventCard} from "@/components/event_card/event-card";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {DAOFactory} from "@/DAO/interface/Factory";
 import homepageImage from '../public/home_page.png'
+import {Button} from "@/components/util/button";
 
 export default async function Home() {
     const daoFactory: DAOFactory = new SupabaseDAOFactory()
@@ -41,8 +42,8 @@ export default async function Home() {
                     <div className="mb-4">
                         <h3 className="text-xl font-semibold mb-2">Provo, UT</h3>
                         <div className="flex space-x-2">
-                            <button className="px-4 py-2 border border-gray-300 rounded-full">Change Location</button>
-                            <button className="px-4 py-2 border border-gray-300 rounded-full">Filter By Date</button>
+                            <Button>Change Location</Button>
+                            <Button>Filter By Date</Button>
                         </div>
                     </div>
                     <h3 className="text-xl font-semibold mb-4">Events</h3>
