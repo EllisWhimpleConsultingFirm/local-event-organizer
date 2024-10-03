@@ -1,12 +1,12 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import { Home, Calendar, Users, Settings, LogIn, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useSidebar } from './SidebarContext';
+import {Calendar, ChevronLeft, ChevronRight, Settings, Users} from 'lucide-react';
+import {useSidebar} from './SidebarContext';
 import './sidebar.css'
 import Image from "next/image";
-import { Solway } from 'next/font/google'
+import {Solway} from 'next/font/google'
 import homeIcon from '../../public/home-icon.svg'
 import vendorIcon from '../../public/vendors-icon.svg'
 import eventIcon from '../../public/events.svg'
