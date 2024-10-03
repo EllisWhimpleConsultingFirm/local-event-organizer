@@ -20,7 +20,7 @@ jobs:
           node-version: '16' # Adjust the version to match your project setup
 
       - name: Install dependencies
-        run: npm install
+        run: cd leo &&npm install
 
       - name: Run ESLint
-        run: npm run lint
+        run: cd leo &&npm run lint
