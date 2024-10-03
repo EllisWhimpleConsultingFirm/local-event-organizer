@@ -70,7 +70,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
                     )}
                 </ul>
             </nav>
-            <div className="mt-auto pl-3 pb-3 space-y-3">
+            <div className="mt-auto pl-3 pb-12 space-y-3">
                 <ul className="space-y-3">
                     <SidebarItem href="/settings" icon={<Settings size={24} />} label="Settings" />
                     {isAuthorized ? (
