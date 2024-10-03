@@ -35,7 +35,7 @@ export default async function Home() {
                 </div>
             </header>
 
-            <div className="flex-grow bg-white p-6">
+            <div className="flex-grow bg-white p-6 text-gray-700">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-2xl font-bold mb-4">Browse Events</h2>
                     <div className="mb-4">
