@@ -1,0 +1,26 @@
+name: Lint
+
+on:
+  pull_request:
+    branches:
+      - main  # You can specify the branch or use a wildcard like "*" for all branches
+
+jobs:
+  lint:
+    name: Run ESLint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '16' # Adjust the version to match your project setup
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run ESLint
+        run: npm run lint
