@@ -47,7 +47,7 @@ export async function signup(formData: FormData) {
 }
 
 export async function handleSignInWithGoogle(response: CredentialResponse) {
-    const { data, error } = await createClient().auth.signInWithIdToken({
+    await createClient().auth.signInWithIdToken({
         provider: 'google',
         token: response.credential,
     })
