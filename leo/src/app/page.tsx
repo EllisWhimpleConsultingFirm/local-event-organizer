@@ -1,7 +1,7 @@
 import React from 'react';
 import {Search} from 'lucide-react';
 import Image from 'next/image'
-import {EventCard} from "@/components/event_card/event-card";
+import {Card} from "@/components/util/card";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {DAOFactory} from "@/DAO/interface/Factory";
 import homepageImage from '../public/home_page.png'
@@ -52,7 +52,7 @@ export default async function Home() {
                             if (event.name && event.description) {
                                 const img = await eventsDao.getEventPicture(event.id)
                                 return (
-                                    <EventCard
+                                    <Card
                                         key={event.id}
                                         title={event.name}
                                         description={event.description}
