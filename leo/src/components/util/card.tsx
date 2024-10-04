@@ -9,7 +9,7 @@ type EventCardProps = {
     description: string
 }
 
-export const EventCard = ({image, title, description}: EventCardProps) => (
+export const Card = ({image, title, description}: EventCardProps) => (
 
     <div className="bg-white rounded-lg overflow-hidden shadow-md">
         <Image src={image} alt={title} width={250} height={250} className="w-full h-48 object-cover" />

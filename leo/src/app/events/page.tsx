@@ -1,6 +1,6 @@
 import {DAOFactory} from "@/DAO/interface/Factory";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
-import {EventCard} from "@/components/event_card/event-card";
+import {Card} from "@/components/util/card";
 import React from "react";
 
 export default async function Notes() {
@@ -15,7 +15,7 @@ export default async function Notes() {
                 {events.map((event) => {
                     if (event.name && event.description) {
                         return (
-                            <EventCard
+                            <Card
                                 key={event.id}
                                 title={event.name}
                                 description={event.description}
