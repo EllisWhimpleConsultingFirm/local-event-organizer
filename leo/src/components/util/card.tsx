@@ -1,7 +1,8 @@
+
 import React from "react";
 import Image from "next/image";
 import {Button} from "@/components/util/button";
-import ticketIcon from '../../public/icon-event-ticket.svg'
+import ticketIcon from '../../public/event-ticket.svg'
 
 type EventCardProps = {
     image?: string,
@@ -10,6 +11,7 @@ type EventCardProps = {
 }
 
 export const Card = ({image, title, description}: EventCardProps) => (
+
     <div className="bg-white rounded-lg overflow-hidden shadow-md">
         {image && (
             <Image src={image} alt={title} width={250} height={250} className="w-full h-48 object-cover" />
