@@ -1,10 +1,11 @@
 import React from 'react';
 import {Search} from 'lucide-react';
 import Image from 'next/image'
-import {EventCard} from "@/components/event_card/event-card";
+import {Card} from "@/components/util/card";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {DAOFactory} from "@/DAO/interface/Factory";
 import homepageImage from '../public/home_page.png'
+import {Button} from "@/components/util/button";
 
 export default async function Home() {
     const daoFactory: DAOFactory = new SupabaseDAOFactory()
@@ -35,26 +36,27 @@ export default async function Home() {
                 </div>
             </header>
 
-            <div className="flex-grow bg-white p-6">
+            <div className="flex-grow bg-white p-6 text-gray-700">
                 <div className="max-w-6xl mx-auto">
                     <h2 className="text-2xl font-bold mb-4">Browse Events</h2>
                     <div className="mb-4">
                         <h3 className="text-xl font-semibold mb-2">Provo, UT</h3>
                         <div className="flex space-x-2">
-                            <button className="px-4 py-2 border border-gray-300 rounded-full">Change Location</button>
-                            <button className="px-4 py-2 border border-gray-300 rounded-full">Filter By Date</button>
+                            <Button>Change Location</Button>
+                            <Button>Filter By Date</Button>
                         </div>
                     </div>
                     <h3 className="text-xl font-semibold mb-4">Events</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {events.map((event) => {
+                        {events.map(async (event) => {
                             if (event.name && event.description) {
+                                const img = await eventsDao.getEventPicture(event.id)
                                 return (
-                                    <EventCard
+                                    <Card
                                         key={event.id}
                                         title={event.name}
                                         description={event.description}
-                                        image={eventsDao.getEventPicture(event.id).publicUrl}
+                                        image={img.publicUrl}
                                     />
                                 );
                             }
