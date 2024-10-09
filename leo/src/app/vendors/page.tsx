@@ -21,7 +21,7 @@ const vendors = [
 
 const VendorsPage = () => {
     return (
-        <div className="container mx-auto p-6 bg-gray-100 text-gray-700">
+        <div className="container mx-auto p-6 text-gray-700">
             <h1 className="text-3xl font-bold mb-4">Vendors</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {vendors.map((vendor) => (
@@ -49,8 +49,8 @@ const VendorCard = ({ vendor }: { vendor: any }) => {
 
             {/* Action buttons */}
             <div className="flex justify-between">
-                <Button>Edit</Button>
-                <Button>Remove</Button>
+                <Button style={'px-4'}>Edit</Button>
+                <Button style={'px-4'}>Remove</Button>
             </div>
         </div>
     );
