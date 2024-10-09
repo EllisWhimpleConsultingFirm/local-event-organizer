@@ -1,7 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import {Button} from "@/components/util/button";
-import ticketIcon from '../../public/event-ticket.svg'
+import ticketIcon from '../../public/icon-event-ticket.svg'
 
 type EventCardProps = {
     image: string,
