@@ -47,14 +47,15 @@ export default async function Home() {
                     </div>
                     <h3 className="text-xl font-semibold mb-4">Events</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {events.map((event) => {
+                        {events.map(async (event) => {
                             if (event.name && event.description) {
+                                const img = await eventsDao.getEventPicture(event.id)
                                 return (
                                     <EventCard
                                         key={event.id}
                                         title={event.name}
                                         description={event.description}
-                                        image={eventsDao.getEventPicture(event.id).publicUrl}
+                                        image={img.publicUrl}
                                     />
                                 );
                             }

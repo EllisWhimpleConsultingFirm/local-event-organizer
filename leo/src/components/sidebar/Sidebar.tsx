@@ -60,7 +60,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
             <nav className="flex-grow overflow-y-auto">
                 <ul className="space-y-3 pl-3">
                     <SidebarItem href="/" icon={<Image src={homeIcon} alt={'Home Icon'} />} label="Home" />
-                    <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="EventsDAO" />
+                    <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="Events" />
                     <SidebarItem href="/vendors" icon={<Image src={vendorIcon} alt={'Vendor Icon'} />} label="Vendors" />
                     {isAuthorized && (
                         <>
