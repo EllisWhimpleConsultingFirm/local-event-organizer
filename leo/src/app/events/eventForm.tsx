@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { addEvent, FormState } from '@/actions/event';
 
@@ -16,14 +16,13 @@ function SubmitButton() {
 
 export function EventForm({ onSuccess }: { onSuccess: () => void }) {
     const initialState: FormState = {};
-    const [state, action] = useFormState<FormState, FormData>(addEvent, initialState);
+    const [state, action] = useFormState(addEvent, initialState);
 
-    // const handleSubmit = async (formData: FormData) => {
-    //     const result = await action(formData);
-    //     if (!result?.errors) {
-    //         onSuccess();
-    //     }
-    // };
+    useEffect(() => {
+        if (state.message === "Event added successfully!") {
+            onSuccess();
+        }
+    }, [state, onSuccess]);
 
     return (
         <form action={action} className="space-y-4">

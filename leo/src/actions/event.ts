@@ -25,7 +25,8 @@ const EventFormSchema = z.object({
     admin_id: z.number().int().positive("Admin ID must be a positive integer"),
 });
 
-export async function addEvent(prevState: FormState, formData: FormData): Promise<FormState> {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function addEvent(prevState: any, formData: FormData): Promise<FormState> {
     'use server'
     // Validate form fields
     const validatedFields = EventFormSchema.safeParse({

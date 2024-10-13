@@ -1,6 +1,6 @@
 'use client';
 
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import { useFormState, useFormStatus } from 'react-dom'
 import { EventCard } from "@/components/event_card/event-card";
 import { EventWithPicture } from "@/services/events";
@@ -8,7 +8,8 @@ import { deleteEvent } from '@/actions/event'
 import Link from 'next/link';
 
 interface EventListProps {
-    initialEvents: EventWithPicture[];
+    events: EventWithPicture[];
+    onEventDeleted: () => void;
 }
 
 function DeleteButton() {
@@ -21,24 +22,11 @@ function DeleteButton() {
     )
 }
 
-export function EventList({ initialEvents }: EventListProps) {
-    const [state, formAction] = useFormState(deleteEvent, null);
-    const [events, setEvents] = useState(initialEvents);
-
-    useEffect(() => {
-        const handleEventAdded = async () => {
-            // Fetch updated events list
-            const response = await fetch('/api/events');
-            const updatedEvents = await response.json();
-            setEvents(updatedEvents);
-        };
-
-        window.addEventListener('eventAdded', handleEventAdded);
-
-        return () => {
-            window.removeEventListener('eventAdded', handleEventAdded);
-        };
-    }, []);
+export function EventList({ events, onEventDeleted }: EventListProps) {
+    const handleDelete = async (formData: FormData) => {
+        await deleteEvent(null, formData);
+        onEventDeleted();
+    };
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -51,11 +39,10 @@ export function EventList({ initialEvents }: EventListProps) {
                             image={event.pictureUrl}
                         />
                     </Link>
-                    <form action={formAction} onClick={(e) => e.stopPropagation()}>
+                    <form action={handleDelete}>
                         <input type="hidden" name="id" value={event.id} />
                         <DeleteButton />
                     </form>
-                    {state?.message && <p className="text-red-500">{state.message}</p>}
                 </div>
             ))}
         </div>

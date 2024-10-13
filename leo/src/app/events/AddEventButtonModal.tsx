@@ -4,14 +4,16 @@ import React, { useState } from 'react';
 import { EventForm } from './eventForm';
 import { Modal } from '@/components//modal/modal';
 
-export function AddEventButtonModal() {
+interface AddEventButtonModalProps {
+    onEventAdded: () => void;
+}
+
+export function AddEventButtonModal({ onEventAdded }: AddEventButtonModalProps) {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     const handleAddEventSuccess = () => {
         setIsModalOpen(false);
-        // You might want to add a way to refresh the event list here
-        // For example, you could emit a custom event that the server component listens for
-        window.dispatchEvent(new Event('eventAdded'));
+        onEventAdded();
     };
 
     return (

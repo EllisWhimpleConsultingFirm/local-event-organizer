@@ -1,25 +1,37 @@
-import React from 'react';
+'use client';
+
+import React, { useState, useEffect } from 'react';
 import { EventList } from './eventList';
 import { AddEventButtonModal } from './AddEventButtonModal';
-import { DAOFactory } from "@/DAO/interface/Factory";
-import { SupabaseDAOFactory } from "@/DAO/supabase/SupabaseDAOFactory";
-import { EventService } from "@/services/events";
+import { EventWithPicture } from "@/services/events";
 
-export default async function EventsManagement() {
-    const daoFactory: DAOFactory = new SupabaseDAOFactory();
-    const eventsDao = daoFactory.getEventsDAO();
-    const eventService = new EventService(eventsDao);
+async function fetchEvents() {
+    const response = await fetch('/api/events');
+    if (!response.ok) {
+        throw new Error('Failed to fetch events');
+    }
+    return response.json();
+}
 
-    const events = await eventService.getAllEvents();
+export default function EventsManagement() {
+    const [events, setEvents] = useState<EventWithPicture[]>([]);
+
+    useEffect(() => {
+        fetchEvents().then(setEvents);
+    }, []);
+
+    const refreshEvents = () => {
+        fetchEvents().then(setEvents);
+    };
 
     return (
         <div className="container mx-auto p-10">
             <div className="flex justify-between items-center mb-4 p-20">
                 <h1 className="text-5xl font-bold">Event Management</h1>
-                <AddEventButtonModal />
+                <AddEventButtonModal onEventAdded={refreshEvents} />
             </div>
 
-            <EventList initialEvents={events} />
+            <EventList events={events} onEventDeleted={refreshEvents} />
         </div>
     );
 }
