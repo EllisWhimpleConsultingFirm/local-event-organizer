@@ -30,7 +30,7 @@ export function UpdateEventForm({ event }: UpdateEventFormProps) {
                 <input
                     id="name"
                     name="name"
-                    defaultValue={event.name}
+                    defaultValue={event.name ?? "Name Not Found"}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
                 {state?.errors?.name && <p className="mt-2 text-sm text-red-600">{state.errors.name}</p>}
@@ -40,7 +40,7 @@ export function UpdateEventForm({ event }: UpdateEventFormProps) {
                 <textarea
                     id="description"
                     name="description"
-                    defaultValue={event.description}
+                    defaultValue={event.description ?? "Description Not Found"}
                     rows={3}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />

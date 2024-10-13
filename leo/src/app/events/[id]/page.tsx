@@ -1,10 +1,8 @@
 import React from 'react';
-import { DAOFactory } from "@/DAO/interface/Factory";
-import { SupabaseDAOFactory } from "@/DAO/supabase/SupabaseDAOFactory";
-import { EventService } from "@/services/events";
 import Image from 'next/image';
 import Link from 'next/link';
-import { UpdateEventForm } from './UpdateEventForm';
+import { UpdateEventForm } from './updateEventForm';
+import {getEvent} from "@/actions/event";
 
 interface EventDetailsProps {
     params: {
@@ -13,11 +11,7 @@ interface EventDetailsProps {
 }
 
 export default async function EventDetails({ params }: EventDetailsProps) {
-    const daoFactory: DAOFactory = new SupabaseDAOFactory();
-    const eventsDao = daoFactory.getEventsDAO();
-    const eventService = new EventService(eventsDao);
-
-    const event = await eventService.getEvent(parseInt(params.id, 10));
+    const event = await getEvent(parseInt(params.id, 10));
 
     if (!event) {
         return <div>Event not found</div>;
@@ -34,7 +28,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                     <div className="mb-4">
                         <Image
                             src={event.pictureUrl}
-                            alt={event.name}
+                            alt={event.name ?? "Name Not Found"}
                             width={500}
                             height={300}
                             className="rounded-lg"

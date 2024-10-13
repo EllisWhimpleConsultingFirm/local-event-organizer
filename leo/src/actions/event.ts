@@ -26,6 +26,7 @@ const EventFormSchema = z.object({
 });
 
 export async function addEvent(prevState: FormState, formData: FormData): Promise<FormState> {
+    'use server'
     // Validate form fields
     const validatedFields = EventFormSchema.safeParse({
         name: formData.get('name'),
@@ -72,7 +73,8 @@ export async function addEvent(prevState: FormState, formData: FormData): Promis
     }
 }
 
-export async function deleteEvent(state: any, formData: FormData) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function deleteEvent(state : any, formData: FormData) {
     'use server';
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -99,6 +101,7 @@ const UpdateEventFormSchema = z.object({
 });
 
 export async function updateEvent(prevState: FormState, formData: FormData): Promise<FormState> {
+    'use server'
     const validatedFields = UpdateEventFormSchema.safeParse({
         id: formData.get('id'),
         name: formData.get('name'),
@@ -137,4 +140,13 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
             message: error instanceof Error ? error.message : "Failed to update event. Please try again.",
         };
     }
+}
+
+export async function getEvent(id: number){
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const eventService = new EventService(eventsDao);
+
+    return await eventService.getEvent(id)
 }

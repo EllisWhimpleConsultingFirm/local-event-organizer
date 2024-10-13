@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { EventForm } from './EventForm';
+import { EventForm } from './eventForm';
 import { Modal } from '@/components//modal/modal';
 
 export function AddEventButtonModal() {
