@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useFormState, useFormStatus } from 'react-dom'
+import { useFormStatus } from 'react-dom'
 import { EventCard } from "@/components/event_card/event-card";
 import { EventWithPicture } from "@/services/events";
 import { deleteEvent } from '@/actions/event'

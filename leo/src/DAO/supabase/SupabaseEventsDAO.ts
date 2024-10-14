@@ -54,7 +54,7 @@ export class SupabaseEventsDAO implements EventsDAO {
     }
 
     async addEventPicture(eventId: number, file: File): Promise<{ publicUrl: string }> {
-        const { data, error } = await this.supabase.storage
+        const { error } = await this.supabase.storage
             .from(this.BUCKET)
             .upload(`${eventId}.png`, file, {
                 cacheControl: '3600',
@@ -70,7 +70,7 @@ export class SupabaseEventsDAO implements EventsDAO {
         const fileName = `${eventId}.png`;
 
         try {
-            const { data, error } = await this.supabase.storage
+            const { error } = await this.supabase.storage
                 .from(this.BUCKET)
                 .upload(fileName, file, {
                     cacheControl: '3600',
@@ -98,7 +98,7 @@ export class SupabaseEventsDAO implements EventsDAO {
     }
 
     async deleteEventPicture(eventId: number): Promise<void> {
-        const { data, error } = await this.supabase.storage
+        const { error } = await this.supabase.storage
             .from(this.BUCKET)
             .remove([`${eventId}.png`])
 

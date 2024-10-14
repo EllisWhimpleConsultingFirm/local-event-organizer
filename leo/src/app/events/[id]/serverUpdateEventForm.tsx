@@ -1,4 +1,4 @@
-import {FormEvent, useState} from 'react';
+import React from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { updateEvent, FormState } from '@/actions/event';
 import { EventWithPicture } from "@/services/events";
@@ -17,46 +17,12 @@ function SubmitButton() {
     );
 }
 
-
-
 export function UpdateEventForm({ event }: UpdateEventFormProps) {
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [error, setError] = useState<string | null>(null)
-    const [state, action] = useFormState<FormState, FormData>(updateEvent, {} as FormState);
-
-    async function onSubmit(event: FormEvent<HTMLFormElement>) {
-        event.preventDefault()
-        setIsLoading(true)
-        setError(null) // Clear previous errors when a new request starts
-
-        try {
-            const formData = new FormData(event.currentTarget)
-            const response = await fetch('/api/submit', {
-                method: 'POST',
-                body: formData,
-            })
-
-            if (!response.ok) {
-                throw new Error('Failed to submit the data. Please try again.')
-            }
-
-            // Handle response if necessary
-            const data = await response.json()
-            // ...
-        } catch (error : unknown) {
-            // Capture the error message to display to the user
-            if (error instanceof Error) {
-                setError(error.message)
-                console.error(error)
-            }
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
+    const initialState: FormState = {};
+    const [state, action] = useFormState(updateEvent, initialState);
 
     return (
-        <form onSubmit={onSubmit} className="space-y-4">
+        <form action={action} className="space-y-4">
             <input type="hidden" name="id" value={event.id} />
             <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Event Name</label>
