@@ -82,15 +82,20 @@ export async function deleteEvent(state : any, formData: FormData) {
     const eventService = new EventService(eventsDao);
 
     const id = formData.get('id');
-    if (id && typeof id === 'string') {
+
+    if (id && typeof id === 'string' && !isNaN(parseInt(id, 10))) {
         try {
-            await eventService.deleteEvent(parseInt(id, 10));
+            const intId = parseInt(id, 10)
+            if (intId )
+            await eventService.deleteEvent(intId);
             revalidatePath('/events');
         } catch (error) {
             return {
                 message: 'Failed to delete event. Please try again.',
             }
         }
+    } else {
+        throw new Error('Invalid event ID');
     }
 }
 
@@ -143,11 +148,18 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
     }
 }
 
-export async function getEvent(id: number){
+export async function getEvent(id: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
     const eventService = new EventService(eventsDao);
 
-    return await eventService.getEvent(id)
+    try {
+        return await eventService.getEvent(id);
+    } catch (error) {
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
 }

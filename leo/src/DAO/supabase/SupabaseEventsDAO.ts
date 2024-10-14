@@ -8,17 +8,21 @@ export class SupabaseEventsDAO implements EventsDAO {
     private BUCKET = 'events-pictures'
 
     getEventPicture(eventId: number): { publicUrl: string; } {
-        const { data } = this.supabase.storage
+        const result = this.supabase.storage
             .from(this.BUCKET)
             .getPublicUrl(`${eventId}.png`);
 
-        return data;
+        if (!result?.data?.publicUrl) {
+            throw new Error('Failed to get public URL');
+        }
+
+        return { publicUrl: result.data.publicUrl };
     }
 
     async getEvents(): Promise<Tables<'Events'>[]> {
         const { data, error } = await this.supabase.from(this.TABLE).select()
         if (error) { throw error }
-        return data
+        return data ?? []
     }
 
     async addEvent(event: TablesInsert<'Events'>): Promise<Tables<'Events'>> {
@@ -29,6 +33,7 @@ export class SupabaseEventsDAO implements EventsDAO {
             .single()
 
         if (error) { throw error }
+        if (!data) { throw new Error('Failed to add event') }
         return data
     }
 
@@ -41,6 +46,7 @@ export class SupabaseEventsDAO implements EventsDAO {
             .single()
 
         if (error) { throw error }
+        if (!data) { throw new Error('Failed to update event') }
         return data
     }
 
@@ -54,14 +60,14 @@ export class SupabaseEventsDAO implements EventsDAO {
     }
 
     async addEventPicture(eventId: number, file: File): Promise<{ publicUrl: string }> {
-        const { error } = await this.supabase.storage
+        const result = await this.supabase.storage
             .from(this.BUCKET)
             .upload(`${eventId}.png`, file, {
                 cacheControl: '3600',
                 upsert: false
             })
 
-        if (error) { throw error }
+        if (result.error) { throw result.error }
 
         return this.getEventPicture(eventId)
     }
@@ -70,27 +76,18 @@ export class SupabaseEventsDAO implements EventsDAO {
         const fileName = `${eventId}.png`;
 
         try {
-            const { error } = await this.supabase.storage
+            const result = await this.supabase.storage
                 .from(this.BUCKET)
                 .upload(fileName, file, {
                     cacheControl: '3600',
                     upsert: true
                 });
 
-            if (error) {
-                console.error('Error uploading file:', error);
-                throw error;
+            if (result.error) {
+                throw result.error;
             }
 
-            const { data: urlData } = this.supabase.storage
-                .from(this.BUCKET)
-                .getPublicUrl(fileName);
-
-            if (!urlData.publicUrl) {
-                throw new Error('Failed to get public URL for uploaded file');
-            }
-
-            return { publicUrl: urlData.publicUrl };
+            return this.getEventPicture(eventId);
         } catch (error) {
             console.error('Error in updateEventPicture:', error);
             throw error;
@@ -98,10 +95,10 @@ export class SupabaseEventsDAO implements EventsDAO {
     }
 
     async deleteEventPicture(eventId: number): Promise<void> {
-        const { error } = await this.supabase.storage
+        const result = await this.supabase.storage
             .from(this.BUCKET)
             .remove([`${eventId}.png`])
 
-        if (error) { throw error }
+        if (result.error) { throw result.error }
     }
 }

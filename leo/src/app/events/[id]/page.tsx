@@ -13,7 +13,7 @@ interface EventDetailsProps {
 export default async function EventDetails({ params }: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));
 
-    if (!event) {
+    if (!event || "error" in event) {
         return <div>Event not found</div>;
     }
 
