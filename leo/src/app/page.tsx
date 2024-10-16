@@ -8,7 +8,7 @@ import homepageImage from '../public/icon-home-page.png'
 import {Button} from "@/components/util/button";
 import {IconFilterFunnel} from "@/public/icon-filter-funnel";
 import {Modal} from "@/components/util/modal";
-import {FilterModal} from "@/components/filter/FilterModal";
+import {FilterModal} from "@/components/filter/filter-modal";
 
 export default async function Home() {
     const daoFactory: DAOFactory = new SupabaseDAOFactory()
@@ -42,11 +42,10 @@ export default async function Home() {
 
             <div className="flex-grow bg-white p-6 text-gray-700">
                 <div className="max-w-6xl mx-auto">
-                    <h2 className="text-2xl font-bold mb-4">Browse Events</h2>
-                    <div className="mb-4">
-                        <h3 className="text-xl font-semibold mb-2">Provo, UT</h3>
-                        <div className="flex space-x-2">
-                            <Button>Change Location</Button>
+                    <h2 className="text-2xl font-bold">Browse Events</h2>
+                    <div className="flex flex-row items-center">
+                        <h3 className="text-xl font-semibold">Provo, UT</h3>
+                        <div className="px-4 mb-1">
                             <FilterModal/>
                         </div>
                     </div>

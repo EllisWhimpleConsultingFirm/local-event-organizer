@@ -4,6 +4,9 @@ import {Button} from "@/components/util/button";
 import {IconFilterFunnel} from "@/public/icon-filter-funnel";
 import React, {useState} from "react";
 import {Modal} from "@/components/util/modal";
+import {DistanceSlider} from "@/components/filter/distance-slider";
+import DatePicker from "react-datepicker";
+import {DatePickerLeo} from "@/components/filter/date-picker";
 
 export const FilterModal = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +22,8 @@ export const FilterModal = () => {
 
             <Modal isOpen={isOpen} onClose={toggleModal} title={"Filters"}>
                 <div className="flex flex-col">
-                    test
+                    <DistanceSlider/>
+                    <DatePickerLeo/>
                 </div>
             </Modal>
         </>
