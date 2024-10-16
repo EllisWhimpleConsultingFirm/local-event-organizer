@@ -1,5 +1,5 @@
 import {Button} from "@/components/util/button";
-import {CategoryTag} from "@/app/vendors/components/category-tag";
+import {Tables} from "../../../types/database.types";
 
 const vendors = [
     {
@@ -32,19 +32,11 @@ const VendorsPage = () => {
     );
 };
 
-const VendorCard = ({ vendor }: { vendor: any }) => {
+const VendorCard = ({ vendor }: { vendor: Tables<'Vendors'> }) => {
     return (
         <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
             <div>
                 <h2 className="text-xl font-bold mb-2">{vendor.name}</h2>
-                <p className="text-gray-600 mb-2">Category: {vendor.category}</p>
-                <p className="text-gray-600 mb-4">Contact: {vendor.contact}</p>
-
-                <div className="flex flex-wrap gap-2 mb-4">
-                    {vendor.events.map((event: string) => (
-                        CategoryTag({tagName: event})
-                    ))}
-                </div>
             </div>
 
             {/* Action buttons */}
