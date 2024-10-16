@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useFormStatus } from 'react-dom'
-import { EventCard } from "@/components/event_card/event-card";
+import { Card } from "@/components/util/card";
 import { EventWithPicture } from "@/services/events";
 import { deleteEvent } from '@/actions/event'
 import Link from 'next/link';
@@ -33,7 +33,7 @@ export function EventList({ events, onEventDeleted }: EventListProps) {
             {events.map((event) => (
                 <div key={event.id} className="relative">
                     <Link href={`/events/${event.id}`} className="block">
-                        <EventCard
+                        <Card
                             title={event.name || ""}
                             description={event.description || ""}
                             image={event.pictureUrl}
