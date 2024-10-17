@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { UpdateEventForm } from './updateEventForm';
 import {getEvent} from "@/actions/event";
-
 interface EventDetailsProps {
     params: {
         id: string;
@@ -19,7 +18,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
 
     return (
         <div className="container mx-auto p-4">
-            <Link href="/events" className="text-blue-500 hover:underline mb-4 block">
+            <Link href="/admin/events" className="text-blue-500 hover:underline mb-4 block">
                 &larr; Back to Events
             </Link>
             <div className="flex flex-row space-x-8">

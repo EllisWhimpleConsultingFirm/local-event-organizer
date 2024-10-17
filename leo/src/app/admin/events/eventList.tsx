@@ -32,7 +32,7 @@ export function EventList({ events, onEventDeleted }: EventListProps) {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {events.map((event) => (
                 <div key={event.id} className="relative">
-                    <Link href={`/events/${event.id}`} className="block">
+                    <Link href={`/admin/events/${event.id}`} className="block">
                         <Card
                             title={event.name || ""}
                             description={event.description || ""}
