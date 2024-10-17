@@ -50,7 +50,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
             <div className="flex justify-center mt-1" style={{height: "80px"}}>
                 <div className={`logo ${sidebarState} text-5xl`}>
                     <div className={solway.className}>
-                        <Link href={"/home"} className="flex items-center p-2 rounded-lg">
+                        <Link href={"/"} className="flex items-center p-2 rounded-lg">
                             <Image src={logoIcon} alt={'Logo'} width={isExpanded ? 72 : 36} height={isExpanded ? 72 : 36} className="transition-all duration-300" />
                             <span className="sidebar-label ml-3">{"leo"}</span>
                         </Link>

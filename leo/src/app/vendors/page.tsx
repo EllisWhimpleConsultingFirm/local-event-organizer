@@ -8,6 +8,9 @@ const vendors = [
         category: "Catering",
         contact: "contact@vendor-a.com",
         events: ["Wedding", "Corporate Party", "Concert"],
+        created_at: '1/1/2024',
+        phone_number: 123456789,
+        email: 'test@gmail.com'
     },
     {
         id: 2,
@@ -15,6 +18,9 @@ const vendors = [
         category: "Music",
         contact: "music@vendor-b.com",
         events: ["Wedding", "Festival", "Birthday Party"],
+        created_at: '1/1/2024',
+        phone_number: 123456789,
+        email: 'test@gmail.com'
     },
     // Add more vendors
 ];
