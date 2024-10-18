@@ -158,24 +158,30 @@ export type Database = {
       Vendors: {
         Row: {
           created_at: string
+          description: string | null
           email: string | null
           id: number
           name: string
           phone_number: number | null
+          photo_url: string | null
         }
         Insert: {
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: number
           name: string
           phone_number?: number | null
+          photo_url?: string | null
         }
         Update: {
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: number
           name?: string
           phone_number?: number | null
+          photo_url?: string | null
         }
         Relationships: []
       }
