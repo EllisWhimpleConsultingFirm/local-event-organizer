@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
-    const isAuthorized = false; // This should be determined by your auth logic
+    const isAuthorized = true; // This should be determined by your auth logic
 
     return (
         <html lang="en">
