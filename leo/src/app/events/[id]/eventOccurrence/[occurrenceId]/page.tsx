@@ -1,54 +1,48 @@
 import { getEvent } from "@/actions/event";
 import Image from 'next/image';
-import { CalendarDays } from "lucide-react";
 import Link from "next/link";
 import React from "react";
-import EventOccurrenceCard from "@/app/events/[id]/EventOccurrenceCard";
 import {Tables} from "../../../../../../types/database.types";
+import {Card} from "@/components/util/card";
 
 interface EventDetailsProps {
     params: {
         id: string;
+        occurrenceId: string;
     };
 }
 
-const eventOccurrences : (Tables<'Event_Occurences'>)[] = [
+const vendors : (Tables<'Vendors'>)[] = [
     {
         id : 1,
-        created_at:"2024-10-09 21:36:30.851+00",
-        event_id:2,
-        start_time:"2024-10-17 20:36:30.851",
-        end_time:"2024-10-17 21:36:30.851",
-        latitude: -73.882575,
-        longitude: -18.947416
+        description : "Test Description",
+        photo_url : "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png",
+        created_at : "2024-10-09 21:36:30.851+00",
+        name : "Testers of Patience",
+        phone_number: 123456789,
+        email : "testyMcTesterson@gmail.com",
     },
     {
-        id : 2,
-        created_at:"2024-10-09 21:36:30.851+00",
-        event_id:2,
-        start_time:"2024-10-17 20:36:30.851",
-        end_time:"2024-10-17 21:36:30.851",
-        latitude: -73.882575,
-        longitude: -18.947416
+        id : 1,
+        description : "Test Description",
+        photo_url : "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png",
+        created_at : "2024-10-09 21:36:30.851+00",
+        name : "Testers of Patience II",
+        phone_number: 123456789,
+        email : "testyMcTesterson@gmail.com",
     },
 ];
 
-const capitalizeFirstLetter = (string: string): string => {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-};
-
 export default async function EventOccurrenceDetails({ params }: EventDetailsProps) {
-    const eventOccurrence = await getEvent(parseInt(params.id, 10)); //TODO UPDATE THIS TO GRAB EVENT OCCURRENCE INFO
+    const eventOccurrence = await getEvent(parseInt(params.occurrenceId, 10)); //TODO UPDATE THIS TO GRAB EVENT OCCURRENCE INFO
+    const event = await getEvent(parseInt(params.id, 10));
 
     if (!eventOccurrence || "error" in eventOccurrence) {
         return (
             <div className="text-center text-2xl text-red-600 mt-10">Event Occurrence not found</div>
         );
     }
-
-    const event = await getEvent(eventOccurrence.id);
-
-    if (!event || "error" in event) {
+    else if (!event || "error" in event) {
         return (
             <div className="text-center text-2xl text-red-600 mt-10">Event Associated with the Event Occurrence was not found</div>
         );
@@ -72,11 +66,15 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                     <h1 className="text-xl font-bold text-gray-800">Vendors </h1>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {eventOccurrences.map((eventOccurrence) => {
+                    {vendors.map((vendor) => {
                         return (
-                            <Link href={`eventOccurrence/${eventOccurrence.id}`}>
-                                <EventOccurrenceCard
-                                    eventOccurrence={eventOccurrence}
+                            <Link href={`../../../vendors/${vendor.id}`} key={vendor.id}>
+                                <Card
+                                    title={vendor.name}
+                                    description="VENDOR DESCRIPTION"
+                                    image="/FAIL_TO_FIND"
+                                    // description={vendor.description} TODO add this value in supabase
+                                    // image={vendor.img_url} TODO add this value in supabase
                                 />
                             </Link>
                         );

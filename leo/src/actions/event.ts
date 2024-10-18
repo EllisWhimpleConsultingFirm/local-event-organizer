@@ -54,7 +54,8 @@ export async function addEvent(prevState: any, formData: FormData): Promise<Form
     try {
         const daoFactory: DAOFactory = new SupabaseDAOFactory();
         const eventsDao = daoFactory.getEventsDAO();
-        const eventService = new EventService(eventsDao);
+        const bucketDao = daoFactory.getBucketDAO();
+        const eventService = new EventService(eventsDao, bucketDao);
 
         const eventData: TablesInsert<'Events'> = {
             name: validatedFields.data.name,
@@ -79,7 +80,8 @@ export async function deleteEvent(state : any, formData: FormData) {
     'use server';
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
-    const eventService = new EventService(eventsDao);
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventService = new EventService(eventsDao, bucketDao);
 
     const id = formData.get('id');
 
@@ -128,7 +130,8 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
     try {
         const daoFactory: DAOFactory = new SupabaseDAOFactory();
         const eventsDao = daoFactory.getEventsDAO();
-        const eventService = new EventService(eventsDao);
+        const bucketDao = daoFactory.getBucketDAO();
+        const eventService = new EventService(eventsDao, bucketDao);
 
         const eventData: TablesUpdate<'Events'> = {
             name: validatedFields.data.name,
@@ -152,7 +155,8 @@ export async function getEvent(id: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
-    const eventService = new EventService(eventsDao);
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventService = new EventService(eventsDao, bucketDao);
 
     try {
         return await eventService.getEvent(id);

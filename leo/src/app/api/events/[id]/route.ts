@@ -10,7 +10,8 @@ type Params = {
 export async function DELETE(request: Request, context: { params: Params }) {
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
-    const eventService = new EventService(eventsDao);
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventService = new EventService(eventsDao, bucketDao);
 
     const id = Number(context.params.id);
 

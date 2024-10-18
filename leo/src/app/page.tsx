@@ -10,6 +10,7 @@ import {Button} from "@/components/util/button";
 export default async function Home() {
     const daoFactory: DAOFactory = new SupabaseDAOFactory()
     const eventsDao = daoFactory.getEventsDAO()
+    const bucketDao = daoFactory.getBucketDAO()
     const events = await eventsDao.getEvents()
 
     return (
@@ -50,7 +51,7 @@ export default async function Home() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {events.map(async (event) => {
                             if (event.name && event.description) {
-                                const img = await eventsDao.getEventPicture(event.id)
+                                const img = await bucketDao.getPicture(event.id)
                                 return (
                                     <Card
                                         key={event.id}

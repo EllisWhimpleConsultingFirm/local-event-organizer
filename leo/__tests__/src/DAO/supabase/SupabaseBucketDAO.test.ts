@@ -1,13 +1,13 @@
 import { SupabaseEventsDAO } from '@/DAO/supabase/SupabaseEventsDAO';
 import { createClient } from "@/utils/supabase/server";
-import { Tables, TablesInsert, TablesUpdate } from "../../../../types/database.types";
+import {SupabaseBucketDAO} from "@/DAO/supabase/SupabaseBucketDAO";
 
 jest.mock("@/utils/supabase/server", () => ({
     createClient: jest.fn(),
 }));
 
 describe('SupabaseEventsDAO', () => {
-    let eventsDAO: SupabaseEventsDAO;
+    let bucketDAO: SupabaseBucketDAO;
     let mockSupabaseClient: any;
 
     beforeEach(() => {
@@ -30,7 +30,7 @@ describe('SupabaseEventsDAO', () => {
 
         (createClient as jest.Mock).mockReturnValue(mockSupabaseClient);
 
-        eventsDAO = new SupabaseEventsDAO();
+        bucketDAO = new SupabaseBucketDAO();
     });
 
     describe('getEventPicture', () => {
@@ -38,7 +38,7 @@ describe('SupabaseEventsDAO', () => {
             const mockPublicUrl = 'http://example.com/event.png';
             mockSupabaseClient.storage.from().getPublicUrl.mockReturnValue({ data: { publicUrl: mockPublicUrl } });
 
-            const result = eventsDAO.getEventPicture(1);
+            const result = bucketDAO.getPicture(1);
 
             expect(result).toEqual({ publicUrl: mockPublicUrl });
             expect(mockSupabaseClient.storage.from).toHaveBeenCalledWith('events-pictures');
@@ -48,11 +48,10 @@ describe('SupabaseEventsDAO', () => {
         it('should throw an error if getPublicUrl fails', () => {
             mockSupabaseClient.storage.from().getPublicUrl.mockReturnValue({ data: null });
 
-            expect(() => eventsDAO.getEventPicture(1)).toThrow('Failed to get public URL');
+            expect(() => bucketDAO.getPicture(1)).toThrow('Failed to get public URL');
         });
     });
 
-    // ... other tests remain the same ...
 
     describe('addEventPicture', () => {
         it('should add a picture for an event', async () => {
@@ -61,7 +60,7 @@ describe('SupabaseEventsDAO', () => {
             mockSupabaseClient.storage.from().upload.mockResolvedValue({ data: {}, error: null });
             mockSupabaseClient.storage.from().getPublicUrl.mockReturnValue({ data: { publicUrl: mockPublicUrl } });
 
-            const result = await eventsDAO.addEventPicture(1, mockFile);
+            const result = await bucketDAO.addPicture(1, mockFile);
 
             expect(result).toEqual({ publicUrl: mockPublicUrl });
             expect(mockSupabaseClient.storage.from).toHaveBeenCalledWith('events-pictures');
@@ -71,7 +70,7 @@ describe('SupabaseEventsDAO', () => {
         it('should throw an error if the upload fails', async () => {
             mockSupabaseClient.storage.from().upload.mockResolvedValue({ error: new Error('Upload failed') });
 
-            await expect(eventsDAO.addEventPicture(1, new File([''], 'test.png'))).rejects.toThrow('Upload failed');
+            await expect(bucketDAO.addPicture(1, new File([''], 'test.png'))).rejects.toThrow('Upload failed');
         });
     });
 
@@ -92,7 +91,7 @@ describe('SupabaseEventsDAO', () => {
             mockSupabaseClient.storage.from().upload.mockResolvedValue({ data: {}, error: null });
             mockSupabaseClient.storage.from().getPublicUrl.mockReturnValue({ data: { publicUrl: mockPublicUrl } });
 
-            const result = await eventsDAO.updateEventPicture(1, mockFile);
+            const result = await bucketDAO.updatePicture(1, mockFile);
 
             expect(result).toEqual({ publicUrl: mockPublicUrl });
             expect(mockSupabaseClient.storage.from).toHaveBeenCalledWith('events-pictures');
@@ -102,7 +101,7 @@ describe('SupabaseEventsDAO', () => {
         it('should throw an error if the update fails', async () => {
             mockSupabaseClient.storage.from().upload.mockResolvedValue({ error: new Error('Update failed') });
 
-            await expect(eventsDAO.updateEventPicture(1, new File([''], 'test.png'))).rejects.toThrow('Update failed');
+            await expect(bucketDAO.updatePicture(1, new File([''], 'test.png'))).rejects.toThrow('Update failed');
         });
     });
 
@@ -110,7 +109,7 @@ describe('SupabaseEventsDAO', () => {
         it('should delete a picture for an event', async () => {
             mockSupabaseClient.storage.from().remove.mockResolvedValue({ data: {}, error: null });
 
-            await eventsDAO.deleteEventPicture(1);
+            await bucketDAO.deletePicture(1);
 
             expect(mockSupabaseClient.storage.from).toHaveBeenCalledWith('events-pictures');
             expect(mockSupabaseClient.storage.from().remove).toHaveBeenCalledWith(['1.png']);
@@ -119,7 +118,7 @@ describe('SupabaseEventsDAO', () => {
         it('should throw an error if the delete fails', async () => {
             mockSupabaseClient.storage.from().remove.mockResolvedValue({ error: new Error('Delete failed') });
 
-            await expect(eventsDAO.deleteEventPicture(1)).rejects.toThrow('Delete failed');
+            await expect(bucketDAO.deletePicture(1)).rejects.toThrow('Delete failed');
         });
     });
 });

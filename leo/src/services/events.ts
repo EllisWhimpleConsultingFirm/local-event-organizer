@@ -1,12 +1,13 @@
 import { EventsDAO } from "@/DAO/interface/EventsDAO";
 import { Tables, TablesInsert, TablesUpdate } from "../../types/database.types";
+import {BucketDAO} from "@/DAO/interface/BucketDAO";
 
 export interface EventWithPicture extends Tables<'Events'> {
     pictureUrl: string;
 }
 
 export class EventService {
-    constructor(private eventsDAO: EventsDAO) {}
+    constructor(private eventsDAO: EventsDAO, private bucketDAO: BucketDAO) {}
 
     async getEvent(id: number): Promise<EventWithPicture> {
         const event = await this.eventsDAO.getEvents().then(events =>
@@ -15,21 +16,21 @@ export class EventService {
         if (!event) {
             throw new Error(`Event with id ${id} not found`);
         }
-        const { publicUrl: pictureUrl } = this.eventsDAO.getEventPicture(id);
+        const { publicUrl: pictureUrl } = this.bucketDAO.getPicture(id);
         return { ...event, pictureUrl };
     }
 
     async getAllEvents(): Promise<EventWithPicture[]> {
         const events = await this.eventsDAO.getEvents();
         return Promise.all(events.map(async (event) => {
-            const { publicUrl: pictureUrl } = this.eventsDAO.getEventPicture(event.id);
+            const { publicUrl: pictureUrl } = this.bucketDAO.getPicture(event.id);
             return { ...event, pictureUrl };
         }));
     }
 
     async addEvent(eventData: TablesInsert<'Events'>, picture: File): Promise<EventWithPicture> {
         const newEvent = await this.eventsDAO.addEvent(eventData);
-        const { publicUrl: pictureUrl } = await this.eventsDAO.addEventPicture(newEvent.id, picture);
+        const { publicUrl: pictureUrl } = await this.bucketDAO.addPicture(newEvent.id, picture);
         return { ...newEvent, pictureUrl };
     }
 
@@ -37,10 +38,10 @@ export class EventService {
         const updatedEvent = await this.eventsDAO.updateEvent(id, eventData);
         let pictureUrl: string;
         if (picture) {
-            const result = await this.eventsDAO.updateEventPicture(id, picture);
+            const result = await this.bucketDAO.updatePicture(id, picture);
             pictureUrl = result.publicUrl;
         } else {
-            const result = this.eventsDAO.getEventPicture(id);
+            const result = this.bucketDAO.getPicture(id);
             pictureUrl = result.publicUrl;
         }
         return { ...updatedEvent, pictureUrl };
@@ -48,6 +49,6 @@ export class EventService {
 
     async deleteEvent(id: number): Promise<void> {
         await this.eventsDAO.deleteEvent(id);
-        await this.eventsDAO.deleteEventPicture(id);
+        await this.bucketDAO.deletePicture(id);
     }
 }

@@ -5,19 +5,6 @@ import { Tables, TablesInsert, TablesUpdate } from "../../../types/database.type
 export class SupabaseEventsDAO implements EventsDAO {
     private supabase = createClient();
     private TABLE = 'Events'
-    private BUCKET = 'events-pictures'
-
-    getEventPicture(eventId: number): { publicUrl: string; } {
-        const result = this.supabase.storage
-            .from(this.BUCKET)
-            .getPublicUrl(`${eventId}.png`);
-
-        if (!result?.data?.publicUrl) {
-            throw new Error('Failed to get public URL');
-        }
-
-        return { publicUrl: result.data.publicUrl };
-    }
 
     async getEvents(): Promise<Tables<'Events'>[]> {
         const { data, error } = await this.supabase.from(this.TABLE).select()
@@ -57,48 +44,5 @@ export class SupabaseEventsDAO implements EventsDAO {
             .eq('id', id)
 
         if (error) { throw error }
-    }
-
-    async addEventPicture(eventId: number, file: File): Promise<{ publicUrl: string }> {
-        const result = await this.supabase.storage
-            .from(this.BUCKET)
-            .upload(`${eventId}.png`, file, {
-                cacheControl: '3600',
-                upsert: false
-            })
-
-        if (result.error) { throw result.error }
-
-        return this.getEventPicture(eventId)
-    }
-
-    async updateEventPicture(eventId: number, file: File): Promise<{ publicUrl: string }> {
-        const fileName = `${eventId}.png`;
-
-        try {
-            const result = await this.supabase.storage
-                .from(this.BUCKET)
-                .upload(fileName, file, {
-                    cacheControl: '3600',
-                    upsert: true
-                });
-
-            if (result.error) {
-                throw result.error;
-            }
-
-            return this.getEventPicture(eventId);
-        } catch (error) {
-            console.error('Error in updateEventPicture:', error);
-            throw error;
-        }
-    }
-
-    async deleteEventPicture(eventId: number): Promise<void> {
-        const result = await this.supabase.storage
-            .from(this.BUCKET)
-            .remove([`${eventId}.png`])
-
-        if (result.error) { throw result.error }
     }
 }

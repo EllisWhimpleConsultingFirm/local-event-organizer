@@ -1,24 +1,30 @@
 import { EventService, EventWithPicture } from '@/services/events';
 import { EventsDAO } from "@/DAO/interface/EventsDAO";
 import { Tables, TablesInsert, TablesUpdate } from "../../../types/database.types";
+import {BucketDAO} from "@/DAO/interface/BucketDAO";
 
 // Mock EventsDAO
 const mockEventsDAO: jest.Mocked<EventsDAO> = {
     getEvents: jest.fn(),
-    getEventPicture: jest.fn(),
     addEvent: jest.fn(),
-    addEventPicture: jest.fn(),
     updateEvent: jest.fn(),
-    updateEventPicture: jest.fn(),
     deleteEvent: jest.fn(),
-    deleteEventPicture: jest.fn(),
 };
+
+const mockBucketDAO: jest.Mocked<BucketDAO> = {
+    getPicture: jest.fn(),
+    addPicture: jest.fn(),
+    updatePicture: jest.fn(),
+    deletePicture: jest.fn(),
+};
+
 
 describe('EventService', () => {
     let eventService: EventService;
 
     beforeEach(() => {
-        eventService = new EventService(mockEventsDAO);
+        eventService = new EventService(mockEventsDAO, mockBucketDAO);
+
         jest.clearAllMocks();
     });
 
@@ -26,13 +32,13 @@ describe('EventService', () => {
         it('should return an event with picture URL', async () => {
             const mockEvent: Tables<'Events'> = { id: 1, name: 'Test Event', description: 'Test Description', admin_id: 1 };
             mockEventsDAO.getEvents.mockResolvedValue([mockEvent]);
-            mockEventsDAO.getEventPicture.mockReturnValue({ publicUrl: 'http://test.com/image.jpg' });
+            mockBucketDAO.getPicture.mockReturnValue({ publicUrl: 'http://test.com/image.jpg' });
 
             const result = await eventService.getEvent(1);
 
             expect(result).toEqual({ ...mockEvent, pictureUrl: 'http://test.com/image.jpg' });
             expect(mockEventsDAO.getEvents).toHaveBeenCalled();
-            expect(mockEventsDAO.getEventPicture).toHaveBeenCalledWith(1);
+            expect(mockBucketDAO.getPicture).toHaveBeenCalledWith(1);
         });
 
         it('should throw an error if event is not found', async () => {
@@ -49,13 +55,13 @@ describe('EventService', () => {
                 { id: 2, name: 'Event 2', description: 'Description 2', admin_id: 1 },
             ];
             mockEventsDAO.getEvents.mockResolvedValue(mockEvents);
-            mockEventsDAO.getEventPicture.mockReturnValue({ publicUrl: 'http://test.com/image.jpg' });
+            mockBucketDAO.getPicture.mockReturnValue({ publicUrl: 'http://test.com/image.jpg' });
 
             const result = await eventService.getAllEvents();
 
             expect(result).toEqual(mockEvents.map(event => ({ ...event, pictureUrl: 'http://test.com/image.jpg' })));
             expect(mockEventsDAO.getEvents).toHaveBeenCalled();
-            expect(mockEventsDAO.getEventPicture).toHaveBeenCalledTimes(2);
+            expect(mockBucketDAO.getPicture).toHaveBeenCalledTimes(2);
         });
     });
 
@@ -66,13 +72,13 @@ describe('EventService', () => {
             const mockFile = new File([''], 'test.jpg', { type: 'image/jpeg' });
 
             mockEventsDAO.addEvent.mockResolvedValue(mockNewEvent);
-            mockEventsDAO.addEventPicture.mockResolvedValue({ publicUrl: 'http://test.com/new-image.jpg' });
+            mockBucketDAO.addPicture.mockResolvedValue({ publicUrl: 'http://test.com/new-image.jpg' });
 
             const result = await eventService.addEvent(mockEventData, mockFile);
 
             expect(result).toEqual({ ...mockNewEvent, pictureUrl: 'http://test.com/new-image.jpg' });
             expect(mockEventsDAO.addEvent).toHaveBeenCalledWith(mockEventData);
-            expect(mockEventsDAO.addEventPicture).toHaveBeenCalledWith(1, mockFile);
+            expect(mockBucketDAO.addPicture).toHaveBeenCalledWith(1, mockFile);
         });
     });
 
@@ -83,13 +89,13 @@ describe('EventService', () => {
             const mockFile = new File([''], 'new-test.jpg', { type: 'image/jpeg' });
 
             mockEventsDAO.updateEvent.mockResolvedValue(mockUpdatedEvent);
-            mockEventsDAO.updateEventPicture.mockResolvedValue({ publicUrl: 'http://test.com/updated-image.jpg' });
+            mockBucketDAO.updatePicture.mockResolvedValue({ publicUrl: 'http://test.com/updated-image.jpg' });
 
             const result = await eventService.updateEvent(1, mockEventData, mockFile);
 
             expect(result).toEqual({ ...mockUpdatedEvent, pictureUrl: 'http://test.com/updated-image.jpg' });
             expect(mockEventsDAO.updateEvent).toHaveBeenCalledWith(1, mockEventData);
-            expect(mockEventsDAO.updateEventPicture).toHaveBeenCalledWith(1, mockFile);
+            expect(mockBucketDAO.updatePicture).toHaveBeenCalledWith(1, mockFile);
         });
 
         it('should update an event without changing the picture', async () => {
@@ -97,14 +103,14 @@ describe('EventService', () => {
             const mockUpdatedEvent: Tables<'Events'> = { id: 1, name: 'Updated Event', description: 'Description', admin_id: 1 };
 
             mockEventsDAO.updateEvent.mockResolvedValue(mockUpdatedEvent);
-            mockEventsDAO.getEventPicture.mockReturnValue({ publicUrl: 'http://test.com/existing-image.jpg' });
+            mockBucketDAO.getPicture.mockReturnValue({ publicUrl: 'http://test.com/existing-image.jpg' });
 
             const result = await eventService.updateEvent(1, mockEventData);
 
             expect(result).toEqual({ ...mockUpdatedEvent, pictureUrl: 'http://test.com/existing-image.jpg' });
             expect(mockEventsDAO.updateEvent).toHaveBeenCalledWith(1, mockEventData);
-            expect(mockEventsDAO.updateEventPicture).not.toHaveBeenCalled();
-            expect(mockEventsDAO.getEventPicture).toHaveBeenCalledWith(1);
+            expect(mockBucketDAO.updatePicture).not.toHaveBeenCalled();
+            expect(mockBucketDAO.getPicture).toHaveBeenCalledWith(1);
         });
     });
 
@@ -113,7 +119,7 @@ describe('EventService', () => {
             await eventService.deleteEvent(1);
 
             expect(mockEventsDAO.deleteEvent).toHaveBeenCalledWith(1);
-            expect(mockEventsDAO.deleteEventPicture).toHaveBeenCalledWith(1);
+            expect(mockBucketDAO.deletePicture).toHaveBeenCalledWith(1);
         });
     });
 });

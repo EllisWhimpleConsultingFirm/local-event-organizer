@@ -14,18 +14,18 @@ interface EventDetailsProps {
 
 const eventOccurrences : (Tables<'Event_Occurences'>)[] = [
     {
-        id : 1,
-        created_at:"2024-10-09 21:36:30.851+00",
-        event_id:2,
-        start_time:"2024-10-17 20:36:30.851",
-        end_time:"2024-10-17 21:36:30.851",
+        id : 4,
+        created_at: "2024-10-09 21:36:30.851+00",
+        event_id: 4,
+        start_time: "2024-10-17 20:36:30.851",
+        end_time: "2024-10-17 21:36:30.851",
         latitude: -73.882575,
         longitude: -18.947416
     },
     {
         id : 2,
         created_at:"2024-10-09 21:36:30.851+00",
-        event_id:2,
+        event_id: 2,
         start_time:"2024-10-17 20:36:30.851",
         end_time:"2024-10-17 21:36:30.851",
         latitude: -73.882575,
@@ -72,7 +72,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {eventOccurrences.map((eventOccurrence) => {
                         return (
-                            <Link href={`eventOccurrence/${eventOccurrence.id}`}>
+                            <Link href={`${eventOccurrence.event_id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
                                 <EventOccurrenceCard
                                     eventOccurrence={eventOccurrence}
                                 />

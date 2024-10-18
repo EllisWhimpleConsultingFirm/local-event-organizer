@@ -7,6 +7,7 @@ import Link from "next/link";
 export default async function Events() {
     const daoFactory: DAOFactory = new SupabaseDAOFactory()
     const eventsDao = daoFactory.getEventsDAO()
+    const bucketDao = daoFactory.getBucketDAO()
     const events = await eventsDao.getEvents()
 
     return (
@@ -16,11 +17,10 @@ export default async function Events() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {events.map(async (event) => {
                         if (event.name && event.description) {
-                            const img = await eventsDao.getEventPicture(event.id)
+                            const img = await bucketDao.getPicture(event.id)
                             return (
-                                <Link href={`events/${event.id}`}>
+                                <Link href={`events/${event.id}`} key={event.id}>
                                     <Card
-                                        key={event.id}
                                         title={event.name}
                                         description={event.description}
                                         image={img.publicUrl}
