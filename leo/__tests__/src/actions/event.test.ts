@@ -1,6 +1,7 @@
 import { addEvent, updateEvent, deleteEvent, getEvent, FormState } from '@/actions/event';
 import { EventService } from '@/services/events';
 import { TablesInsert, TablesUpdate } from '../../../types/database.types';
+import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 
 // Mock Next.js modules and functions
 jest.mock('next/cache', () => ({
@@ -30,11 +31,15 @@ jest.mock('@/DAO/supabase/SupabaseDAOFactory', () => ({
         getEventsDAO: jest.fn().mockReturnValue({
             // Mock DAO methods as needed
         }),
+        getBucketsDAO: jest.fn().mockReturnValue({
+            // Mock DAO methods as needed
+        }),
     })),
 }));
 
 describe('Event Actions', () => {
     let mockEventService: jest.Mocked<EventService>;
+    let mockDAOFactory: jest.Mocked<SupabaseDAOFactory>;
 
     beforeEach(() => {
         mockEventService = {
@@ -42,12 +47,14 @@ describe('Event Actions', () => {
             updateEvent: jest.fn(),
             deleteEvent: jest.fn(),
             getEvent: jest.fn(),
-        } as unknown as jest.Mocked<EventService>;
+        } as any;
 
-        // Reset mocks before each test
-        jest.clearAllMocks();
+        mockDAOFactory = {
+            getEventsDAO: jest.fn(),
+            getBucketDAO: jest.fn(),
+        } as any;
 
-        // Mock EventService instance
+        (SupabaseDAOFactory as jest.MockedClass<typeof SupabaseDAOFactory>).mockImplementation(() => mockDAOFactory);
         (EventService as jest.MockedClass<typeof EventService>).mockImplementation(() => mockEventService);
     });
 
