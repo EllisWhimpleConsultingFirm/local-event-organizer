@@ -24,9 +24,10 @@ export type Database = {
         }
         Relationships: []
       }
-      Event_Occurences: {
+      Event_Occurrences: {
         Row: {
           created_at: string
+          description: string | null
           end_time: string
           event_id: number
           id: number
@@ -36,6 +37,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           end_time: string
           event_id: number
           id?: number
@@ -45,6 +47,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           end_time?: string
           event_id?: number
           id?: number
