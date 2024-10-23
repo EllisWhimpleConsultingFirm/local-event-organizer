@@ -194,3 +194,41 @@ export async function getEventOccurrencesByEventId(id: number) {
         return { error: 'An unknown error occurred' };
     }
 }
+
+export async function getEventOccurrence(id: number) {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        return await eventService.getEventOccurrence(id);
+    } catch (error) {
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
+export async function getEventVendors(eventOccurrenceId: number){
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        return await eventService.getEventVendors(eventOccurrenceId);
+    } catch (error) {
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}

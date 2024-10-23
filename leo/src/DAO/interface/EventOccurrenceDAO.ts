@@ -6,4 +6,5 @@ export interface EventOccurrenceDAO {
     updateEventOccurrence(id: number, eventVendor: TablesUpdate<'Event_Occurrences'>): Promise<Tables<'Event_Occurrences'>>;
     deleteEventOccurrence(id: number): Promise<void>;
     getEventOccurrencesByEventId(eventId: number): Promise<Tables<'Event_Occurrences'>[]>
+    getEventOccurrence(id: number): Promise<Tables<'Event_Occurrences'> | null>;
 }

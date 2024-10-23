@@ -4,6 +4,7 @@ import Link from "next/link";
 import React from "react";
 import {Tables} from "../../../../types/database.types";
 import {Card} from "@/components/util/card";
+import {getVendor, getVendorEventOccurrences} from "@/actions/vendor";
 
 interface VendorDetailsProps {
     params: {
@@ -12,57 +13,39 @@ interface VendorDetailsProps {
 }
 const defaultImage = "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png"
 
-const vendor : (Tables<'Vendors'>) =
-    {
-        id : 1,
-        created_at : "2024-10-09 21:36:30.851+00",
-        name : "Testers of Patience",
-        phone_number: 123456789,
-        email : "testyMcTesterson@gmail.com",
-        photo_url : "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png",
-        description : "Test Description"
-    };
-
-const eventOccurrences : (Tables<'Event_Occurrences'>)[] = [
-    {
-        id : 4,
-        created_at: "2024-10-09 21:36:30.851+00",
-        event_id: 4,
-        description : "TEST DESCRIPTION",
-        start_time: "2024-10-17 20:36:30.851",
-        end_time: "2024-10-17 21:36:30.851",
-        latitude: -73.882575,
-        longitude: -18.947416
-    },
-    {
-        id : 2,
-        created_at:"2024-10-09 21:36:30.851+00",
-        event_id: 2,
-        description : "TEST DESCRIPTION",
-        start_time:"2024-10-17 20:36:30.851",
-        end_time:"2024-10-17 21:36:30.851",
-        latitude: -73.882575,
-        longitude: -18.947416
-    },
-];
-
 export default async function VendorDetails({ params }: VendorDetailsProps) {
-    console.log(params)
-    // TODO get vendor information based on the id
-    // TODO get event information based on event occurrences of vendor
-    const eventArray : {event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'>}[] = []
-    try {
-        for (let i = 0; i < eventOccurrences.length; i++) {
-            const event = await getEvent(eventOccurrences[i].event_id);
-            if (!event || 'error' in event) {
-                throw new Error("Error retrieving events")
-            }
-            eventArray.push({eventOccurrence : eventOccurrences[i], event})
-        }
-    } catch (e) {
+    const vendor = await getVendor(parseInt(params.id, 10))
+
+    if (!vendor || "error" in vendor) {
         return (
-                <div className="text-center text-2xl text-red-600 mt-10">Error retrieving the Events</div>
+            <div className="text-center text-2xl text-red-600 mt-10">Vendor not found</div>
         );
+    }
+
+    const eventOccurrences = await getVendorEventOccurrences(vendor.id)
+
+    const eventArray: { event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] = [];
+
+    function isValidEventOccurrences(data: unknown): data is Tables<'Event_Occurrences'>[] {
+        return Array.isArray(data) && !("error" in data);
+    }
+
+    if (eventOccurrences && isValidEventOccurrences(eventOccurrences)) {
+        try {
+            for (const occurrence of eventOccurrences) {
+                if (!occurrence || !occurrence.event_id) continue; // Skip invalid occurrences
+
+                const event = await getEvent(occurrence.event_id);
+                if (!event || 'error' in event) {
+                    throw new Error("Error retrieving events");
+                }
+                eventArray.push({ eventOccurrence: occurrence, event });
+            }
+        } catch (e) {
+            return (
+                <div className="text-center text-2xl text-red-600 mt-10">Error retrieving the Events</div>
+            );
+        }
     }
 
     return (
@@ -86,7 +69,7 @@ export default async function VendorDetails({ params }: VendorDetailsProps) {
                     {eventArray.map(async ({event, eventOccurrence}) => {
                         if (event.name && event.description) {
                             return (
-                                <Link href={`../events/${eventOccurrence.event_id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
+                                <Link href={`../events/${event.id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
                                     <Card
                                         title={event.name}
                                         description={event.description}

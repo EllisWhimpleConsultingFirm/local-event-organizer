@@ -68,6 +68,14 @@ export class EventService {
         return await this.eventOccurrenceDAO.getEventOccurrencesByEventId(eventId);
     }
 
+    async getEventOccurrence(eventOccurrenceId: number) : Promise<Tables<'Event_Occurrences'>> {
+        const eventOccurrence = await this.eventOccurrenceDAO.getEventOccurrence(eventOccurrenceId)
+        if (!eventOccurrence) {
+            throw new Error(`EventOccurrence with id ${eventOccurrenceId} not found`);
+        }
+        return eventOccurrence;
+    }
+
     async addEventOccurrence(occurrenceData: TablesInsert<'Event_Occurrences'>): Promise<Tables<'Event_Occurrences'>> {
         // Validate that the event exists
         await this.getEvent(occurrenceData.event_id);
@@ -144,6 +152,10 @@ export class EventService {
             event_occurence_id: eventOccurrenceId,
             booth_number: boothNumber
         });
+    }
+
+    async getEventVendors(eventId: number): Promise<Tables<'Event_Vendors'>[]> {
+        return await this.eventVendorDAO.getVendorsByEventId(eventId)
     }
 
     async updateVendorInEvent(
