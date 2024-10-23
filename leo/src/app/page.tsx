@@ -50,13 +50,12 @@ export default async function Home() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         {events.map(async (event) => {
                             if (event.name && event.description) {
-                                const img = await eventsDao.getEventPicture(event.id)
                                 return (
                                     <Card
                                         key={event.id}
                                         title={event.name}
                                         description={event.description}
-                                        image={img.publicUrl}
+                                        image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                                     />
                                 );
                             }

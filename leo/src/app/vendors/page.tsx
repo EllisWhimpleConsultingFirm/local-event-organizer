@@ -1,22 +1,25 @@
 import {Button} from "@/components/util/button";
 import {Tables} from "../../../types/database.types";
 
-const vendors = [
+const vendors : (Tables<'Vendors'>)[] = [
     {
-        id: 1,
-        name: "Vendor A",
-        category: "Catering",
-        contact: "contact@vendor-a.com",
-        events: ["Wedding", "Corporate Party", "Concert"],
+        id : 1,
+        created_at : "2024-10-09 21:36:30.851+00",
+        name : "Testers of Patience",
+        phone_number: 123456789,
+        email : "testyMcTesterson@gmail.com",
+        photo_url : "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png",
+        description : "Test Description"
     },
     {
-        id: 2,
-        name: "Vendor B",
-        category: "Music",
-        contact: "music@vendor-b.com",
-        events: ["Wedding", "Festival", "Birthday Party"],
+        id : 2,
+        created_at : "2024-10-09 21:36:30.851+00",
+        name : "Testers of Patience II",
+        phone_number: 123456789,
+        email : "testyMcTesterson@gmail.com",
+        photo_url : "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png",
+        description : "Test Description II"
     },
-    // Add more vendors
 ];
 
 const VendorsPage = () => {

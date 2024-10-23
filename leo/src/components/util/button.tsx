@@ -1,11 +1,11 @@
-'use server'
+'use client'
 
 import React from "react";
 
 export interface ButtonProps {
     onClick?: () => void;
     style?: string;
-    children?: React.ReactNode; // Accepts img, svg, or any ReactNode for icons
+    children?: React.ReactNode;
     label?: string;
 }
 
