@@ -26,7 +26,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                     <h1 className="text-3xl font-bold mb-4">{event.name}</h1>
                     <div className="mb-4">
                         <Image
-                            src={event.pictureUrl}
+                            src={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                             alt={event.name ?? "Name Not Found"}
                             width={500}
                             height={300}

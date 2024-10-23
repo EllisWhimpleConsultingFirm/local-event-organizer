@@ -3,7 +3,6 @@ import Image from 'next/image';
 import Link from "next/link";
 import React from "react";
 import {Tables} from "../../../../types/database.types";
-import {EventWithPicture} from "@/services/events";
 import {Card} from "@/components/util/card";
 
 interface VendorDetailsProps {
@@ -24,11 +23,12 @@ const vendor : (Tables<'Vendors'>) =
         description : "Test Description"
     };
 
-const eventOccurrences : (Tables<'Event_Occurences'>)[] = [
+const eventOccurrences : (Tables<'Event_Occurrences'>)[] = [
     {
         id : 4,
         created_at: "2024-10-09 21:36:30.851+00",
         event_id: 4,
+        description : "TEST DESCRIPTION",
         start_time: "2024-10-17 20:36:30.851",
         end_time: "2024-10-17 21:36:30.851",
         latitude: -73.882575,
@@ -38,6 +38,7 @@ const eventOccurrences : (Tables<'Event_Occurences'>)[] = [
         id : 2,
         created_at:"2024-10-09 21:36:30.851+00",
         event_id: 2,
+        description : "TEST DESCRIPTION",
         start_time:"2024-10-17 20:36:30.851",
         end_time:"2024-10-17 21:36:30.851",
         latitude: -73.882575,
@@ -49,7 +50,7 @@ export default async function VendorDetails({ params }: VendorDetailsProps) {
     console.log(params)
     // TODO get vendor information based on the id
     // TODO get event information based on event occurrences of vendor
-    const eventArray : {event: EventWithPicture, eventOccurrence: Tables<'Event_Occurences'>}[] = []
+    const eventArray : {event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'>}[] = []
     try {
         for (let i = 0; i < eventOccurrences.length; i++) {
             const event = await getEvent(eventOccurrences[i].event_id);
@@ -89,7 +90,7 @@ export default async function VendorDetails({ params }: VendorDetailsProps) {
                                     <Card
                                         title={event.name}
                                         description={event.description}
-                                        image={event.pictureUrl}
+                                        image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                                     />
                                 </Link>
                             );

@@ -4,15 +4,15 @@ import { Tables, TablesInsert, TablesUpdate } from "../../../types/database.type
 
 export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
     private supabase = createClient();
-    private TABLE = 'EventOccurrences'
+    private TABLE = 'Event_Occurrences'
 
-    async getEventOccurrences(): Promise<Tables<'EventOccurrences'>[]> {
+    async getEventOccurrences(): Promise<Tables<'Event_Occurrences'>[]> {
         const { data, error } = await this.supabase.from(this.TABLE).select()
         if (error) { throw error }
         return data ?? []
     }
 
-    async getEventOccurrencesByEventId(eventId: number): Promise<Tables<'EventOccurrences'>[]> {
+    async getEventOccurrencesByEventId(eventId: number): Promise<Tables<'Event_Occurrences'>[]> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .select()
@@ -22,7 +22,7 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
         return data ?? []
     }
 
-    async addEventOccurrence(eventOccurrence: TablesInsert<'EventOccurrences'>): Promise<Tables<'EventOccurrences'>> {
+    async addEventOccurrence(eventOccurrence: TablesInsert<'Event_Occurrences'>): Promise<Tables<'Event_Occurrences'>> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .insert(eventOccurrence)
@@ -34,7 +34,7 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
         return data
     }
 
-    async updateEventOccurrence(id: number, eventOccurrence: TablesUpdate<'EventOccurrences'>): Promise<Tables<'EventOccurrences'>> {
+    async updateEventOccurrence(id: number, eventOccurrence: TablesUpdate<'Event_Occurrences'>): Promise<Tables<'Event_Occurrences'>> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .update(eventOccurrence)

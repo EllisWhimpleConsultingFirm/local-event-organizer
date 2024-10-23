@@ -5,10 +5,10 @@ export class SupabaseBucketDAO implements BucketDAO {
     private supabase = createClient();
     private BUCKET = 'events-pictures'
 
-    getPicture(eventId: number): { publicUrl: string; } {
+    getFile(fileName: string): { publicUrl: string; } {
         const result = this.supabase.storage
             .from(this.BUCKET)
-            .getPublicUrl(`${eventId}.png`);
+            .getPublicUrl(`${fileName}`);
 
         if (!result?.data?.publicUrl) {
             throw new Error('Failed to get public URL');
@@ -17,22 +17,21 @@ export class SupabaseBucketDAO implements BucketDAO {
         return {publicUrl: result.data.publicUrl};
     }
 
-    async addPicture(eventId: number, file: File): Promise<{ publicUrl: string }> {
+    async addFile(file: File): Promise<{ publicUrl: string }> {
+        const uuid = crypto.randomUUID();
         const result = await this.supabase.storage
             .from(this.BUCKET)
-            .upload(`${eventId}.png`, file, {
+            .upload(`${uuid}.png`, file, {
                 cacheControl: '3600',
                 upsert: false
             })
 
         if (result.error) { throw result.error }
 
-        return this.getPicture(eventId)
+        return this.getFile(`${uuid}.png`)
     }
 
-    async updatePicture(eventId: number, file: File): Promise<{ publicUrl: string }> {
-        const fileName = `${eventId}.png`;
-
+    async updateFile(fileName: string, file: File): Promise<{ publicUrl: string }> {
         try {
             const result = await this.supabase.storage
                 .from(this.BUCKET)
@@ -45,17 +44,16 @@ export class SupabaseBucketDAO implements BucketDAO {
                 throw result.error;
             }
 
-            return this.getPicture(eventId);
+            return this.getFile(fileName);
         } catch (error) {
-            console.error('Error in updateEventPicture:', error);
             throw error;
         }
     }
 
-    async deletePicture(eventId: number): Promise<void> {
+    async deleteFile(fileId: string): Promise<void> {
         const result = await this.supabase.storage
             .from(this.BUCKET)
-            .remove([`${eventId}.png`])
+            .remove([`${fileId}`])
 
         if (result.error) { throw result.error }
     }

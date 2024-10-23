@@ -38,7 +38,7 @@ describe('SupabaseEventOccurrenceDAO', () => {
             const result = await eventOccurrenceDAO.getEventOccurrences();
 
             expect(result).toEqual(mockData);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventOccurrences');
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Occurrences');
             expect(mockChain.select).toHaveBeenCalled();
         });
 
@@ -61,7 +61,7 @@ describe('SupabaseEventOccurrenceDAO', () => {
             const result = await eventOccurrenceDAO.getEventOccurrencesByEventId(1);
 
             expect(result).toEqual(mockData);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventOccurrences');
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Occurrences');
             expect(mockChain.select).toHaveBeenCalled();
             expect(mockChain.eq).toHaveBeenCalledWith('event_id', 1);
         });
@@ -99,7 +99,7 @@ describe('SupabaseEventOccurrenceDAO', () => {
             const result = await eventOccurrenceDAO.addEventOccurrence(newEventOccurrence);
 
             expect(result).toEqual(insertedEventOccurrence);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventOccurrences');
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Occurrences');
             expect(mockChain.insert).toHaveBeenCalledWith(newEventOccurrence);
             expect(mockChain.select).toHaveBeenCalled();
             expect(mockChain.single).toHaveBeenCalled();
@@ -135,7 +135,7 @@ describe('SupabaseEventOccurrenceDAO', () => {
             const result = await eventOccurrenceDAO.updateEventOccurrence(1, updatedEventOccurrence);
 
             expect(result).toEqual(resultEventOccurrence);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventOccurrences');
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Occurrences');
             expect(mockChain.update).toHaveBeenCalledWith(updatedEventOccurrence);
             expect(mockChain.eq).toHaveBeenCalledWith('id', 1);
             expect(mockChain.select).toHaveBeenCalled();
@@ -160,7 +160,7 @@ describe('SupabaseEventOccurrenceDAO', () => {
 
             await expect(eventOccurrenceDAO.deleteEventOccurrence(1)).resolves.not.toThrow();
 
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventOccurrences');
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Occurrences');
             expect(mockChain.delete).toHaveBeenCalled();
             expect(mockChain.eq).toHaveBeenCalledWith('id', 1);
         });

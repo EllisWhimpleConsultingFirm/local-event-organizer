@@ -3,10 +3,10 @@
 import React from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { updateEvent, FormState } from '@/actions/event';
-import { EventWithPicture } from "@/services/events";
+import {Tables} from "../../../../../types/supabase";
 
 interface UpdateEventFormProps {
-    event: EventWithPicture;
+    event: Tables<'Events'>;
 }
 
 function SubmitButton() {

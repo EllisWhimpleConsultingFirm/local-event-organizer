@@ -1,4 +1,4 @@
-import { getEvent } from "@/actions/event";
+import { getEvent, getEventOccurrencesByEventId } from "@/actions/event";
 import Image from 'next/image';
 import { CalendarDays } from "lucide-react";
 import Link from "next/link";
@@ -12,11 +12,12 @@ interface EventDetailsProps {
     };
 }
 
-const eventOccurrences : (Tables<'Event_Occurences'>)[] = [
+const eventOccurrences : (Tables<'Event_Occurrences'>)[] = [
     {
         id : 4,
         created_at: "2024-10-09 21:36:30.851+00",
         event_id: 4,
+        description : "TEST DESCRIPTION",
         start_time: "2024-10-17 20:36:30.851",
         end_time: "2024-10-17 21:36:30.851",
         latitude: -73.882575,
@@ -26,6 +27,7 @@ const eventOccurrences : (Tables<'Event_Occurences'>)[] = [
         id : 2,
         created_at:"2024-10-09 21:36:30.851+00",
         event_id: 2,
+        description : "TEST DESCRIPTION",
         start_time:"2024-10-17 20:36:30.851",
         end_time:"2024-10-17 21:36:30.851",
         latitude: -73.882575,
@@ -46,13 +48,15 @@ export default async function EventDetails({ params }: EventDetailsProps) {
         );
     }
 
+    const eventOccurrences = await getEventOccurrencesByEventId(event.id)
+
     return (
         <>
             <div className="container mx-auto p-4 max-w-4xl">
                 <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">{event.name}</h1>
                 <div className="mb-8 w-4/5 mx-auto h-64 rounded-2xl overflow-hidden shadow-lg">
                     <Image
-                        src={event.pictureUrl}
+                        src={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                         alt={event.name ?? "Event Image"}
                         width={1500}
                         height={800}
@@ -69,17 +73,23 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                         </span>
                     </div>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {eventOccurrences.map((eventOccurrence) => {
-                        return (
-                            <Link href={`${eventOccurrence.event_id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
-                                <EventOccurrenceCard
-                                    eventOccurrence={eventOccurrence}
-                                />
-                            </Link>
-                        );
-                    })}
-                </div>
+                {!eventOccurrences || "error" in eventOccurrences || eventOccurrences.length === 0 ? (
+                    <div className="text-center text-2xl text-red-600 mt-10">No Event Occurrences found</div>
+                )
+                :
+                    (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {eventOccurrences.map((eventOccurrence) => {
+                            return (
+                                <Link href={`${eventOccurrence.event_id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
+                                    <EventOccurrenceCard
+                                        eventOccurrence={eventOccurrence}
+                                    />
+                                </Link>
+                            );
+                        })}
+                    </div>
+                    )
+                }
             </div>
         </>
     );

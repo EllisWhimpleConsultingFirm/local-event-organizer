@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { EventList } from './eventList';
 import { AddEventButtonModal } from './AddEventButtonModal';
-import { EventWithPicture } from "@/services/events";
+import {Tables} from "../../../../types/database.types";
 
 async function fetchEvents() {
     const response = await fetch('/api/events');
@@ -14,7 +14,7 @@ async function fetchEvents() {
 }
 
 export default function EventsManagement() {
-    const [events, setEvents] = useState<EventWithPicture[]>([]);
+    const [events, setEvents] = useState<Tables<'Events'>[]>([]);
 
     useEffect(() => {
         fetchEvents().then(setEvents);

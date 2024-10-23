@@ -7,20 +7,36 @@ jest.mock('@/utils/supabase/server');
 describe('SupabaseEventVendorDAO', () => {
     let eventVendorDAO: SupabaseEventVendorDAO;
     let mockSupabase: any;
-    let mockChain: any;
+    let mockQuery: any;
 
     beforeEach(() => {
-        mockChain = {
-            select: jest.fn(() => mockChain),
-            eq: jest.fn(() => mockChain),
-            insert: jest.fn(() => mockChain),
-            update: jest.fn(() => mockChain),
-            delete: jest.fn(() => mockChain),
-            single: jest.fn(() => Promise.resolve({ data: null, error: null })),
+        // Create a new mock query chain for each test
+        mockQuery = {
+            data: null,
+            error: null,
+            select: jest.fn(),
+            eq: jest.fn(),
+            insert: jest.fn(),
+            update: jest.fn(),
+            delete: jest.fn(),
+            single: jest.fn(),
         };
 
+        // Setup the chainable methods
+        mockQuery.select.mockReturnValue(mockQuery);
+        mockQuery.eq.mockReturnValue(mockQuery);
+        mockQuery.insert.mockReturnValue(mockQuery);
+        mockQuery.update.mockReturnValue(mockQuery);
+        mockQuery.delete.mockReturnValue(mockQuery);
+        mockQuery.single.mockReturnValue(mockQuery);
+
+        // Setup the final promise resolution
+        mockQuery.then = jest.fn().mockImplementation((callback) => {
+            return Promise.resolve(callback({ data: mockQuery.data, error: mockQuery.error }));
+        });
+
         mockSupabase = {
-            from: jest.fn(() => mockChain),
+            from: jest.fn(() => mockQuery),
         };
 
         (createClient as jest.Mock).mockReturnValue(mockSupabase);
@@ -29,22 +45,24 @@ describe('SupabaseEventVendorDAO', () => {
 
     describe('getEventVendors', () => {
         it('should return all event vendors', async () => {
-            const mockEventVendors: Tables<'EventVendors'>[] = [
+            const mockEventVendors: Tables<'Event_Vendors'>[] = [
                 { event_occurence_id: 1, vendor_id: 1, booth_number: 1 },
                 { event_occurence_id: 2, vendor_id: 2, booth_number: 2 },
             ];
-            mockChain.select.mockResolvedValue({ data: mockEventVendors, error: null });
+
+            mockQuery.data = mockEventVendors;
+            mockQuery.error = null;
 
             const result = await eventVendorDAO.getEventVendors();
 
             expect(result).toEqual(mockEventVendors);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventVendors');
-            expect(mockChain.select).toHaveBeenCalled();
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Vendors');
+            expect(mockQuery.select).toHaveBeenCalled();
         });
 
         it('should throw an error if the query fails', async () => {
-            const mockError = new Error('Database error');
-            mockChain.select.mockResolvedValue({ data: null, error: mockError });
+            mockQuery.data = null;
+            mockQuery.error = new Error('Database error');
 
             await expect(eventVendorDAO.getEventVendors()).rejects.toThrow('Database error');
         });
@@ -52,23 +70,51 @@ describe('SupabaseEventVendorDAO', () => {
 
     describe('getVendorsByEventId', () => {
         it('should return vendors for a specific event', async () => {
-            const mockVendors: Tables<'EventVendors'>[] = [
-                { event_occurence_id: 1, vendor_id: 1, booth_number: 1, Vendors: { id: 1, name: 'Vendor 1' } },
-                { event_occurence_id: 1, vendor_id: 2, booth_number: 2, Vendors: { id: 2, name: 'Vendor 2' } },
+            const mockVendors: Tables<'Event_Vendors'>[] = [
+                {
+                    event_occurence_id: 1,
+                    vendor_id: 1,
+                    booth_number: 1,
+                    Vendors: {
+                        id: 1,
+                        name: 'Vendor 1',
+                        description: null,
+                        email: null,
+                        phone_number: null,
+                        photo_url: null,
+                        created_at: '2024-01-01'
+                    }
+                },
+                {
+                    event_occurence_id: 1,
+                    vendor_id: 2,
+                    booth_number: 2,
+                    Vendors: {
+                        id: 2,
+                        name: 'Vendor 2',
+                        description: null,
+                        email: null,
+                        phone_number: null,
+                        photo_url: null,
+                        created_at: '2024-01-01'
+                    }
+                },
             ];
-            mockChain.eq.mockResolvedValue({ data: mockVendors, error: null });
+
+            mockQuery.data = mockVendors;
+            mockQuery.error = null;
 
             const result = await eventVendorDAO.getVendorsByEventId(1);
 
             expect(result).toEqual(mockVendors);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventVendors');
-            expect(mockChain.select).toHaveBeenCalledWith('*, Vendors(*)');
-            expect(mockChain.eq).toHaveBeenCalledWith('event_id', 1);
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Vendors');
+            expect(mockQuery.select).toHaveBeenCalledWith('*, Vendors(*)');
+            expect(mockQuery.eq).toHaveBeenCalledWith('event_occurence_id', 1);
         });
 
         it('should throw an error if the query fails', async () => {
-            const mockError = new Error('Database error');
-            mockChain.eq.mockResolvedValue({ data: null, error: mockError });
+            mockQuery.data = null;
+            mockQuery.error = new Error('Database error');
 
             await expect(eventVendorDAO.getVendorsByEventId(1)).rejects.toThrow('Database error');
         });
@@ -76,23 +122,51 @@ describe('SupabaseEventVendorDAO', () => {
 
     describe('getEventsByVendorId', () => {
         it('should return events for a specific vendor', async () => {
-            const mockEvents: Tables<'EventVendors'>[] = [
-                { event_occurence_id: 1, vendor_id: 1, booth_number: 1, Events: { id: 1, name: 'Event 1' } },
-                { event_occurence_id: 2, vendor_id: 1, booth_number: 2, Events: { id: 2, name: 'Event 2' } },
+            const mockEvents: Tables<'Event_Vendors'>[] = [
+                {
+                    event_occurence_id: 1,
+                    vendor_id: 1,
+                    booth_number: 1,
+                    Events: {
+                        id: 1,
+                        name: 'Event 1',
+                        description: null,
+                        admin_id: 1,
+                        is_recurring: false,
+                        photo_url: null,
+                        recurrence_pattern: null
+                    }
+                },
+                {
+                    event_occurence_id: 2,
+                    vendor_id: 1,
+                    booth_number: 2,
+                    Events: {
+                        id: 2,
+                        name: 'Event 2',
+                        description: null,
+                        admin_id: 1,
+                        is_recurring: false,
+                        photo_url: null,
+                        recurrence_pattern: null
+                    }
+                },
             ];
-            mockChain.eq.mockResolvedValue({ data: mockEvents, error: null });
+
+            mockQuery.data = mockEvents;
+            mockQuery.error = null;
 
             const result = await eventVendorDAO.getEventsByVendorId(1);
 
             expect(result).toEqual(mockEvents);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventVendors');
-            expect(mockChain.select).toHaveBeenCalledWith('*, Events(*)');
-            expect(mockChain.eq).toHaveBeenCalledWith('vendor_id', 1);
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Vendors');
+            expect(mockQuery.select).toHaveBeenCalledWith('*, Events(*)');
+            expect(mockQuery.eq).toHaveBeenCalledWith('vendor_id', 1);
         });
 
         it('should throw an error if the query fails', async () => {
-            const mockError = new Error('Database error');
-            mockChain.eq.mockResolvedValue({ data: null, error: mockError });
+            mockQuery.data = null;
+            mockQuery.error = new Error('Database error');
 
             await expect(eventVendorDAO.getEventsByVendorId(1)).rejects.toThrow('Database error');
         });
@@ -100,23 +174,34 @@ describe('SupabaseEventVendorDAO', () => {
 
     describe('addEventVendor', () => {
         it('should add a new event vendor', async () => {
-            const newEventVendor: TablesInsert<'EventVendors'> = { event_occurence_id: 1, vendor_id: 1, booth_number: 1 };
-            const insertedEventVendor: Tables<'EventVendors'> = { ...newEventVendor };
-            mockChain.single.mockResolvedValue({ data: insertedEventVendor, error: null });
+            const newEventVendor: TablesInsert<'Event_Vendors'> = {
+                event_occurence_id: 1,
+                vendor_id: 1,
+                booth_number: 1
+            };
+            const insertedEventVendor: Tables<'Event_Vendors'> = { ...newEventVendor };
+
+            mockQuery.data = insertedEventVendor;
+            mockQuery.error = null;
 
             const result = await eventVendorDAO.addEventVendor(newEventVendor);
 
             expect(result).toEqual(insertedEventVendor);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventVendors');
-            expect(mockChain.insert).toHaveBeenCalledWith(newEventVendor);
-            expect(mockChain.select).toHaveBeenCalled();
-            expect(mockChain.single).toHaveBeenCalled();
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Vendors');
+            expect(mockQuery.insert).toHaveBeenCalledWith(newEventVendor);
+            expect(mockQuery.select).toHaveBeenCalled();
+            expect(mockQuery.single).toHaveBeenCalled();
         });
 
         it('should throw an error if the insert fails', async () => {
-            const newEventVendor: TablesInsert<'EventVendors'> = { event_occurence_id: 1, vendor_id: 1, booth_number: 1 };
-            const mockError = new Error('Insert failed');
-            mockChain.single.mockResolvedValue({ data: null, error: mockError });
+            const newEventVendor: TablesInsert<'Event_Vendors'> = {
+                event_occurence_id: 1,
+                vendor_id: 1,
+                booth_number: 1
+            };
+
+            mockQuery.data = null;
+            mockQuery.error = new Error('Insert failed');
 
             await expect(eventVendorDAO.addEventVendor(newEventVendor)).rejects.toThrow('Insert failed');
         });
@@ -124,45 +209,63 @@ describe('SupabaseEventVendorDAO', () => {
 
     describe('updateEventVendor', () => {
         it('should update an existing event vendor', async () => {
-            const updatedEventVendor: TablesUpdate<'EventVendors'> = { booth_number: 2 };
-            const resultEventVendor: Tables<'EventVendors'> = { event_occurence_id: 1, vendor_id: 1, booth_number: 2 };
-            mockChain.single.mockResolvedValue({ data: resultEventVendor, error: null });
+            const updatedEventVendor: TablesUpdate<'Event_Vendors'> = {
+                booth_number: 2
+            };
+            const resultEventVendor: Tables<'Event_Vendors'> = {
+                event_occurence_id: 1,
+                vendor_id: 1,
+                booth_number: 2
+            };
 
-            const result = await eventVendorDAO.updateEventVendor(1, updatedEventVendor);
+            mockQuery.data = resultEventVendor;
+            mockQuery.error = null;
+
+            const result = await eventVendorDAO.updateEventVendor(1, 1, updatedEventVendor);
 
             expect(result).toEqual(resultEventVendor);
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventVendors');
-            expect(mockChain.update).toHaveBeenCalledWith(updatedEventVendor);
-            expect(mockChain.eq).toHaveBeenCalledWith('id', 1);
-            expect(mockChain.select).toHaveBeenCalled();
-            expect(mockChain.single).toHaveBeenCalled();
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Vendors');
+            expect(mockQuery.update).toHaveBeenCalledWith(updatedEventVendor);
+            expect(mockQuery.eq).toHaveBeenCalledTimes(2);
+            expect(mockQuery.eq).toHaveBeenNthCalledWith(1, 'vendor_id', 1);
+            expect(mockQuery.eq).toHaveBeenNthCalledWith(2, 'event_occurence_id', 1);
+            expect(mockQuery.select).toHaveBeenCalled();
+            expect(mockQuery.single).toHaveBeenCalled();
         });
 
         it('should throw an error if the update fails', async () => {
-            const updatedEventVendor: TablesUpdate<'EventVendors'> = { booth_number: 2 };
-            const mockError = new Error('Update failed');
-            mockChain.single.mockResolvedValue({ data: null, error: mockError });
+            const updatedEventVendor: TablesUpdate<'Event_Vendors'> = {
+                booth_number: 2
+            };
 
-            await expect(eventVendorDAO.updateEventVendor(1, updatedEventVendor)).rejects.toThrow('Update failed');
+            mockQuery.data = null;
+            mockQuery.error = new Error('Update failed');
+
+            await expect(eventVendorDAO.updateEventVendor(1, 1, updatedEventVendor))
+                .rejects.toThrow('Update failed');
         });
     });
 
     describe('deleteEventVendor', () => {
         it('should delete an event vendor', async () => {
-            mockChain.eq.mockResolvedValue({ error: null });
+            mockQuery.data = null;
+            mockQuery.error = null;
 
-            await expect(eventVendorDAO.deleteEventVendor(1)).resolves.not.toThrow();
+            await eventVendorDAO.deleteEventVendor(1, 1);
 
-            expect(mockSupabase.from).toHaveBeenCalledWith('EventVendors');
-            expect(mockChain.delete).toHaveBeenCalled();
-            expect(mockChain.eq).toHaveBeenCalledWith('id', 1);
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Vendors');
+            expect(mockQuery.delete).toHaveBeenCalled();
+            expect(mockQuery.eq).toHaveBeenCalledTimes(2);
+            expect(mockQuery.eq).toHaveBeenNthCalledWith(1, 'vendor_id', 1);
+            expect(mockQuery.eq).toHaveBeenNthCalledWith(2, 'event_occurence_id', 1);
         });
 
         it('should throw an error if the delete fails', async () => {
-            const mockError = new Error('Delete failed');
-            mockChain.eq.mockResolvedValue({ error: mockError });
+            mockQuery.data = null;
+            mockQuery.error = new Error('Delete failed');
 
-            await expect(eventVendorDAO.deleteEventVendor(1)).rejects.toThrow('Delete failed');
+            await expect(eventVendorDAO.deleteEventVendor(1, 1))
+                .rejects.toThrow('Delete failed');
         });
     });
 });

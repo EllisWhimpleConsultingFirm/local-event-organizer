@@ -11,7 +11,9 @@ export async function DELETE(request: Request, context: { params: Params }) {
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
     const bucketDao = daoFactory.getBucketDAO();
-    const eventService = new EventService(eventsDao, bucketDao);
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
     const id = Number(context.params.id);
 

@@ -1,7 +1,7 @@
 import {Tables} from "../../../../types/database.types";
 import {Button} from "@/components/util/button";
 
-export default function EventOccurrenceCard({ eventOccurrence }: { eventOccurrence: Tables<'Event_Occurences'> }) {
+export default function EventOccurrenceCard({ eventOccurrence }: { eventOccurrence: Tables<'Event_Occurrences'> }) {
     return (
         <div className="bg-white p-6 rounded-lg shadow-lg flex flex-col justify-between">
             <div className="flex justify-between">

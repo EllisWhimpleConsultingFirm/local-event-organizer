@@ -4,7 +4,6 @@ import {SupabaseEventsDAO} from "@/DAO/supabase/SupabaseEventsDAO";
 import {BucketDAO} from "@/DAO/interface/BucketDAO";
 import {SupabaseBucketDAO} from "@/DAO/supabase/SupabaseBucketDAO";
 import {EventOccurrenceDAO} from "@/DAO/interface/EventOccurrenceDAO";
-import {undefined} from "zod";
 import {EventVendorDAO} from "@/DAO/interface/EventVendorDAO";
 import {VendorDAO} from "@/DAO/interface/VendorDAO";
 import {SupabaseEventOccurrenceDAO} from "@/DAO/supabase/SupabaseEventOccurrenceDAO";

@@ -54,7 +54,7 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                 <h1 className="text-4xl font-bold mb-6 text-gray-800 text-center">{event.name}</h1>
                 <div className="mb-8 w-4/5 mx-auto h-64 rounded-2xl overflow-hidden shadow-lg">
                     <Image
-                        src={event.pictureUrl}
+                        src={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                         alt={event.name ?? "Event Image"}
                         width={1500}
                         height={800}
@@ -71,8 +71,8 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                             <Link href={`../../../vendors/${vendor.id}`} key={vendor.id}>
                                 <Card
                                     title={vendor.name}
-                                    description="VENDOR DESCRIPTION"
-                                    image="/FAIL_TO_FIND"
+                                    description={vendor.description ?? "VENDOR DESCRIPTION"}
+                                    image={vendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                                     // description={vendor.description} TODO add this value in supabase
                                     // image={vendor.img_url} TODO add this value in supabase
                                 />

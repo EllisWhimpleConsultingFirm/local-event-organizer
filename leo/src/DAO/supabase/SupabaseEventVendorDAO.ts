@@ -4,25 +4,25 @@ import { Tables, TablesInsert, TablesUpdate } from "../../../types/database.type
 
 export class SupabaseEventVendorDAO implements EventVendorDAO {
     private supabase = createClient();
-    private TABLE = 'EventVendors'
+    private TABLE = 'Event_Vendors'
 
-    async getEventVendors(): Promise<Tables<'EventVendors'>[]> {
+    async getEventVendors(): Promise<Tables<'Event_Vendors'>[]> {
         const { data, error } = await this.supabase.from(this.TABLE).select()
         if (error) { throw error }
         return data ?? []
     }
 
-    async getVendorsByEventId(eventId: number): Promise<Tables<'EventVendors'>[]> {
+    async getVendorsByEventId(eventOccurrenceId: number): Promise<Tables<'Event_Vendors'>[]> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .select('*, Vendors(*)')
-            .eq('event_id', eventId)
+            .eq('event_occurence_id', eventOccurrenceId)
 
         if (error) { throw error }
         return data ?? []
     }
 
-    async getEventsByVendorId(vendorId: number): Promise<Tables<'EventVendors'>[]> {
+    async getEventsByVendorId(vendorId: number): Promise<Tables<'Event_Vendors'>[]> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .select('*, Events(*)')
@@ -32,7 +32,7 @@ export class SupabaseEventVendorDAO implements EventVendorDAO {
         return data ?? []
     }
 
-    async addEventVendor(eventVendor: TablesInsert<'EventVendors'>): Promise<Tables<'EventVendors'>> {
+    async addEventVendor(eventVendor: TablesInsert<'Event_Vendors'>): Promise<Tables<'Event_Vendors'>> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .insert(eventVendor)
@@ -44,11 +44,16 @@ export class SupabaseEventVendorDAO implements EventVendorDAO {
         return data
     }
 
-    async updateEventVendor(id: number, eventVendor: TablesUpdate<'EventVendors'>): Promise<Tables<'EventVendors'>> {
+    async updateEventVendor(
+        vendorId: number,
+        eventOccurrenceId: number,
+        eventVendor: TablesUpdate<'Event_Vendors'>
+    ): Promise<Tables<'Event_Vendors'>> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .update(eventVendor)
-            .eq('id', id)
+            .eq('vendor_id', vendorId)
+            .eq('event_occurence_id', eventOccurrenceId)
             .select()
             .single()
 
@@ -57,11 +62,12 @@ export class SupabaseEventVendorDAO implements EventVendorDAO {
         return data
     }
 
-    async deleteEventVendor(id: number): Promise<void> {
+    async deleteEventVendor(vendorId: number, eventOccurrenceId: number): Promise<void> {
         const { error } = await this.supabase
             .from(this.TABLE)
             .delete()
-            .eq('id', id)
+            .eq('vendor_id', vendorId)
+            .eq('event_occurence_id', eventOccurrenceId)
 
         if (error) { throw error }
     }

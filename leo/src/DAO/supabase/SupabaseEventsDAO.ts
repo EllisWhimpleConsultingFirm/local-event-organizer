@@ -6,6 +6,17 @@ export class SupabaseEventsDAO implements EventsDAO {
     private supabase = createClient();
     private TABLE = 'Events'
 
+    async getEvent(id: number): Promise<Tables<'Events'> | null> {
+        const { data, error } = await this.supabase
+            .from(this.TABLE)
+            .select()
+            .eq('id', id)
+            .single()
+
+        if (error) { throw error }
+        return data
+    }
+
     async getEvents(): Promise<Tables<'Events'>[]> {
         const { data, error } = await this.supabase.from(this.TABLE).select()
         if (error) { throw error }

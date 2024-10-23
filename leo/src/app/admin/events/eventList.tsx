@@ -3,12 +3,12 @@
 import React from 'react';
 import { useFormStatus } from 'react-dom'
 import { Card } from "@/components/util/card";
-import { EventWithPicture } from "@/services/events";
 import { deleteEvent } from '@/actions/event'
 import Link from 'next/link';
+import {Tables} from "../../../../types/supabase";
 
 interface EventListProps {
-    events: EventWithPicture[];
+    events: Tables<'Events'>[];
     onEventDeleted: () => void;
 }
 
@@ -36,7 +36,7 @@ export function EventList({ events, onEventDeleted }: EventListProps) {
                         <Card
                             title={event.name || ""}
                             description={event.description || ""}
-                            image={event.pictureUrl}
+                            image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                         />
                     </Link>
                     <form action={handleDelete}>

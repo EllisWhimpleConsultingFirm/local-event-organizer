@@ -1,6 +1,6 @@
 export interface BucketDAO {
-    getPicture(eventId: number): { publicUrl: string };
-    addPicture(eventId: number, file: File): Promise<{ publicUrl: string }>;
-    updatePicture(eventId: number, file: File): Promise<{ publicUrl: string }>;
-    deletePicture(eventId: number): Promise<void>;
+    getFile(fileId: string): { publicUrl: string };
+    addFile(file: File): Promise<{ publicUrl: string }>;
+    updateFile(fileId: string, file: File): Promise<{ publicUrl: string }>;
+    deleteFile(fileId: string): Promise<void>;
 }

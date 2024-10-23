@@ -55,7 +55,9 @@ export async function addEvent(prevState: any, formData: FormData): Promise<Form
         const daoFactory: DAOFactory = new SupabaseDAOFactory();
         const eventsDao = daoFactory.getEventsDAO();
         const bucketDao = daoFactory.getBucketDAO();
-        const eventService = new EventService(eventsDao, bucketDao);
+        const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+        const eventVendorDao = daoFactory.getEventVendorDAO();
+        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
         const eventData: TablesInsert<'Events'> = {
             name: validatedFields.data.name,
@@ -81,7 +83,9 @@ export async function deleteEvent(state : any, formData: FormData) {
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
     const bucketDao = daoFactory.getBucketDAO();
-    const eventService = new EventService(eventsDao, bucketDao);
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
     const id = formData.get('id');
 
@@ -131,7 +135,9 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
         const daoFactory: DAOFactory = new SupabaseDAOFactory();
         const eventsDao = daoFactory.getEventsDAO();
         const bucketDao = daoFactory.getBucketDAO();
-        const eventService = new EventService(eventsDao, bucketDao);
+        const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+        const eventVendorDao = daoFactory.getEventVendorDAO();
+        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
         const eventData: TablesUpdate<'Events'> = {
             name: validatedFields.data.name,
@@ -156,10 +162,31 @@ export async function getEvent(id: number) {
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
     const bucketDao = daoFactory.getBucketDAO();
-    const eventService = new EventService(eventsDao, bucketDao);
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
     try {
         return await eventService.getEvent(id);
+    } catch (error) {
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
+export async function getEventOccurrencesByEventId(id: number) {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        return await eventService.getEventOccurrencesByEventId(id);
     } catch (error) {
         if (error instanceof Error) {
             return { error: error.message };
