@@ -4,36 +4,12 @@ import { CalendarDays } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import EventOccurrenceCard from "@/app/events/[id]/EventOccurrenceCard";
-import {Tables} from "../../../../types/database.types";
 
 interface EventDetailsProps {
     params: {
         id: string;
     };
 }
-
-const eventOccurrences : (Tables<'Event_Occurrences'>)[] = [
-    {
-        id : 4,
-        created_at: "2024-10-09 21:36:30.851+00",
-        event_id: 4,
-        description : "TEST DESCRIPTION",
-        start_time: "2024-10-17 20:36:30.851",
-        end_time: "2024-10-17 21:36:30.851",
-        latitude: -73.882575,
-        longitude: -18.947416
-    },
-    {
-        id : 2,
-        created_at:"2024-10-09 21:36:30.851+00",
-        event_id: 2,
-        description : "TEST DESCRIPTION",
-        start_time:"2024-10-17 20:36:30.851",
-        end_time:"2024-10-17 21:36:30.851",
-        latitude: -73.882575,
-        longitude: -18.947416
-    },
-];
 
 const capitalizeFirstLetter = (string: string): string => {
     return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
