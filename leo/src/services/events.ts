@@ -42,21 +42,29 @@ export class EventService {
     }
 
     async deleteEvent(id: number): Promise<void> {
-        const event = await this.eventsDAO.getEvent(id)
+        try {
+            const event = await this.eventsDAO.getEvent(id)
 
-        // Get all occurrences for this event
-        const occurrences = await this.eventOccurrenceDAO.getEventOccurrencesByEventId(id);
+            // Get all occurrences for this event
+            const occurrences = await this.eventOccurrenceDAO.getEventOccurrencesByEventId(id);
 
-        // Delete all occurrences first
-        for (const occurrence of occurrences) {
-            await this.deleteEventOccurrence(occurrence.id);
+            // Delete all occurrences first
+            for (const occurrence of occurrences) {
+                await this.deleteEventOccurrence(occurrence.id);
+            }
+
+            // Then delete the event and its photo
+            await this.eventsDAO.deleteEvent(id);
+            if (event && event.photo_url) {
+                await this.deleteFile(event.photo_url)
+            }
+        } catch (e) {
+            if (e instanceof Error) {
+                throw new Error(e.message);
+            }
+            throw new Error('An unknown error occurred');
         }
 
-        // Then delete the event and its photo
-        await this.eventsDAO.deleteEvent(id);
-        if (event && event.photo_url) {
-            await this.deleteFile(event.photo_url)
-        }
     }
 
     // Event Occurrence Management Methods

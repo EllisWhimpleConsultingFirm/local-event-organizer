@@ -169,6 +169,7 @@ export async function getEvent(id: number) {
     try {
         return await eventService.getEvent(id);
     } catch (error) {
+        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
             return { error: error.message };
         }
@@ -188,6 +189,7 @@ export async function getEventOccurrencesByEventId(id: number) {
     try {
         return await eventService.getEventOccurrencesByEventId(id);
     } catch (error) {
+        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
             return { error: error.message };
         }
@@ -207,6 +209,7 @@ export async function getEventOccurrence(id: number) {
     try {
         return await eventService.getEventOccurrence(id);
     } catch (error) {
+        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
             return { error: error.message };
         }
@@ -226,6 +229,7 @@ export async function getEventVendors(eventOccurrenceId: number){
     try {
         return await eventService.getEventVendors(eventOccurrenceId);
     } catch (error) {
+        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
             return { error: error.message };
         }

@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { useFormState, useFormStatus } from 'react-dom';
-import { updateEvent, FormState } from '@/actions/event';
+import {useFormState, useFormStatus} from 'react-dom';
+import {FormState, updateEvent} from '@/actions/event';
 import {Tables} from "../../../../../types/supabase";
 
 interface UpdateEventFormProps {
@@ -10,7 +10,7 @@ interface UpdateEventFormProps {
 }
 
 function SubmitButton() {
-    const { pending } = useFormStatus();
+    const {pending} = useFormStatus();
 
     return (
         <button disabled={pending} type="submit" className="bg-blue-500 text-white p-2 rounded">
@@ -19,12 +19,12 @@ function SubmitButton() {
     );
 }
 
-export function UpdateEventForm({ event }: UpdateEventFormProps) {
+export function UpdateEventForm({event}: UpdateEventFormProps) {
     const [state, action] = useFormState<FormState, FormData>(updateEvent, {} as FormState);
 
     return (
         <form action={action} className="space-y-4">
-            <input type="hidden" name="id" value={event.id} />
+            <input type="hidden" name="id" value={event.id}/>
             <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Event Name</label>
                 <input
@@ -58,7 +58,8 @@ export function UpdateEventForm({ event }: UpdateEventFormProps) {
                 {state?.errors?.admin_id && <p className="mt-2 text-sm text-red-600">{state.errors.admin_id}</p>}
             </div>
             <div>
-                <label htmlFor="picture" className="block text-sm font-medium text-gray-700">New Picture (optional)</label>
+                <label htmlFor="picture" className="block text-sm font-medium text-gray-700">New Picture
+                    (optional)</label>
                 <input
                     type="file"
                     id="picture"
@@ -67,7 +68,7 @@ export function UpdateEventForm({ event }: UpdateEventFormProps) {
                 />
                 {state?.errors?.picture && <p className="mt-2 text-sm text-red-600">{state.errors.picture}</p>}
             </div>
-            <SubmitButton />
+            <SubmitButton/>
             {state?.message && <p className="mt-2 text-sm text-green-600">{state.message}</p>}
         </form>
     );

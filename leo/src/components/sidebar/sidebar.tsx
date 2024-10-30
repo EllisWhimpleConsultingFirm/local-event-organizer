@@ -3,7 +3,7 @@
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
 import {Calendar, ChevronLeft, ChevronRight, Settings, Users} from 'lucide-react';
-import {useSidebar} from './SidebarContext';
+import {useSidebar} from './sidebarContext';
 import './sidebar.css'
 import Image from "next/image";
 import {Solway} from 'next/font/google'

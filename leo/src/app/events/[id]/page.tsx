@@ -4,16 +4,13 @@ import { CalendarDays } from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import EventOccurrenceCard from "@/app/events/[id]/EventOccurrenceCard";
+import {capitalizeFirstLetter} from "@/utils/app/capitalizeFirstLetter";
 
 interface EventDetailsProps {
     params: {
         id: string;
     };
 }
-
-const capitalizeFirstLetter = (string: string): string => {
-    return string.charAt(0).toUpperCase() + string.slice(1).toLowerCase();
-};
 
 export default async function EventDetails({ params }: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));

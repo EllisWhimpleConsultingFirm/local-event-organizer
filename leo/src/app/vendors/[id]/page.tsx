@@ -11,7 +11,7 @@ interface VendorDetailsProps {
         id: string;
     };
 }
-const defaultImage = "https://rnjoinjtiwtrnpwlvkeu.supabase.co/storage/v1/object/public/events-pictures/10.png"
+const defaultImage = process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!
 
 export default async function VendorDetails({ params }: VendorDetailsProps) {
     const vendor = await getVendor(parseInt(params.id, 10))
