@@ -9,9 +9,25 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
-      Event_Occurences: {
+      Categories: {
+        Row: {
+          description: string | null
+          id: number
+        }
+        Insert: {
+          description?: string | null
+          id?: number
+        }
+        Update: {
+          description?: string | null
+          id?: number
+        }
+        Relationships: []
+      }
+      Event_Occurrences: {
         Row: {
           created_at: string
+          description: string | null
           end_time: string
           event_id: number
           id: number
@@ -21,6 +37,7 @@ export type Database = {
         }
         Insert: {
           created_at?: string
+          description?: string | null
           end_time: string
           event_id: number
           id?: number
@@ -30,6 +47,7 @@ export type Database = {
         }
         Update: {
           created_at?: string
+          description?: string | null
           end_time?: string
           event_id?: number
           id?: number
@@ -50,23 +68,23 @@ export type Database = {
       Event_Vendors: {
         Row: {
           booth_number: number
-          event_id: number
+          event_occurence_id: number
           vendor_id: number
         }
         Insert: {
           booth_number: number
-          event_id?: number
+          event_occurence_id?: number
           vendor_id: number
         }
         Update: {
           booth_number?: number
-          event_id?: number
+          event_occurence_id?: number
           vendor_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "Event_Vendors_event_id_fkey"
-            columns: ["event_id"]
+            foreignKeyName: "Event_Vendors_event_occurence_id_fkey"
+            columns: ["event_occurence_id"]
             isOneToOne: false
             referencedRelation: "Events"
             referencedColumns: ["id"]
@@ -87,6 +105,7 @@ export type Database = {
           id: number
           is_recurring: boolean | null
           name: string | null
+          photo_url: string | null
           recurrence_pattern: string | null
         }
         Insert: {
@@ -95,6 +114,7 @@ export type Database = {
           id?: number
           is_recurring?: boolean | null
           name?: string | null
+          photo_url?: string | null
           recurrence_pattern?: string | null
         }
         Update: {
@@ -103,31 +123,68 @@ export type Database = {
           id?: number
           is_recurring?: boolean | null
           name?: string | null
+          photo_url?: string | null
           recurrence_pattern?: string | null
         }
         Relationships: []
       }
+      Vendor_Categories: {
+        Row: {
+          category_id: number
+          vendor_id: number
+        }
+        Insert: {
+          category_id: number
+          vendor_id: number
+        }
+        Update: {
+          category_id?: number
+          vendor_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Vendor_Categories_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "Categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "vendor_categories_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "Vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Vendors: {
         Row: {
           created_at: string
+          description: string | null
           email: string | null
           id: number
           name: string
           phone_number: number | null
+          photo_url: string | null
         }
         Insert: {
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: number
           name: string
           phone_number?: number | null
+          photo_url?: string | null
         }
         Update: {
           created_at?: string
+          description?: string | null
           email?: string | null
           id?: number
           name?: string
           phone_number?: number | null
+          photo_url?: string | null
         }
         Relationships: []
       }
@@ -227,4 +284,19 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never

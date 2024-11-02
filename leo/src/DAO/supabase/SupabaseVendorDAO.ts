@@ -1,54 +1,57 @@
-import { EventsDAO } from "@/DAO/interface/EventsDAO";
+import { VendorDAO } from "@/DAO/interface/VendorDAO";
 import { createClient } from "@/utils/supabase/server";
 import { Tables, TablesInsert, TablesUpdate } from "../../../types/database.types";
 
-export class SupabaseEventsDAO implements EventsDAO {
+export class SupabaseVendorDAO implements VendorDAO {
     private supabase = createClient();
-    private TABLE = 'Events'
+    private TABLE = 'Vendors'
 
-    async getEvent(id: number): Promise<Tables<'Events'> | null> {
+    async getVendors(): Promise<Tables<'Vendors'>[]> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
             .select()
-            .eq('id', id)
-            .single()
 
-        if (error) { throw error }
-        return data
-    }
-
-    async getEvents(): Promise<Tables<'Events'>[]> {
-        const { data, error } = await this.supabase.from(this.TABLE).select()
         if (error) { throw error }
         return data ?? []
     }
 
-    async addEvent(event: TablesInsert<'Events'>): Promise<Tables<'Events'>> {
+    async getVendorById(id: number): Promise<Tables<'Vendors'> | null> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
-            .insert(event)
+            .select()
+            .eq('id', id)
+            .single()
+
+        if (error) { throw error }
+        return data
+    }
+
+    async addVendor(vendor: TablesInsert<'Vendors'>): Promise<Tables<'Vendors'>> {
+        const { data, error } = await this.supabase
+            .from(this.TABLE)
+            .insert(vendor)
             .select()
             .single()
 
         if (error) { throw error }
-        if (!data) { throw new Error('Failed to add event') }
+        if (!data) { throw new Error('Failed to add vendor') }
         return data
     }
 
-    async updateEvent(id: number, event: TablesUpdate<'Events'>): Promise<Tables<'Events'>> {
+    async updateVendor(id: number, vendor: TablesUpdate<'Vendors'>): Promise<Tables<'Vendors'>> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
-            .update(event)
+            .update(vendor)
             .eq('id', id)
             .select()
             .single()
 
         if (error) { throw error }
-        if (!data) { throw new Error('Failed to update event') }
+        if (!data) { throw new Error('Failed to update vendor') }
         return data
     }
 
-    async deleteEvent(id: number): Promise<void> {
+    async deleteVendor(id: number): Promise<void> {
         const { error } = await this.supabase
             .from(this.TABLE)
             .delete()
