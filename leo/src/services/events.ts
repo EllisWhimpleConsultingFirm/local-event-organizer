@@ -3,6 +3,7 @@ import { Tables, TablesInsert, TablesUpdate } from "../../types/database.types";
 import { BucketDAO } from "@/DAO/interface/BucketDAO";
 import { EventOccurrenceDAO } from "@/DAO/interface/EventOccurrenceDAO";
 import { EventVendorDAO } from "@/DAO/interface/EventVendorDAO";
+import {Result} from "../../types/Result";
 
 export class EventService {
     constructor(
@@ -13,7 +14,7 @@ export class EventService {
     ) {}
 
     // Event Management Methods
-    async getEvent(id: number): Promise<Tables<'Events'>> {
+    async getEvent(id: number): Promise<Result<Tables<'Events'>>> {
         const event = await this.eventsDAO.getEvent(id)
         if (!event) {
             throw new Error(`Event with id ${id} not found`);
@@ -72,7 +73,7 @@ export class EventService {
         return await this.eventOccurrenceDAO.getEventOccurrences();
     }
 
-    async getEventOccurrencesByEventId(eventId: number): Promise<Tables<'Event_Occurrences'>[]> {
+    async getEventOccurrencesByEventId(eventId: number): Promise<Result<Tables<'Event_Occurrences'>[]>> {
         return await this.eventOccurrenceDAO.getEventOccurrencesByEventId(eventId);
     }
 

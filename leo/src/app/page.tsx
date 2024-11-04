@@ -13,7 +13,7 @@ export default async function Home() {
     const events = await eventsDao.getEvents()
 
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen font-solway">
             <header className="relative">
                 <Image
                     src={homepageImage}
@@ -23,7 +23,7 @@ export default async function Home() {
                     height={300}
                 />
                 <div className="absolute inset-0 bg-black bg-opacity-50 flex flex-col items-center justify-center">
-                    <h1 className="text-6xl font-bold text-white mb-2">leo</h1>
+                    <h1 className="text-6xl text-white mb-2 font-solway font-medium">leo</h1>
                     <p className="text-xl text-white mb-6">local event organizer</p>
                     <div className="relative w-3/4 max-w-2xl">
                         <input
