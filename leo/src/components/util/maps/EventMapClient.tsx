@@ -51,7 +51,6 @@ export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey
                     </GoogleMap>
                 </LoadScript>
             </div>
-            <div className="h-1/2 p-4"></div>
         </div>
     );
 };

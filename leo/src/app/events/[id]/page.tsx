@@ -1,8 +1,12 @@
 import {getEvent, getEventOccurrencesByEventId} from "@/actions/event";
 import Image from 'next/image';
+import {CalendarDays} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import EventOccurrenceCard from "@/app/events/[id]/EventOccurrenceCard";
+import {capitalizeFirstLetter} from "@/utils/app/capitalizeFirstLetter";
+import EventOccurenceMap from "@/app/events/[id]/EventOccurenceMap";
+import {isError, Result} from "../../../../types/Result";
 import {Tables} from "../../../../types/database.types";
 import {fetchAddresses} from "@/components/util/maps/FetchAddressesFromCoordinates";
 import {EventOccurrenceMap} from "@/app/events/[id]/EventOccurrenceMap";
