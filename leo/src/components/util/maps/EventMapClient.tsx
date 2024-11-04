@@ -19,8 +19,8 @@ export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey
     };
 
     return (
-        <div className="flex justify-items-start items-center mt-6">
-            <div className="w-3/4 h-[350px] rounded-xl overflow-hidden shadow-lg">
+        <div className="flex justify-center items-center mt-6">
+            <div className="w-full h-[350px] rounded-xl overflow-hidden shadow-lg">
                 <LoadScript googleMapsApiKey={apiKey}>
                     <GoogleMap
                         mapContainerStyle={{width: '100%', height: '100%'}}
@@ -40,7 +40,6 @@ export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey
                     </GoogleMap>
                 </LoadScript>
             </div>
-            <div className="h-1/2 p-4"></div>
         </div>
     );
 };
