@@ -14,12 +14,14 @@ import loginIcon from '../../public/briefcase-icon.svg'
 import logoIcon from '../../public/logo.svg'
 
 interface SidebarProps {
-    isAuthorized: boolean;
+    isLoggedIn: boolean;
+    isVendorAdmin: boolean;
+    isEventAdmin: boolean;
 }
 
 const solway = Solway({weight:"400", subsets: ['latin']})
 
-const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isLoggedIn, isVendorAdmin, isEventAdmin }) => {
     const { isExpanded, toggleSidebar } = useSidebar();
     const [isHovered, setIsHovered] = useState(false);
 
@@ -62,9 +64,13 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
                     <SidebarItem href="/" icon={<Image src={homeIcon} alt={'Home Icon'} />} label="Home" />
                     <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="Events" />
                     <SidebarItem href="/vendors" icon={<Image src={vendorIcon} alt={'Vendor Icon'} />} label="Vendors" />
-                    {isAuthorized && (
+                    {isVendorAdmin && (
                         <>
                             <SidebarItem href="/admin/vendors" icon={<Users size={24} />} label="Admin Vendor" />
+                        </>
+                    )}
+                    {isEventAdmin && (
+                        <>
                             <SidebarItem href="/admin/events" icon={<Calendar size={24} />} label="Admin Event" />
                         </>
                     )}
@@ -73,7 +79,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
             <div className="mt-auto pl-3 pb-12 space-y-3">
                 <ul className="space-y-3">
                     <SidebarItem href="/settings" icon={<Settings size={24} />} label="Settings" />
-                    {isAuthorized ? (
+                    {isLoggedIn ? (
                         <SidebarItem href="/logout" icon={<Image src={loginIcon} alt={'Logout Icon'} />} label="Logout" />
                     ) : (
                         <SidebarItem href="/login" icon={<Image src={loginIcon} alt={'Login Icon'} />} label="Login" />
