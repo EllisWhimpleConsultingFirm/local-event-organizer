@@ -1,6 +1,7 @@
 import React from 'react';
 import {Tables} from "../../../../types/database.types";
 import {EventMapClient} from "@/components/util/maps/EventMapClient";
+import {type} from "node:os";
 
 type EventMapProps = {
     event_occurrences: Tables<"Event_Occurrences">[];

@@ -1,4 +1,4 @@
-export const MapPin = ({width = 25, height = 25}: { width?: number, height?: number }) => {
+export const IconMapPin = ({width = 25, height = 25}: { width?: number, height?: number }) => {
     return (
         <svg width={width} height={height} xmlns="http://www.w3.org/2000/svg" fill-rule="evenodd" clip-rule="evenodd">
             <path
