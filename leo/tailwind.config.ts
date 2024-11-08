@@ -13,6 +13,7 @@ const config: Config = {
                 foreground: "var(--foreground)",
                 current: 'currentColor',
                 white: '#FFFFFF',
+                offwhite: '#FAF9F6',
                 leoblue: '#B4DBDC',
                 superlightgr: '#E5E5E5',
                 lightgr: '#BABCBE',
@@ -23,7 +24,7 @@ const config: Config = {
                 darkred: '#8B0000'
             },
             fontFamily: {
-                sans: ['"PT Sans"', 'sans-serif']
+                sans: ['Solway', 'sans-serif']
             },
         },
     },

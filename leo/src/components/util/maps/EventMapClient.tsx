@@ -9,10 +9,11 @@ type EventMapClientProps<T extends MapOption> = {
     markers: T[];
     addresses: { [key: string]: string };
     apiKey: string;
+    onMarkerClicked?: () => void
 };
 
 
-export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey, }: EventMapClientProps<T>) => {
+export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey, onMarkerClicked }: EventMapClientProps<T>) => {
     const mapCenter = {
         lat: markers[0]?.latitude || 0,
         lng: markers[0]?.longitude || 0,
@@ -31,6 +32,7 @@ export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey
                         {markers.map((event) => (
                             event.latitude !== null && event.longitude !== null ? (
                                 <Marker
+                                    onClick={onMarkerClicked ? () => onMarkerClicked(): () => console.log("clicked")}
                                     key={event.id}
                                     position={{ lat: event.latitude, lng: event.longitude }}
                                     title={addresses[event.id] || 'Fetching address...'}
