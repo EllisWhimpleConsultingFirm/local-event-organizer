@@ -8,6 +8,8 @@ import {capitalizeFirstLetter} from "@/utils/app/capitalizeFirstLetter";
 import EventOccurenceMap from "@/app/events/[id]/EventOccurenceMap";
 import {Tables} from "../../../../types/database.types";
 import {fetchAddresses} from "@/components/util/maps/FetchAddressesFromCoordinates";
+import {isError} from "../../../../types/Result";
+import {EventOccurrenceMap} from "@/app/events/[id]/EventOccurrenceMap";
 import {isError, Result} from "../../../../types/Result";
 
 interface EventDetailsProps {
@@ -55,13 +57,12 @@ export default async function EventDetails({params}: EventDetailsProps) {
                             <Link href={`${eventOccurrence.event_id}/eventOccurrence/${eventOccurrence.id}`}
                                   key={eventOccurrence.id}>
                                 <EventOccurrenceCard
-                                    event={event}
                                     eventOccurrence={eventOccurrence}
                                 />
                             </Link>
                         ))}
                     </div>
-                    <EventOccurenceMap event_occurrences={eventOccurrences} addresses={addresses}/>
+                    <EventOccurrenceMap event_occurrences={eventOccurrences} addresses={addresses}/>
                 </div>
             </>
         );

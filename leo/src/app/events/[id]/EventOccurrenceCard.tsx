@@ -6,10 +6,9 @@ import {IconMapPin} from "@/public/icon-map-pin";
 
 interface EventOccurrenceCardProps {
     eventOccurrence: Tables<'Event_Occurrences'>;
-    event: Tables<'Events'>;
 }
 
-export default async function EventOccurrenceCard({ eventOccurrence, event }: EventOccurrenceCardProps) {
+export default async function EventOccurrenceCard({ eventOccurrence}: EventOccurrenceCardProps) {
     const startDate = new Date(eventOccurrence.start_time);
     const endDate = new Date(eventOccurrence.end_time);
 
