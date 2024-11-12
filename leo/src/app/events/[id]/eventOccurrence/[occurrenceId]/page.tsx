@@ -18,12 +18,12 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
 
     if (!eventOccurrence || "error" in eventOccurrence) {
         return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event Occurrence not found</div>
+            <div className="text-center text-2xl text-red-600 mt-10">{ `Event Occurrence not found: ${eventOccurrence.error}` } </div>
         );
     }
     else if (!event || "error" in event) {
         return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event Associated with the Event Occurrence was not found</div>
+            <div className="text-center text-2xl text-red-600 mt-10">{`Event Associated with the Event Occurrence was not found ${event.error}`}</div>
         );
     }
 
