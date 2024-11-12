@@ -4,7 +4,6 @@ import "./globals.css";
 import Sidebar from "@/components/sidebar/sidebar";
 import Footer from "@/components/footer/footer";
 import { SidebarProvider } from "@/components/sidebar/sidebarContext";
-import {redirect} from "next/navigation";
 import {createClient} from "@/utils/supabase/server";
 
 const geistSans = localFont({
@@ -39,7 +38,7 @@ export default async function RootLayout({children}: Readonly<{
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarProvider>
             <div className="min-h-screen">
-                <Sidebar isLoggedIn={isLoggedIn} isVendorAdmin={true} isEventAdmin={true}/>
+                <Sidebar isLoggedIn={isLoggedIn} />
                 <main className="min-h-screen flex flex-col">
                     <div className={"flex-grow"}>
                         {children}
