@@ -2,11 +2,11 @@ import React from 'react';
 import {Search} from 'lucide-react';
 import Image from 'next/image'
 import {Card} from "@/components/util/card";
-import homepageImage from '../public/home_page.png'
+import homepageImage from '../public/icon-home-page.png'
 import {Button} from "@/components/util/button";
 import {getEventOccurrencesWithEvent} from "@/actions/event";
 import Link from "next/link";
-import {FilterModal} from "@/components/filter/FilterModal";
+import {FilterModal} from "@/components/filter/filter-modal";
 
 export default async function Home() {
     const eventArray = await getEventOccurrencesWithEvent()
