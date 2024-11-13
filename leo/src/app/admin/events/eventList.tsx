@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import { useFormStatus } from 'react-dom'
-import { Card } from "@/components/util/card";
-import { deleteEvent } from '@/actions/event'
+import {useFormStatus} from 'react-dom'
+import {Card} from "@/components/util/card";
+import {deleteEvent} from '@/actions/event'
 import Link from 'next/link';
-import {Tables} from "../../../../types/supabase";
+import {Tables} from "../../../../types/database.types";
 
 interface EventListProps {
     events: Tables<'Events'>[];

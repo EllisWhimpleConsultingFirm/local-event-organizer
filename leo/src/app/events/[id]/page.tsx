@@ -1,16 +1,11 @@
 import {getEvent, getEventOccurrencesByEventId} from "@/actions/event";
 import Image from 'next/image';
-import {CalendarDays} from "lucide-react";
 import Link from "next/link";
 import React from "react";
 import EventOccurrenceCard from "@/app/events/[id]/EventOccurrenceCard";
-import {capitalizeFirstLetter} from "@/utils/app/capitalizeFirstLetter";
-import EventOccurenceMap from "@/app/events/[id]/EventOccurenceMap";
 import {Tables} from "../../../../types/database.types";
 import {fetchAddresses} from "@/components/util/maps/FetchAddressesFromCoordinates";
-import {isError} from "../../../../types/Result";
 import {EventOccurrenceMap} from "@/app/events/[id]/EventOccurrenceMap";
-import {isError, Result} from "../../../../types/Result";
 
 interface EventDetailsProps {
     params: {
@@ -20,21 +15,22 @@ interface EventDetailsProps {
 
 export default async function EventDetails({params}: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));
-    let eventOccurrences: Result<Tables<'Event_Occurrences'>[]> | null = null;
+    let eventOccurrences: Tables<'Event_Occurrences'>[] | null = null;
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API;
 
-    if (!apiKey || isError(event)) {
+    if (!apiKey || !event) {
         return (<div className="text-center text-2xl text-red-600 mt-10">Event not found</div>);
     }
 
     try {
         eventOccurrences = await getEventOccurrencesByEventId(event?.id)
-        const addresses = await fetchAddresses(
+
+        if(!eventOccurrences) {}
+        const addresses = eventOccurrences ? await fetchAddresses(
             eventOccurrences
                 .filter(e => e.longitude !== null && e.latitude !== null)
-                .map(e => ({id: e.id, longitude: e.longitude!, latitude: e.latitude!})),
-            process.env.NEXT_PUBLIC_GOOGLE_MAPS_API!
-        );
+                .map(e => ({id: e.id, longitude: e.longitude!, latitude: e.latitude!}))
+        ): null;
 
         return (
             <>
@@ -53,7 +49,7 @@ export default async function EventDetails({params}: EventDetailsProps) {
                     <div className="flex flex-row mb-4 mt-6 justify-around">
                     </div>
                     <div className="flex gap-2 overflow-x-scroll">
-                        {eventOccurrences.map((eventOccurrence) => (
+                        {eventOccurrences?.map((eventOccurrence) => (
                             <Link href={`${eventOccurrence.event_id}/eventOccurrence/${eventOccurrence.id}`}
                                   key={eventOccurrence.id}>
                                 <EventOccurrenceCard
@@ -62,7 +58,9 @@ export default async function EventDetails({params}: EventDetailsProps) {
                             </Link>
                         ))}
                     </div>
-                    <EventOccurrenceMap event_occurrences={eventOccurrences} addresses={addresses}/>
+                    {eventOccurrences && addresses && (
+                        <EventOccurrenceMap event_occurrences={eventOccurrences} addresses={addresses}/>
+                    )}
                 </div>
             </>
         );
