@@ -1,7 +1,6 @@
 'use client';
 
-import { useRef } from "react";
-import React from 'react';
+import React, {useRef} from "react";
 import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
 
 type MapOption = { id: string | number; latitude: number; longitude: number }
