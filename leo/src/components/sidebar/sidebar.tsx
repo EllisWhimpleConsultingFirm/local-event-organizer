@@ -9,17 +9,19 @@ import Image from "next/image";
 import {Solway} from 'next/font/google'
 import homeIcon from '../../public/home-icon.svg'
 import vendorIcon from '../../public/vendors-icon.svg'
+import dashIcon from '../../public/dash.png'
 import eventIcon from '../../public/events.svg'
 import loginIcon from '../../public/briefcase-icon.svg'
 import logoIcon from '../../public/logo.svg'
+import {logout} from "@/actions/auth";
 
 interface SidebarProps {
-    isAuthorized: boolean;
+    isLoggedIn: boolean;
 }
 
 const solway = Solway({weight:"400", subsets: ['latin']})
 
-const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isLoggedIn}) => {
     const { isExpanded, toggleSidebar } = useSidebar();
     const [isHovered, setIsHovered] = useState(false);
 
@@ -35,6 +37,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
     }, [isExpanded, isHovered]);
 
     const sidebarState = isExpanded ? 'expanded' : (isHovered ? 'hovered' : 'collapsed');
+
+    const handleLogout = async () => {
+        await logout();
+    };
 
     return (
         <aside
@@ -61,20 +67,23 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
                 <ul className="space-y-3 pl-3">
                     <SidebarItem href="/" icon={<Image src={homeIcon} alt={'Home Icon'} />} label="Home" />
                     <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="Events" />
+                    <SidebarItem href="/admin/events" icon={<Image src={vendorIcon} alt={'My Events Icon'} />} label="My Events" />
                     <SidebarItem href="/vendors" icon={<Image src={vendorIcon} alt={'Vendor Icon'} />} label="Vendors" />
-                    {isAuthorized && (
-                        <>
-                            <SidebarItem href="/admin/vendors" icon={<Users size={24} />} label="Admin Vendor" />
-                            <SidebarItem href="/admin/events" icon={<Calendar size={24} />} label="Admin Event" />
-                        </>
-                    )}
+                    <SidebarItem href="/admin/vendors" icon={<Image src={vendorIcon} alt={'My Shops Icon'} />} label="My Shops" />
                 </ul>
             </nav>
             <div className="mt-auto pl-3 pb-12 space-y-3">
                 <ul className="space-y-3">
                     <SidebarItem href="/settings" icon={<Settings size={24} />} label="Settings" />
-                    {isAuthorized ? (
-                        <SidebarItem href="/logout" icon={<Image src={loginIcon} alt={'Logout Icon'} />} label="Logout" />
+                    {isLoggedIn ? (
+                        <li className={solway.className}>
+                            <form action={handleLogout}>
+                                <button className="sidebar-item flex items-center p-2 rounded-lg hover:bg-gray-700 transition-colors">
+                                    <Image src={loginIcon} alt={'Logout Icon'} />
+                                    <span className="sidebar-label ml-3">{"Logout"}</span>
+                                </button>
+                            </form>
+                        </li>
                     ) : (
                         <SidebarItem href="/login" icon={<Image src={loginIcon} alt={'Login Icon'} />} label="Login" />
                     )}
@@ -86,7 +95,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isAuthorized }) => {
 
 interface SidebarItemProps {
     href: string;
-    icon: React.ReactNode;
+    icon?: React.ReactNode;
     label: string;
 }
 

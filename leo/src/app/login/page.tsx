@@ -3,6 +3,7 @@
 import { CredentialResponse } from "google-one-tap";
 import Script from 'next/script';
 import { useRouter } from 'next/navigation';
+import {login, signup} from "@/app/login/actions";
 
 export default function LoginPage() {
     const router = useRouter();
@@ -66,12 +67,14 @@ export default function LoginPage() {
                 </div>
                 <div className="flex items-center justify-between">
                     <button
+                        formAction={login}
                         type="submit"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >
                         Log in
                     </button>
                     <button
+                        formAction={signup}
                         type="submit"
                         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                     >

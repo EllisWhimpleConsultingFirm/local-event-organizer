@@ -100,7 +100,7 @@ export type Database = {
       }
       Events: {
         Row: {
-          admin_id: number
+          admin_id: string | null
           description: string | null
           id: number
           is_recurring: boolean | null
@@ -109,7 +109,7 @@ export type Database = {
           recurrence_pattern: string | null
         }
         Insert: {
-          admin_id: number
+          admin_id?: string | null
           description?: string | null
           id?: number
           is_recurring?: boolean | null
@@ -118,7 +118,7 @@ export type Database = {
           recurrence_pattern?: string | null
         }
         Update: {
-          admin_id?: number
+          admin_id?: string | null
           description?: string | null
           id?: number
           is_recurring?: boolean | null
@@ -160,6 +160,7 @@ export type Database = {
       }
       Vendors: {
         Row: {
+          admin_id: string | null
           created_at: string
           description: string | null
           email: string | null
@@ -169,6 +170,7 @@ export type Database = {
           photo_url: string | null
         }
         Insert: {
+          admin_id?: string | null
           created_at?: string
           description?: string | null
           email?: string | null
@@ -178,6 +180,7 @@ export type Database = {
           photo_url?: string | null
         }
         Update: {
+          admin_id?: string | null
           created_at?: string
           description?: string | null
           email?: string | null

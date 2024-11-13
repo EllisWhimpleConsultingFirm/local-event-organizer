@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { UpdateEventForm } from './updateEventForm';
 import {getEvent} from "@/actions/event";
+import {DeleteEventForm} from "./deleteEventForm";
 interface EventDetailsProps {
     params: {
         id: string;
@@ -38,7 +39,12 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                 </div>
                 <div className="flex-1">
                     <h2 className="text-2xl font-bold mb-4">Update Event</h2>
-                    <UpdateEventForm event={event} />
+                    <div className="p-3">
+                        <UpdateEventForm event={event} />
+                    </div>
+                    <div className="p-3">
+                        <DeleteEventForm event={event} />
+                    </div>
                 </div>
             </div>
         </div>

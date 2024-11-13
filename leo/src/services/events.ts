@@ -25,6 +25,10 @@ export class EventService {
         return await this.eventsDAO.getEvents();
     }
 
+    async getAdminEvents(adminId: string): Promise<Tables<'Events'>[]> {
+        return await this.eventsDAO.getUserEvents(adminId);
+    }
+
     async addEvent(eventData: TablesInsert<'Events'>, picture: File): Promise<Tables<'Events'>> {
         const { publicUrl: pictureUrl } = await this.bucketDAO.addFile(picture);
         return await this.eventsDAO.addEvent({...eventData, photo_url: pictureUrl});

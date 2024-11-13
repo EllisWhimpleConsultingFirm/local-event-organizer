@@ -1,36 +1,37 @@
 'use client';
 
-import React from 'react';
-import {useFormState, useFormStatus} from 'react-dom';
-import {FormState, updateEvent} from '@/actions/event';
-import {Tables} from "../../../../../types/supabase";
-
-interface UpdateEventFormProps {
-    event: Tables<'Events'>;
-}
+import React, { useEffect } from 'react';
+import { useFormState, useFormStatus } from 'react-dom';
+import { addEvent, FormState } from '@/actions/event';
 
 function SubmitButton() {
-    const {pending} = useFormStatus();
+    const { pending } = useFormStatus();
 
     return (
         <button disabled={pending} type="submit" className="bg-blue-500 text-white p-2 rounded">
-            {pending ? 'Updating...' : 'Update Event'}
+            {pending ? 'Adding...' : 'Add Event'}
         </button>
     );
 }
 
-export function UpdateEventForm({event}: UpdateEventFormProps) {
-    const [state, action] = useFormState<FormState, FormData>(updateEvent, {} as FormState);
+export function AddEventForm({ onSuccess }: { onSuccess: () => void }) {
+    const initialState: FormState = {};
+    const [state, action] = useFormState(addEvent, initialState);
+
+    useEffect(() => {
+        if (state.message === "Event added successfully!") {
+            onSuccess();
+        }
+    }, [state, onSuccess]);
 
     return (
         <form action={action} className="space-y-4">
-            <input type="hidden" name="id" value={event.id}/>
             <div>
                 <label htmlFor="name" className="block text-sm font-medium text-gray-700">Event Name</label>
                 <input
                     id="name"
                     name="name"
-                    defaultValue={event.name ?? "Name Not Found"}
+                    required
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
                 {state?.errors?.name && <p className="mt-2 text-sm text-red-600">{state.errors.name}</p>}
@@ -40,24 +41,24 @@ export function UpdateEventForm({event}: UpdateEventFormProps) {
                 <textarea
                     id="description"
                     name="description"
-                    defaultValue={event.description ?? "Description Not Found"}
+                    required
                     rows={3}
                     className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
                 />
                 {state?.errors?.description && <p className="mt-2 text-sm text-red-600">{state.errors.description}</p>}
             </div>
             <div>
-                <label htmlFor="picture" className="block text-sm font-medium text-gray-700">New Picture
-                    (optional)</label>
+                <label htmlFor="picture" className="block text-sm font-medium text-gray-700">Picture</label>
                 <input
                     type="file"
                     id="picture"
                     name="picture"
+                    required
                     className="mt-1 block w-full"
                 />
                 {state?.errors?.picture && <p className="mt-2 text-sm text-red-600">{state.errors.picture}</p>}
             </div>
-            <SubmitButton/>
+            <SubmitButton />
             {state?.message && <p className="mt-2 text-sm text-green-600">{state.message}</p>}
         </form>
     );

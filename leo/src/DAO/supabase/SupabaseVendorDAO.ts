@@ -15,6 +15,16 @@ export class SupabaseVendorDAO implements VendorDAO {
         return data ?? []
     }
 
+    async getUserVendors(adminId: string) : Promise<Tables<'Vendors'>[]> {
+        const { data, error } = await this.supabase
+            .from(this.TABLE)
+            .select()
+            .eq('admin_id', adminId)
+
+        if (error) { throw error }
+        return data ?? []
+    }
+
     async getVendorById(id: number): Promise<Tables<'Vendors'> | null> {
         const { data, error } = await this.supabase
             .from(this.TABLE)

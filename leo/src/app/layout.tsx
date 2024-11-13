@@ -4,6 +4,7 @@ import "./globals.css";
 import Sidebar from "@/components/sidebar/sidebar";
 import Footer from "@/components/footer/footer";
 import { SidebarProvider } from "@/components/sidebar/sidebarContext";
+import {createClient} from "@/utils/supabase/server";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -21,22 +22,28 @@ export const metadata: Metadata = {
     description: "Local Event Organizer",
 };
 
-export default function RootLayout({children}: Readonly<{
+export default async function RootLayout({children}: Readonly<{
     children: React.ReactNode;
 }>) {
-    const isAuthorized = true; // This should be determined by your auth logic
+    let isLoggedIn = false
+    const supabase = await createClient()
+    const {data, error} = await supabase.auth.getUser()
+    if (!(error || !data?.user)) {
+        isLoggedIn = true
+    }
+
 
     return (
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SidebarProvider>
             <div className="min-h-screen">
-                <Sidebar isAuthorized={isAuthorized} />
+                <Sidebar isLoggedIn={isLoggedIn} />
                 <main className="min-h-screen flex flex-col">
                     <div className={"flex-grow"}>
                         {children}
                     </div>
-                    <Footer />
+                    <Footer/>
                 </main>
             </div>
         </SidebarProvider>

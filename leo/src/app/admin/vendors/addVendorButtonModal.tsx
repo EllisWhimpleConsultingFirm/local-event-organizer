@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AddEventForm } from './addEventForm';
+import { AddVendorForm } from './addVendorForm';
 import { Modal } from '@/components//modal/modal';
 import {Button} from "@/components/util/button";
 
-export function AddEventButtonModal() {
+export function AddVendorButtonModal() {
     const [isModalOpen, setIsModalOpen] = useState(false);
 
-    const handleAddEventSuccess = () => {
+    const handleAddVendorSuccess = () => {
         setIsModalOpen(false);
     };
 
@@ -17,12 +17,12 @@ export function AddEventButtonModal() {
             <Button
                 onClick={() => setIsModalOpen(true)}
             >
-                Add Event
+                Add Vendor
             </Button>
 
             <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
-                <h2 className="text-xl font-bold mb-4">Add New Event</h2>
-                <AddEventForm onSuccess={handleAddEventSuccess} />
+                <h2 className="text-xl font-bold mb-4">Add New Vendor</h2>
+                <AddVendorForm onSuccess={handleAddVendorSuccess} />
             </Modal>
         </>
     );
