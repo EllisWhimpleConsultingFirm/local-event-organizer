@@ -1,13 +1,13 @@
 'use server'
 
-import {DAOFactory} from "@/DAO/interface/Factory";
+import { DAOFactory } from "@/DAO/interface/Factory";
+import {createClient} from "@/utils/supabase/server";
+import {redirect} from "next/navigation";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {EventService} from "@/services/events";
 import {revalidatePath} from "next/cache";
 import {z} from 'zod';
 import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
-import {createClient} from "@/utils/supabase/server";
-import {redirect} from "next/navigation";
 
 export type FormState = {
     errors?: {
