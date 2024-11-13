@@ -179,6 +179,24 @@ export async function getVendor(id: number) {
     }
 }
 
+export async function getVendors() {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const vendorDAO = daoFactory.getVendorDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const vendorService = new VendorService(vendorDAO, bucketDao, eventVendorDao);
+
+    try {
+        return await vendorService.getAllVendors();
+    } catch (error) {
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
 export async function getAdminVendors(adminId: string) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
