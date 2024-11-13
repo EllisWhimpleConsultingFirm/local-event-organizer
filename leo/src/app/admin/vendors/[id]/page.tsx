@@ -6,6 +6,8 @@ import {getVendor} from "@/actions/vendor";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
 import {DeleteVendorForm} from "@/app/admin/vendors/[id]/deleteEventForm";
+import {getEventOccurrencesWithEvent} from "@/actions/event";
+import {Card} from "@/components/util/card";
 interface EventDetailsProps {
     params: {
         id: string;
@@ -21,12 +23,18 @@ export default async function EventDetails({ params }: EventDetailsProps) {
 
     const vendor = await getVendor(parseInt(params.id, 10));
 
+    const eventArray = await getEventOccurrencesWithEvent()
+
     if (!vendor || "error" in vendor) {
-        return <div>Vendor not found</div>;
+        return <div>Error Retrieving Vendor Information</div>;
     }
 
     if (data.user.id !== vendor.admin_id) {
         return <div>You do not have permission to view this data</div>
+    }
+
+    if (!eventArray || "error" in eventArray) {
+        return <div>Error Retrieving Event Information</div>;
     }
 
 
@@ -58,6 +66,26 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                     <div className="p-3">
                         <DeleteVendorForm vendor={vendor} />
                     </div>
+                </div>
+            </div>
+            <div className="p-10">
+                <h2 className="text-2xl font-bold mb-4 text-center">Apply to Events</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {eventArray.map(async ({event, eventOccurrence}) => {
+                        if (event.name) {
+                            return (
+                                <Link href={`/events/${event.id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
+                                    <Card
+                                        key={event.id}
+                                        title={event.name}
+                                        description={eventOccurrence.description ?? event.description ?? "No Description"}
+                                        image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                    />
+                                </Link>
+                            );
+                        }
+                        return null;
+                    })}
                 </div>
             </div>
         </div>

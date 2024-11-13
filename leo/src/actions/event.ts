@@ -5,9 +5,10 @@ import { SupabaseDAOFactory } from "@/DAO/supabase/SupabaseDAOFactory";
 import { EventService } from "@/services/events";
 import { revalidatePath } from "next/cache";
 import { z } from 'zod';
-import {TablesInsert, TablesUpdate} from "../../types/database.types";
+import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
+import React from "react";
 
 export type FormState = {
     errors?: {
@@ -197,6 +198,55 @@ export async function getAdminEvents(adminId: string) {
 
     try {
         return await eventService.getAdminEvents(adminId);
+    } catch (error) {
+        // Error object is created, so we can check it in the components
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
+export async function getEventOccurrences() {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        return await eventService.getAllEventOccurrences();
+    } catch (error) {
+        // Error object is created, so we can check it in the components
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
+export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] | {error: string}> {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        const eventOccurrences = await eventService.getAllEventOccurrences();
+        const eventArray = []
+        for (const occurrence of eventOccurrences) {
+            if (!occurrence || !occurrence.event_id) continue; // Skip invalid occurrences
+            try {
+                const event = await eventService.getEvent(occurrence.event_id);
+                eventArray.push({ eventOccurrence: occurrence, event });
+            } catch (e) {}
+        }
+        return eventArray
     } catch (error) {
         // Error object is created, so we can check it in the components
         if (error instanceof Error) {

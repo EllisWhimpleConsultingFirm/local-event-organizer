@@ -25,7 +25,7 @@ export default async function EventsManagement() {
     return (
         <div className="container mx-auto p-10">
             <div className="flex justify-between items-center mb-4 p-20">
-                <h1 className="text-5xl font-bold">Event Management</h1>
+                <h1 className="text-5xl font-bold">My Event</h1>
                 <AddEventButtonModal />
             </div>
             {!events || "error" in events || events.length === 0 ? (

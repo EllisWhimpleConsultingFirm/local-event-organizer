@@ -2,15 +2,19 @@ import React from 'react';
 import {Search} from 'lucide-react';
 import Image from 'next/image'
 import {Card} from "@/components/util/card";
-import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
-import {DAOFactory} from "@/DAO/interface/Factory";
 import homepageImage from '../public/home_page.png'
 import {Button} from "@/components/util/button";
+import {getEventOccurrencesWithEvent} from "@/actions/event";
+import Link from "next/link";
 
 export default async function Home() {
-    const daoFactory: DAOFactory = new SupabaseDAOFactory()
-    const eventsDao = daoFactory.getEventsDAO()
-    const events = await eventsDao.getEvents()
+    const eventArray = await getEventOccurrencesWithEvent()
+
+    if (!eventArray || 'error' in eventArray) {
+        return (
+            <div className="text-center text-2xl text-red-600 mt-10">Error retrieving the Events</div>
+        );
+    }
 
     return (
         <div className="flex flex-col min-h-screen">
@@ -48,15 +52,17 @@ export default async function Home() {
                     </div>
                     <h3 className="text-xl font-semibold mb-4">Events</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        {events.map(async (event) => {
-                            if (event.name && event.description) {
+                        {eventArray.map(async ({event, eventOccurrence}) => {
+                            if (event.name) {
                                 return (
-                                    <Card
-                                        key={event.id}
-                                        title={event.name}
-                                        description={event.description}
-                                        image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
-                                    />
+                                    <Link href={`/events/${event.id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>
+                                        <Card
+                                            key={event.id}
+                                            title={event.name}
+                                            description={eventOccurrence.description ?? event.description ?? "No Description"}
+                                            image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                        />
+                                    </Link>
                                 );
                             }
                             return null;
