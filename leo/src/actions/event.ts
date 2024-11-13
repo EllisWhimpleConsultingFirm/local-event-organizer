@@ -1,13 +1,14 @@
 'use server'
 
 import { DAOFactory } from "@/DAO/interface/Factory";
+import { SupabaseDAOFactory } from "@/DAO/supabase/SupabaseDAOFactory";
+import { EventService } from "@/services/events";
+import { revalidatePath } from "next/cache";
+import { z } from 'zod';
+import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
-import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
-import {EventService} from "@/services/events";
-import {revalidatePath} from "next/cache";
-import {z} from 'zod';
-import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
+import React from "react";
 
 export type FormState = {
     errors?: {
@@ -243,7 +244,7 @@ export async function getEventOccurrences() {
     }
 }
 
-export async function getEventOccurrencesWithEvent() {
+export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] | {error: string}> {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();

@@ -82,6 +82,26 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                     </div>
                 </div>
             </div>
+            <div className="p-10">
+                <h2 className="text-2xl font-bold mb-4 text-center">Apply to Events</h2>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/*{eventArray.map(async ({event, eventOccurrence}) => {*/}
+                    {/*    if (event.name) {*/}
+                    {/*        return (*/}
+                    {/*            <Link href={`/events/${event.id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>*/}
+                    {/*                <Card*/}
+                    {/*                    key={event.id}*/}
+                    {/*                    title={event.name}*/}
+                    {/*                    description={eventOccurrence.description ?? event.description ?? "No Description"}*/}
+                    {/*                    image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}*/}
+                    {/*                />*/}
+                    {/*            </Link>*/}
+                    {/*        );*/}
+                    {/*    }*/}
+                    {/*    return null;*/}
+                    {/*})}*/}
+                </div>
+            </div>
             <VendorTabs vendor={vendor} vendorEvents={vendorEvents} events={events} pendingEvents={pendingVendorEvents}></VendorTabs>
         </div>
     );

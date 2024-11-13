@@ -9,6 +9,7 @@ import Image from "next/image";
 import {Solway} from 'next/font/google'
 import homeIcon from '../../public/home-icon.svg'
 import vendorIcon from '../../public/vendors-icon.svg'
+import dashIcon from '../../public/dash.png'
 import eventIcon from '../../public/events.svg'
 import loginIcon from '../../public/briefcase-icon.svg'
 import logoIcon from '../../public/logo.svg'
