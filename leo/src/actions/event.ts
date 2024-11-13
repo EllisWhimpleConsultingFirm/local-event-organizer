@@ -1,10 +1,10 @@
 'use server'
 
-import { DAOFactory } from "@/DAO/interface/Factory";
-import { SupabaseDAOFactory } from "@/DAO/supabase/SupabaseDAOFactory";
-import { EventService } from "@/services/events";
-import { revalidatePath } from "next/cache";
-import { z } from 'zod';
+import {DAOFactory} from "@/DAO/interface/Factory";
+import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
+import {EventService} from "@/services/events";
+import {revalidatePath} from "next/cache";
+import {z} from 'zod';
 import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
@@ -74,7 +74,7 @@ export async function addEvent(prevState: any, formData: FormData): Promise<Form
 
         revalidatePath('/events');
 
-        return { message: "Event added successfully!" };
+        return {message: "Event added successfully!"};
     } catch (error) {
         return {
             message: error instanceof Error ? error.message : "Failed to add event. Please try again.",
@@ -83,7 +83,7 @@ export async function addEvent(prevState: any, formData: FormData): Promise<Form
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function deleteEvent(state : any, formData: FormData) {
+export async function deleteEvent(state: any, formData: FormData) {
     'use server';
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -159,7 +159,7 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
 
         revalidatePath(`/events/${validatedFields.data.id}`);
 
-        return { message: "Event updated successfully!" };
+        return {message: "Event updated successfully!"};
     } catch (error) {
         return {
             message: error instanceof Error ? error.message : "Failed to update event. Please try again.",
@@ -167,7 +167,7 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
     }
 }
 
-export async function getEvent(id: number): Promise<Result<Tables<'Events'>>> {
+export async function getEvent(id: number): Promise<Tables<'Events'> | null> {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -179,11 +179,8 @@ export async function getEvent(id: number): Promise<Result<Tables<'Events'>>> {
     try {
         return await eventService.getEvent(id);
     } catch (error) {
-        // Error object is created, so we can check it in the components
-        if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+        console.error((error as Error).message)
+        return null
     }
 }
 
@@ -256,7 +253,7 @@ export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'E
     }
 }
 
-export async function getEventOccurrencesByEventId(id: number): Promise<Result<Tables<'Event_Occurrences'>[]>> {
+export async function getEventOccurrencesByEventId(id: number): Promise<Tables<'Event_Occurrences'>[] | null> {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -268,7 +265,8 @@ export async function getEventOccurrencesByEventId(id: number): Promise<Result<T
     try {
         return await eventService.getEventOccurrencesByEventId(id);
     } catch (error) {
-        throw new Error(error instanceof Error ? error.message : "failed to get event occurrences.");
+        console.error((error as Error).message)
+        return null
     }
 }
 
@@ -284,15 +282,12 @@ export async function getEventOccurrence(id: number) {
     try {
         return await eventService.getEventOccurrence(id);
     } catch (error) {
-        // Error object is created, so we can check it in the components
-        if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+        console.error((error as Error).message)
+        return null
     }
 }
 
-export async function getEventVendors(eventOccurrenceId: number){
+export async function getEventVendors(eventOccurrenceId: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -304,10 +299,7 @@ export async function getEventVendors(eventOccurrenceId: number){
     try {
         return await eventService.getEventVendors(eventOccurrenceId);
     } catch (error) {
-        // Error object is created, so we can check it in the components
-        if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+        console.error((error as Error).message)
+        return null
     }
 }
