@@ -26,7 +26,7 @@ export class EventService {
     }
 
     async getAdminEvents(adminId: string): Promise<Tables<'Events'>[]> {
-        return await this.eventsDAO.getAdminEvents(adminId);
+        return await this.eventsDAO.getUserEvents(adminId);
     }
 
     async addEvent(eventData: TablesInsert<'Events'>, picture: File): Promise<Tables<'Events'>> {

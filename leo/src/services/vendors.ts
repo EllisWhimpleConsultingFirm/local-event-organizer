@@ -23,7 +23,7 @@ export class VendorService {
     }
 
     async getAdminVendors(adminId: string): Promise<Tables<'Vendors'>[]> {
-        return await this.vendorDAO.getAdminVendors(adminId);
+        return await this.vendorDAO.getUserVendors(adminId);
     }
 
     async addVendor(vendorData: TablesInsert<'Vendors'>, picture?: File): Promise<Tables<'Vendors'>> {

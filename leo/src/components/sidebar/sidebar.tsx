@@ -67,9 +67,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isLoggedIn}) => {
                 <ul className="space-y-3 pl-3">
                     <SidebarItem href="/" icon={<Image src={homeIcon} alt={'Home Icon'} />} label="Home" />
                     <SidebarItem href="/events" icon={<Image src={eventIcon} alt={'Event Icon'} />} label="Events" />
-                    <SidebarItem href="/admin/events" icon={<div className="pl-10"></div>} label="My Events" />
+                    <SidebarItem href="/admin/events" icon={<Image src={vendorIcon} alt={'My Events Icon'} />} label="My Events" />
                     <SidebarItem href="/vendors" icon={<Image src={vendorIcon} alt={'Vendor Icon'} />} label="Vendors" />
-                    <SidebarItem href="/admin/vendors" icon={<div className="pl-10"></div>} label="My Shops" />
+                    <SidebarItem href="/admin/vendors" icon={<Image src={vendorIcon} alt={'My Shops Icon'} />} label="My Shops" />
                 </ul>
             </nav>
             <div className="mt-auto pl-3 pb-12 space-y-3">
