@@ -2,17 +2,16 @@
 
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {Calendar, ChevronLeft, ChevronRight, Settings, Users} from 'lucide-react';
+import {ChevronLeft, ChevronRight, Settings} from 'lucide-react';
 import {useSidebar} from './sidebarContext';
 import './sidebar.css'
 import Image from "next/image";
 import {Solway} from 'next/font/google'
-import homeIcon from '../../public/home-icon.svg'
-import vendorIcon from '../../public/vendors-icon.svg'
-import dashIcon from '../../public/dash.png'
-import eventIcon from '../../public/events.svg'
-import loginIcon from '../../public/briefcase-icon.svg'
-import logoIcon from '../../public/logo.svg'
+import homeIcon from '../../public/icon-home.svg'
+import vendorIcon from '../../public/icon-vendors.svg'
+import eventIcon from '../../public/icon-events.svg'
+import loginIcon from '../../public/icon-briefcase.svg'
+import logoIcon from '../../public/icon-logo.svg'
 import {logout} from "@/actions/auth";
 
 interface SidebarProps {
