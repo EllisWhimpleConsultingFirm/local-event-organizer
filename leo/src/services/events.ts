@@ -156,12 +156,12 @@ export class EventService {
 
     async addVendorToEvent(
         vendorId: number,
-        eventOccurrenceId: number,
+        eventId: number,
         boothNumber: number
     ): Promise<Tables<'Event_Vendors'>> {
         return await this.eventVendorDAO.addEventVendor({
             vendor_id: vendorId,
-            event_occurence_id: eventOccurrenceId,
+            event_id: eventId,
             booth_number: boothNumber
         });
     }

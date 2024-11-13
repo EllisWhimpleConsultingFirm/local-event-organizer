@@ -8,7 +8,6 @@ import { z } from 'zod';
 import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
-import React from "react";
 
 export type FormState = {
     errors?: {

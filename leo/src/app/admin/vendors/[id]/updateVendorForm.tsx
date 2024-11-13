@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {useFormState, useFormStatus} from 'react-dom';
-import {deleteVendor, FormState, updateVendor} from '@/actions/vendor';
+import { FormState, updateVendor} from '@/actions/vendor';
 import {Tables} from "../../../../../types/supabase";
 
 interface UpdateEventFormProps {

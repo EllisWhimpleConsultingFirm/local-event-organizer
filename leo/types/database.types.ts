@@ -24,6 +24,117 @@ export type Database = {
         }
         Relationships: []
       }
+      Event_Applications: {
+        Row: {
+          created_at: string
+          event_id: number | null
+          id: number
+          message: string | null
+          vendor_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          event_id?: number | null
+          id?: number
+          message?: string | null
+          vendor_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          event_id?: number | null
+          id?: number
+          message?: string | null
+          vendor_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Event_Applications_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "Events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Event_Applications_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "Vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Event_Occurrence_Applications: {
+        Row: {
+          created_at: string
+          event_occurrence_id: number | null
+          id: number
+          message: string | null
+          vendor_id: number | null
+        }
+        Insert: {
+          created_at?: string
+          event_occurrence_id?: number | null
+          id?: number
+          message?: string | null
+          vendor_id?: number | null
+        }
+        Update: {
+          created_at?: string
+          event_occurrence_id?: number | null
+          id?: number
+          message?: string | null
+          vendor_id?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Applications_event_occurrence_id_fkey"
+            columns: ["event_occurrence_id"]
+            isOneToOne: false
+            referencedRelation: "Event_Occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Applications_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "Vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      Event_Occurrence_Vendors: {
+        Row: {
+          booth_number: number | null
+          event_occurence_id: number
+          vendor_id: number
+        }
+        Insert: {
+          booth_number?: number | null
+          event_occurence_id?: number
+          vendor_id: number
+        }
+        Update: {
+          booth_number?: number | null
+          event_occurence_id?: number
+          vendor_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "Event_Occurrence_Vendors_event_occurence_id_fkey"
+            columns: ["event_occurence_id"]
+            isOneToOne: false
+            referencedRelation: "Event_Occurrences"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "Event_Occurrence_Vendors_vendor_id_fkey"
+            columns: ["vendor_id"]
+            isOneToOne: false
+            referencedRelation: "Vendors"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       Event_Occurrences: {
         Row: {
           created_at: string
@@ -68,29 +179,29 @@ export type Database = {
       Event_Vendors: {
         Row: {
           booth_number: number
-          event_occurence_id: number
+          event_id: number
           vendor_id: number
         }
         Insert: {
           booth_number: number
-          event_occurence_id?: number
+          event_id?: number
           vendor_id: number
         }
         Update: {
           booth_number?: number
-          event_occurence_id?: number
+          event_id?: number
           vendor_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "Event_Vendors_event_occurence_id_fkey"
-            columns: ["event_occurence_id"]
+            foreignKeyName: "Event_Vendors_event_id_fkey"
+            columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "Events"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "Event_Vendors_vendor_id_fkey"
+            foreignKeyName: "Event_Vendors_vendor_id_fkey1"
             columns: ["vendor_id"]
             isOneToOne: false
             referencedRelation: "Vendors"

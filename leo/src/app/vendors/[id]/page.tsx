@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import {Tables} from "../../../../types/database.types";
 import {Card} from "@/components/util/card";
-import {getVendor, getVendorEventOccurrences} from "@/actions/vendor";
+import {getVendor, getVendorEvents} from "@/actions/vendor";
 
 interface VendorDetailsProps {
     params: {
@@ -22,7 +22,7 @@ export default async function VendorDetails({ params }: VendorDetailsProps) {
         );
     }
 
-    const eventOccurrences = await getVendorEventOccurrences(vendor.id)
+    const eventOccurrences = await getVendorEvents(vendor.id)
 
     const eventArray: { event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] = [];
 

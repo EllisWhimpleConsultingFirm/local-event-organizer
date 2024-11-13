@@ -2,7 +2,7 @@
 import {DAOFactory} from "@/DAO/interface/Factory";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {VendorService} from "@/services/vendors";
-import { getEventOccurrence} from "@/actions/event";
+import {getEvent} from "@/actions/event";
 import {z} from "zod";
 import {TablesInsert, TablesUpdate} from "../../types/database.types";
 import {revalidatePath} from "next/cache";
@@ -215,7 +215,7 @@ export async function getAdminVendors(adminId: string) {
     }
 }
 
-export async function getVendorEventOccurrences(vendorId: number) {
+export async function getVendorEvents(vendorId: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const vendorDAO = daoFactory.getVendorDAO();
@@ -226,7 +226,7 @@ export async function getVendorEventOccurrences(vendorId: number) {
     try {
         const vendorEvents = await vendorService.getVendorEvents(vendorId);
         const eventPromises = vendorEvents.map(async (vendorEvent) => {
-            const currentEvent = await getEventOccurrence(vendorEvent.event_occurence_id);
+            const currentEvent = await getEvent(vendorEvent.event_id);
             if (currentEvent && !("error" in currentEvent)) {
                 return currentEvent;
             }
