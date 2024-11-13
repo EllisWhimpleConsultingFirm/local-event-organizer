@@ -47,17 +47,6 @@ export function UpdateEventForm({event}: UpdateEventFormProps) {
                 {state?.errors?.description && <p className="mt-2 text-sm text-red-600">{state.errors.description}</p>}
             </div>
             <div>
-                <label htmlFor="admin_id" className="block text-sm font-medium text-gray-700">Admin ID</label>
-                <input
-                    id="admin_id"
-                    name="admin_id"
-                    type="number"
-                    defaultValue={event.admin_id}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-                />
-                {state?.errors?.admin_id && <p className="mt-2 text-sm text-red-600">{state.errors.admin_id}</p>}
-            </div>
-            <div>
                 <label htmlFor="picture" className="block text-sm font-medium text-gray-700">New Picture
                     (optional)</label>
                 <input

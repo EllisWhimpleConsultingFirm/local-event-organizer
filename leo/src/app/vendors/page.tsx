@@ -3,6 +3,7 @@ import {Tables} from "../../../types/database.types";
 
 const vendors : (Tables<'Vendors'>)[] = [
     {
+        admin_id : "Test",
         id : 1,
         created_at : "2024-10-09 21:36:30.851+00",
         name : "Testers of Patience",
@@ -12,6 +13,7 @@ const vendors : (Tables<'Vendors'>)[] = [
         description : "Test Description"
     },
     {
+        admin_id : "Test",
         id : 2,
         created_at : "2024-10-09 21:36:30.851+00",
         name : "Testers of Patience II",

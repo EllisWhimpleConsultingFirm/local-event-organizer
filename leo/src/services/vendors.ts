@@ -22,6 +22,10 @@ export class VendorService {
         return await this.vendorDAO.getVendors();
     }
 
+    async getAdminVendors(adminId: string): Promise<Tables<'Vendors'>[]> {
+        return await this.vendorDAO.getAdminVendors(adminId);
+    }
+
     async addVendor(vendorData: TablesInsert<'Vendors'>, picture?: File): Promise<Tables<'Vendors'>> {
         let pictureUrl: string | undefined = undefined;
 

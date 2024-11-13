@@ -62,7 +62,7 @@ describe('Event Actions', () => {
             const formData = new FormData();
             formData.append('name', 'Test Event');
             formData.append('description', 'Test Description');
-            formData.append('admin_id', '1');
+            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
             formData.append('picture', new File(['test'], 'test.png', { type: 'image/png' }));
 
             const result = await addEvent({}, formData);
@@ -72,7 +72,7 @@ describe('Event Actions', () => {
                 {
                     name: 'Test Event',
                     description: 'Test Description',
-                    admin_id: 1,
+                    admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
                 },
                 expect.any(File)
             );
@@ -100,7 +100,7 @@ describe('Event Actions', () => {
             const formData = new FormData();
             formData.append('name', 'Test Event');
             formData.append('description', 'Test Description');
-            formData.append('admin_id', '1');
+            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
             // Intentionally not adding picture
 
             const result = await addEvent({}, formData);
@@ -118,7 +118,7 @@ describe('Event Actions', () => {
             formData.append('id', '1');
             formData.append('name', 'Updated Event');
             formData.append('description', 'Updated Description');
-            formData.append('admin_id', '2');
+            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
             const picture = new File(['test'], 'test.png', { type: 'image/png' });
             formData.append('picture', picture);
 
@@ -130,7 +130,7 @@ describe('Event Actions', () => {
                 {
                     name: 'Updated Event',
                     description: 'Updated Description',
-                    admin_id: 2,
+                    admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
                 },
                 picture
             );
@@ -142,7 +142,7 @@ describe('Event Actions', () => {
             formData.append('id', '1');
             formData.append('name', 'Updated Event');
             formData.append('description', 'Updated Description');
-            formData.append('admin_id', '2');
+            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
             const undefinedPicture = new File([''], 'undefined', { type: 'image/png' });
             formData.append('picture', undefinedPicture);
 
@@ -154,7 +154,7 @@ describe('Event Actions', () => {
                 {
                     name: 'Updated Event',
                     description: 'Updated Description',
-                    admin_id: 2,
+                    admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
                 },
                 undefined
             );
@@ -204,7 +204,7 @@ describe('Event Actions', () => {
 
         it('should return error message when deletion fails', async () => {
             const formData = new FormData();
-            formData.append('id', '1');
+            formData.append('id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
             mockEventService.deleteEvent.mockRejectedValue(new Error('Delete failed'));
 
             const result = await deleteEvent({}, formData);
@@ -221,7 +221,7 @@ describe('Event Actions', () => {
                 id: 1,
                 name: 'Test Event',
                 description: 'Test Description',
-                admin_id: 1,
+                admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
                 photo_url: 'http://test.com/image.jpg'
             };
 

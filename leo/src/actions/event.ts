@@ -6,6 +6,8 @@ import { EventService } from "@/services/events";
 import { revalidatePath } from "next/cache";
 import { z } from 'zod';
 import {TablesInsert, TablesUpdate} from "../../types/database.types";
+import {createClient} from "@/utils/supabase/server";
+import {redirect} from "next/navigation";
 
 export type FormState = {
     errors?: {
@@ -22,17 +24,19 @@ export type FormState = {
 const EventFormSchema = z.object({
     name: z.string().min(1, "Event name is required"),
     description: z.string().min(1, "Description is required"),
-    admin_id: z.number().int().positive("Admin ID must be a positive integer"),
+    admin_id: z.string().min(36,"Admin ID is not valid"),
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addEvent(prevState: any, formData: FormData): Promise<FormState> {
     'use server'
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
     // Validate form fields
     const validatedFields = EventFormSchema.safeParse({
         name: formData.get('name'),
         description: formData.get('description'),
-        admin_id: Number(formData.get('admin_id')),
+        admin_id: data.user?.id,
     });
 
     // If form validation fails, return errors early
@@ -94,7 +98,7 @@ export async function deleteEvent(state : any, formData: FormData) {
             const intId = parseInt(id, 10)
             if (intId )
             await eventService.deleteEvent(intId);
-            revalidatePath('/events');
+            revalidatePath('/admin/events');
         } catch (error) {
             return {
                 message: 'Failed to delete event. Please try again.',
@@ -103,22 +107,27 @@ export async function deleteEvent(state : any, formData: FormData) {
     } else {
         throw new Error('Invalid event ID');
     }
+
+    redirect("/admin/events")
 }
 
 const UpdateEventFormSchema = z.object({
     id: z.string().min(1, "Event ID is required"),
     name: z.string().min(1, "Event name is required"),
     description: z.string().min(1, "Description is required"),
-    admin_id: z.number().int().positive("Admin ID must be a positive integer"),
+    admin_id: z.string().min(36, "Invalid Admin Id"),
 });
 
 export async function updateEvent(prevState: FormState, formData: FormData): Promise<FormState> {
     'use server'
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+
     const validatedFields = UpdateEventFormSchema.safeParse({
         id: formData.get('id'),
         name: formData.get('name'),
         description: formData.get('description'),
-        admin_id: Number(formData.get('admin_id')),
+        admin_id: data.user?.id,
     });
 
     if (!validatedFields.success) {
@@ -168,6 +177,26 @@ export async function getEvent(id: number) {
 
     try {
         return await eventService.getEvent(id);
+    } catch (error) {
+        // Error object is created, so we can check it in the components
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
+export async function getAdminEvents(adminId: string) {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        return await eventService.getAdminEvents(adminId);
     } catch (error) {
         // Error object is created, so we can check it in the components
         if (error instanceof Error) {
