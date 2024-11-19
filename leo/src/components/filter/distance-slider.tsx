@@ -1,14 +1,26 @@
 'use client'
 
-import React, {useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
+import {useFilters} from "@/Contexts/filter-context";
 
 export const DistanceSlider = () => {
-    // State to hold the current distance value
-    const [distance, setDistance] = useState(50); // Default to 50 km
+    const { state, dispatch } = useFilters();
+    const [localDistance, setLocalDistance] = useState(state.distance);
 
-    // Handle slider value change
+    const debouncedDispatch = useCallback(() => {
+        const timeout = setTimeout(() => {
+            dispatch({ type: "SET_DISTANCE", payload: localDistance });
+        }, 600); // Adjust debounce time as needed
+        return () => clearTimeout(timeout);
+    }, [dispatch, localDistance]);
+
+    // Run debounced dispatch whenever localDistance changes
+    useEffect(() => {
+        debouncedDispatch();
+    }, [debouncedDispatch]);
+
     const handleSliderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setDistance(parseInt(event.target.value, 10));
+        setLocalDistance(parseInt(event.target.value, 10)); // Update local distance immediately
     };
 
     return (
@@ -20,14 +32,14 @@ export const DistanceSlider = () => {
                 type="range"
                 min="0"
                 max="100"
-                value={distance}
+                value={localDistance} // Use local state for immediate responsiveness
                 onChange={handleSliderChange}
                 className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
             />
 
             {/* Display selected distance */}
             <div className="mt-4 text-center">
-                <span className="text-xl font-bold">{distance} km</span>
+                <span className="text-xl font-bold">{localDistance} km</span>
             </div>
         </div>
     );
