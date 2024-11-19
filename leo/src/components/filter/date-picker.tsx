@@ -1,11 +1,21 @@
-'use client'
-import React, {useState} from "react";
+"use client";
+
+import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import {useFilters} from "@/Contexts/filter-context";
 
 export const DatePickerLeo = () => {
-    const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>([new Date(), undefined]);
-    const [startDate, endDate] = dateRange;
+    const { state, dispatch } = useFilters();
+
+    // Extract the current dateRange from the global state
+    const [startDate, endDate] = state.dateRange;
+
+    // Handle date range changes
+    const handleDateChange = (update: [Date | null, Date | null]) => {
+        const newDateRange: [Date, Date] = [update[0] || new Date(), update[1] || new Date()];
+        dispatch({ type: "SET_DATE_RANGE", payload: newDateRange });
+    };
 
     return (
         <div className="flex flex-row items-center pt-4 px-4">
@@ -15,9 +25,7 @@ export const DatePickerLeo = () => {
                 maxDate={new Date(9999, 11, 31)}
                 startDate={startDate}
                 endDate={endDate}
-                onChange={(update: [Date | null, Date | null]) => {
-                    setDateRange([update[0] || undefined, update[1] || undefined]); // Convert null to undefined
-                }}
+                onChange={handleDateChange}
                 placeholderText="DD/MM/YYYY - DD/MM/YYYY"
                 isClearable={true}
                 showMonthYearDropdown={true}
