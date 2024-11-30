@@ -186,6 +186,26 @@ export async function getEvent(id: number) {
     }
 }
 
+export async function getEvents() {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+
+    try {
+        return await eventService.getAllEvents();
+    } catch (error) {
+        // Error object is created, so we can check it in the components
+        if (error instanceof Error) {
+            return { error: error.message };
+        }
+        return { error: 'An unknown error occurred' };
+    }
+}
+
 export async function getAdminEvents(adminId: string) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();

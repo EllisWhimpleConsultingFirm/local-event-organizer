@@ -105,23 +105,23 @@ export type Database = {
       Event_Occurrence_Vendors: {
         Row: {
           booth_number: number | null
-          event_occurence_id: number
+          event_occurrence_id: number
           vendor_id: number
         }
         Insert: {
           booth_number?: number | null
-          event_occurence_id?: number
+          event_occurrence_id?: number
           vendor_id: number
         }
         Update: {
           booth_number?: number | null
-          event_occurence_id?: number
+          event_occurrence_id?: number
           vendor_id?: number
         }
         Relationships: [
           {
-            foreignKeyName: "Event_Occurrence_Vendors_event_occurence_id_fkey"
-            columns: ["event_occurence_id"]
+            foreignKeyName: "Event_Occurrence_Vendors_event_occurrence_id_fkey"
+            columns: ["event_occurrence_id"]
             isOneToOne: false
             referencedRelation: "Event_Occurrences"
             referencedColumns: ["id"]
