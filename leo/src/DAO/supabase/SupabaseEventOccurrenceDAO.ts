@@ -1,15 +1,28 @@
-import { EventOccurrenceDAO } from "@/DAO/interface/EventOccurrenceDAO";
-import { createClient } from "@/utils/supabase/server";
-import { Tables, TablesInsert, TablesUpdate } from "../../../types/database.types";
+import {EventOccurrenceDAO} from "@/DAO/interface/EventOccurrenceDAO";
+import {createClient} from "@/utils/supabase/server";
+import {Tables, TablesInsert, TablesUpdate} from "../../../types/database.types";
+import {Filters} from "@/utils/filter-models";
+import {haversineDistance} from "@/utils/get-distance";
 
 export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
     private supabase = createClient();
     private TABLE = 'Event_Occurrences'
 
-    async getEventOccurrences(): Promise<Tables<'Event_Occurrences'>[]> {
-        const { data, error } = await this.supabase.from(this.TABLE).select()
-        if (error) { throw error }
-        return data ?? []
+    async getEventOccurrences(filters?: Filters): Promise<Tables<'Event_Occurrences'>[]> {
+        let query = this.supabase.from(this.TABLE).select()
+
+        if (filters && filters.dateRange) {
+            query = query.gte('start_time', filters.dateRange[0].toISOString());
+            query = query.lte('end_time', filters.dateRange[1].toISOString());
+        }
+
+        const { data, error } = await query;
+
+        if (error) { throw error; }
+
+        if (!data) return [];
+
+        return this.filterData(data, filters)
     }
 
     async getEventOccurrence(id: number): Promise<Tables<'Event_Occurrences'> | null> {
@@ -23,15 +36,61 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
         return data
     }
 
+    filterData(data: Tables<'Event_Occurrences'>[], filters?: Filters): Tables<'Event_Occurrences'>[] {
+        const filteredData = data.filter((event) => {
+            // Apply distance filter
+            if (filters?.distance && filters.userLocation && event.longitude && event.latitude) {
+                const distance = haversineDistance(
+                    filters?.userLocation?.lat,
+                    filters?.userLocation?.lng,
+                    event?.latitude,
+                    event?.longitude
+                );
+                if (distance > filters.distance) {
+                    return false;
+                }
+            }
 
-    async getEventOccurrencesByEventId(eventId: number): Promise<Tables<'Event_Occurrences'>[]> {
-        const { data, error } = await this.supabase
+            // Apply search filter
+            if (filters?.search && !event.description?.toLowerCase().includes(filters.search.toLowerCase())) {
+                return false;
+            }
+
+            // Apply vendor category filter
+            if (filters?.vendorCategory && filters.vendorCategory.length > 0) {
+                // if (!filters.vendorCategory.includes(event.vendorCategory)) {
+                //     return false;
+                // }
+            }
+
+            return true;
+        });
+        return filteredData as Tables<'Event_Occurrences'>[];
+    }
+
+    async getEventOccurrencesByEventId(
+        eventId: number,
+        filters?: Filters
+    ): Promise<Tables<'Event_Occurrences'>[]> {
+        let query = this.supabase
             .from(this.TABLE)
             .select()
             .eq('event_id', eventId);
 
-        if (error) { throw error }
-        return data ?? []
+        if (filters && filters.dateRange) {
+            query = query.gte('start_time', filters.dateRange[0].toISOString());
+            query = query.lte('end_time', filters.dateRange[1].toISOString());
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            throw error;
+        }
+
+        if (!data) return [];
+
+       return this.filterData(data, filters)
     }
 
     async addEventOccurrence(eventOccurrence: TablesInsert<'Event_Occurrences'>): Promise<Tables<'Event_Occurrences'>> {

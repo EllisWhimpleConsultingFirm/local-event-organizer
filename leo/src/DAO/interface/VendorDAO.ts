@@ -7,4 +7,5 @@ export interface VendorDAO {
     addVendor(vendor: TablesInsert<'Vendors'>): Promise<Tables<'Vendors'>>;
     updateVendor(id: number, vendor: TablesUpdate<'Vendors'>): Promise<Tables<'Vendors'>>;
     deleteVendor(id: number): Promise<void>;
+    getVendorCategories(id: number): Promise<Tables<'Categories'>[]>;
 }

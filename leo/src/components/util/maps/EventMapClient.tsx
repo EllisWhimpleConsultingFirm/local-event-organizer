@@ -36,7 +36,6 @@ export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey
                         center={mapCenter}
                         zoom={12}
                         options={{ streetViewControl: false }}
-                        onLoad={(map) => (mapRef.current = map)}
                     >
                         {markers.map((event) => (
                             event.latitude !== null && event.longitude !== null ? (
