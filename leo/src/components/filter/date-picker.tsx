@@ -3,25 +3,29 @@
 import React from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import {useFilters} from "@/Contexts/filter-context";
+import {FilterActions, useFilters} from "@/Contexts/filter-context";
 
 export const DatePickerLeo = () => {
     const { state, dispatch } = useFilters();
 
     // Extract the current dateRange from the global state
-    const [startDate, endDate] = state.dateRange;
+    const [startDate, endDate] = state.filters.dateRange ?? [new Date(), new Date()];
 
     // Handle date range changes
     const handleDateChange = (update: [Date | null, Date | null]) => {
         const newDateRange: [Date, Date] = [update[0] || new Date(), update[1] || new Date()];
-        dispatch({ type: "SET_DATE_RANGE", payload: newDateRange });
+        dispatch({ type: FilterActions.SET_DATE_RANGE, payload: newDateRange });
     };
+
+    // Compute two years ago today
+    const twoYearsAgo = new Date();
+    twoYearsAgo.setFullYear(twoYearsAgo.getFullYear() - 2);
 
     return (
         <div className="flex flex-row items-center pt-4 px-4">
             <DatePicker
                 selectsRange
-                minDate={new Date()}
+                minDate={twoYearsAgo}
                 maxDate={new Date(9999, 11, 31)}
                 startDate={startDate}
                 endDate={endDate}

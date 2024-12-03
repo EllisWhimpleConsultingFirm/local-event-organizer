@@ -3,7 +3,7 @@ import { Tables, TablesInsert, TablesUpdate } from "../../types/database.types";
 import { BucketDAO } from "@/DAO/interface/BucketDAO";
 import { EventOccurrenceDAO } from "@/DAO/interface/EventOccurrenceDAO";
 import { EventVendorDAO } from "@/DAO/interface/EventVendorDAO";
-import {Result} from "../../types/Result";
+import {Filters} from "@/utils/filter-models";
 
 export class EventService {
     constructor(
@@ -14,7 +14,7 @@ export class EventService {
     ) {}
 
     // Event Management Methods
-    async getEvent(id: number): Promise<Result<Tables<'Events'>>> {
+    async getEvent(id: number): Promise<Tables<'Events'>> {
         const event = await this.eventsDAO.getEvent(id)
         if (!event) {
             throw new Error(`Event with id ${id} not found`);
@@ -73,12 +73,13 @@ export class EventService {
     }
 
     // Event Occurrence Management Methods
-    async getAllEventOccurrences(): Promise<Tables<'Event_Occurrences'>[]> {
-        return await this.eventOccurrenceDAO.getEventOccurrences();
+    async getAllEventOccurrences(filters?: Filters): Promise<Tables<'Event_Occurrences'>[]> {
+        console.log("getAllEventOccurrences");
+        return await this.eventOccurrenceDAO.getEventOccurrences(filters);
     }
 
-    async getEventOccurrencesByEventId(eventId: number): Promise<Result<Tables<'Event_Occurrences'>[]>> {
-        return await this.eventOccurrenceDAO.getEventOccurrencesByEventId(eventId);
+    async getEventOccurrencesByEventId(eventId: number, filters?: Filters): Promise<Tables<'Event_Occurrences'>[]> {
+        return await this.eventOccurrenceDAO.getEventOccurrencesByEventId(eventId, filters);
     }
 
     async getEventOccurrence(eventOccurrenceId: number) : Promise<Tables<'Event_Occurrences'>> {

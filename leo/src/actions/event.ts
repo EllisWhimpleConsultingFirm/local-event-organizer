@@ -8,7 +8,7 @@ import {z} from 'zod';
 import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
 import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
-import React from "react";
+import {Filters} from "@/utils/filter-models";
 
 export type FormState = {
     errors?: {
@@ -244,8 +244,8 @@ export async function getEventOccurrences() {
     }
 }
 
-export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] | {error: string}> {
-    'use server'
+export async function getEventOccurrencesWithEvent(filters?: Filters): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] | null> {
+    console.log("here")
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
     const bucketDao = daoFactory.getBucketDAO();
@@ -253,8 +253,9 @@ export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'E
     const eventVendorDao = daoFactory.getEventVendorDAO();
     const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
+    console.log("fetching new events:", filters)
     try {
-        const eventOccurrences = await eventService.getAllEventOccurrences();
+        const eventOccurrences = await eventService.getAllEventOccurrences(filters);
         const eventArray = []
         for (const occurrence of eventOccurrences) {
             if (!occurrence || !occurrence.event_id) continue; // Skip invalid occurrences
@@ -265,15 +266,12 @@ export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'E
         }
         return eventArray
     } catch (error) {
-        // Error object is created, so we can check it in the components
-        if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+        console.error(error);
+        return null
     }
 }
 
-export async function getEventOccurrencesByEventId(id: number): Promise<Tables<'Event_Occurrences'>[] | null> {
+export async function getEventOccurrencesByEventId(id: number, filters?: Filters): Promise<Tables<'Event_Occurrences'>[] | null> {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -283,7 +281,7 @@ export async function getEventOccurrencesByEventId(id: number): Promise<Tables<'
     const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
 
     try {
-        return await eventService.getEventOccurrencesByEventId(id);
+        return await eventService.getEventOccurrencesByEventId(id, filters);
     } catch (error) {
         console.error((error as Error).message)
         return null

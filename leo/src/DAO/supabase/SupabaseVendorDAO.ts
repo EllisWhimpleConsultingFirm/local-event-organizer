@@ -69,4 +69,30 @@ export class SupabaseVendorDAO implements VendorDAO {
 
         if (error) { throw error }
     }
+
+    async getVendorCategories(id: number): Promise<Tables<'Categories'>[]> {
+        const { data: categoryIds, error: categoryError } = await this.supabase
+            .from('Vendor_Categories')
+            .select('category_id')
+            .eq('vendor_id', id);
+
+        if (categoryError) {
+            throw categoryError;
+        }
+
+        // Extract category_id values from the result
+        const categoryIdArray = categoryIds?.map(item => item.category_id) ?? [];
+
+        const { data: categories, error: categoryDataError } = await this.supabase
+            .from('Categories')
+            .select()
+            .in('id', categoryIdArray);
+
+        if (categoryDataError) {
+            throw categoryDataError;
+        }
+
+        return categories ?? [];
+    }
+
 }

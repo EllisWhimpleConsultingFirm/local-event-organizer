@@ -3,6 +3,7 @@ import {DAOFactory} from "@/DAO/interface/Factory";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {VendorService} from "@/services/vendors";
 import {getEvent} from "@/actions/event";
+import {getEventOccurrence} from "@/actions/event";
 import {z} from "zod";
 import {TablesInsert, TablesUpdate} from "../../types/database.types";
 import {revalidatePath} from "next/cache";
@@ -23,13 +24,13 @@ export type FormState = {
 const VendorFormSchema = z.object({
     name: z.string().min(1, "Event name is required"),
     description: z.string().min(1, "Description is required"),
-    admin_id: z.string().min(36,"Admin ID is not valid"),
+    admin_id: z.string().min(36, "Admin ID is not valid"),
 });
 
 export async function addVendor(prevState: FormState, formData: FormData): Promise<FormState> {
     'use server'
     const supabase = await createClient()
-    const { data } = await supabase.auth.getUser()
+    const {data} = await supabase.auth.getUser()
     // Validate form fields
     const validatedFields = VendorFormSchema.safeParse({
         name: formData.get('name'),
@@ -71,7 +72,7 @@ export async function addVendor(prevState: FormState, formData: FormData): Promi
         revalidatePath('/admin/vendors');
         revalidatePath('/vendors');
 
-        return { message: "Vendor added successfully!" };
+        return {message: "Vendor added successfully!"};
     } catch (error) {
         return {
             message: error instanceof Error ? error.message : "Failed to add vendor. Please try again.",
@@ -79,7 +80,7 @@ export async function addVendor(prevState: FormState, formData: FormData): Promi
     }
 }
 
-export async function deleteVendor(state : FormState, formData: FormData) {
+export async function deleteVendor(state: FormState, formData: FormData) {
     'use server';
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const vendorDAO = daoFactory.getVendorDAO();
@@ -117,7 +118,7 @@ const UpdateVendorFormSchema = z.object({
 export async function updateVendor(prevState: FormState, formData: FormData): Promise<FormState> {
     'use server'
     const supabase = await createClient()
-    const { data } = await supabase.auth.getUser()
+    const {data} = await supabase.auth.getUser()
 
     const validatedFields = UpdateVendorFormSchema.safeParse({
         id: formData.get('id'),
@@ -153,7 +154,7 @@ export async function updateVendor(prevState: FormState, formData: FormData): Pr
 
         revalidatePath(`/admin/vendors/${validatedFields.data.id}`);
 
-        return { message: "Vendor updated successfully!" };
+        return {message: "Vendor updated successfully!"};
     } catch (error) {
         return {
             message: error instanceof Error ? error.message : "Failed to update vendor. Please try again.",
@@ -173,9 +174,9 @@ export async function getVendor(id: number) {
         return await vendorService.getVendor(id);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
+            return {error: error.message};
         }
-        return { error: 'An unknown error occurred' };
+        return {error: 'An unknown error occurred'};
     }
 }
 
@@ -191,9 +192,9 @@ export async function getVendors() {
         return await vendorService.getAllVendors();
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
+            return {error: error.message};
         }
-        return { error: 'An unknown error occurred' };
+        return {error: 'An unknown error occurred'};
     }
 }
 
@@ -209,9 +210,9 @@ export async function getAdminVendors(adminId: string) {
         return await vendorService.getAdminVendors(adminId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
+            return {error: error.message};
         }
-        return { error: 'An unknown error occurred' };
+        return {error: 'An unknown error occurred'};
     }
 }
 
@@ -244,8 +245,18 @@ export async function getVendorEvents(vendorId: number) {
         });
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
+            return {error: error.message};
         }
-        return { error: 'An unknown error occurred' };
+        return {error: 'An unknown error occurred'};
     }
+}
+
+export async function getVendorCategories(vendorId: number) {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const vendorDAO = daoFactory.getVendorDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const vendorService = new VendorService(vendorDAO, bucketDao, eventVendorDao);
+    return vendorService.getVendorCategories(vendorId);
 }

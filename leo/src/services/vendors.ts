@@ -1,7 +1,7 @@
-import { VendorDAO } from "@/DAO/interface/VendorDAO";
-import { Tables, TablesInsert, TablesUpdate } from "../../types/database.types";
-import { BucketDAO } from "@/DAO/interface/BucketDAO";
-import { EventVendorDAO } from "@/DAO/interface/EventVendorDAO";
+import {VendorDAO} from "@/DAO/interface/VendorDAO";
+import {Tables, TablesInsert, TablesUpdate} from "../../types/database.types";
+import {BucketDAO} from "@/DAO/interface/BucketDAO";
+import {EventVendorDAO} from "@/DAO/interface/EventVendorDAO";
 
 export class VendorService {
     constructor(
@@ -63,6 +63,14 @@ export class VendorService {
     async deleteVendor(id: number): Promise<void> {
         const vendor = await this.vendorDAO.getVendorById(id);
 
+        // Get all event associations
+        const eventAssociations = await this.eventVendorDAO.getEventsByVendorId(id);
+
+        // Remove all event associations
+        for (const assoc of eventAssociations) {
+            await this.eventVendorDAO.deleteEventVendor(id, assoc.event_id);
+        }
+
         // Delete the vendor
         await this.vendorDAO.deleteVendor(id);
 
@@ -96,5 +104,11 @@ export class VendorService {
 
     async removeVendorFromEvent(vendorId: number, eventOccurrenceId: number): Promise<void> {
         await this.eventVendorDAO.deleteEventVendor(vendorId, eventOccurrenceId);
+    }
+
+    async getVendorCategories(vendorId: number): Promise<Tables<'Categories'>[]> {
+        const data = await this.vendorDAO.getVendorCategories(vendorId);
+        if(data) return data
+        throw new Error(`Vendor with id ${vendorId} not found`);
     }
 }

@@ -1,42 +1,66 @@
 'use client'
 
-import {Filters, Tuple} from "@/utils/filter-models";
+import {Coordinates, Filters, Tuple} from "@/utils/filter-models";
 import {createContext, Dispatch, ReactNode, useContext, useReducer} from "react";
 
-type FiltersState = Filters;
+export enum FilterActions {
+    SET_DISTANCE,
+    SET_USER_LOCATION,
+    SET_SEARCH,
+    SET_VENDOR_CATEGORY,
+    SET_DATE_RANGE,
+    RESET_FILTERS,
+}
+
+type FiltersState = {
+    filters: Filters
+    anywhere: boolean
+};
 
 const initialFilters: FiltersState = {
-    distance: 0,
-    search: "",
-    vendorCategory: [],
-    dateRange: [new Date(), new Date()],
+    filters: {
+        distance: 50,
+        search: undefined,
+        vendorCategory: undefined,
+        dateRange: [
+            new Date(), // Today's date
+            new Date(new Date().setDate(new Date().getDate() + 7)) // One week from today
+        ],
+        userLocation: {lat: 40.238253, lng: -111.646481}
+    },
+    anywhere: false
 };
 
 type FiltersAction =
-    | { type: "SET_DISTANCE"; payload: number }
-    | { type: "SET_SEARCH"; payload: string }
-    | { type: "SET_VENDOR_CATEGORY"; payload: string[] }
-    | { type: "SET_DATE_RANGE"; payload: Tuple<Date, 2> }
-    | { type: "RESET_FILTERS" };
+    | { type: FilterActions.SET_DISTANCE; payload: number | undefined }
+    | { type: FilterActions.SET_USER_LOCATION; payload: Coordinates }
+    | { type: FilterActions.SET_SEARCH; payload: string }
+    | { type: FilterActions.SET_VENDOR_CATEGORY; payload: string[] }
+    | { type: FilterActions.SET_DATE_RANGE; payload: Tuple<Date, 2> }
+    | { type: FilterActions.RESET_FILTERS };
 
 const filtersReducer = (state: FiltersState, action: FiltersAction): FiltersState => {
     switch (action.type) {
-        case "SET_DISTANCE":
-            console.log("new distance:", action.payload)
-            return { ...state, distance: action.payload };
-        case "SET_SEARCH":
-            console.log("new search:", action.payload)
-            return { ...state, search: action.payload };
-        case "SET_VENDOR_CATEGORY":
-            console.log("new category:", action.payload)
-            return { ...state, vendorCategory: action.payload };
-        case "SET_DATE_RANGE":
-            console.log("new date range:", action.payload)
-            return { ...state, dateRange: action.payload };
-        case "RESET_FILTERS":
+        case FilterActions.SET_DISTANCE:
+            console.log("new distance:", action.payload);
+            return { ...state, filters: { ...state.filters, distance: action.payload } };
+        case FilterActions.SET_SEARCH:
+            console.log("new search:", action.payload);
+            return { ...state, filters: { ...state.filters, search: action.payload } };
+        case FilterActions.SET_USER_LOCATION:
+            console.log("set user location:", {lat: 40.238253, lng: -111.646481})
+            return { ...state, filters: { ...state.filters, userLocation: action.payload } };
+        case FilterActions.SET_VENDOR_CATEGORY:
+            console.log("new category:", action.payload);
+            return { ...state, filters: { ...state.filters, vendorCategory: action.payload } };
+        case FilterActions.SET_DATE_RANGE:
+            console.log("new date range:", action.payload);
+            return { ...state, filters: { ...state.filters, dateRange: action.payload } };
+        case FilterActions.RESET_FILTERS:
+            console.log("reset filters");
             return initialFilters;
         default:
-            throw new Error(`Unhandled action type: ${(action as any).type}`);
+            throw new Error("Unknown action type");
     }
 };
 
