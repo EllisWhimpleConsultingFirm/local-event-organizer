@@ -1,4 +1,4 @@
-import { getEvent, getEventOccurrence, getEventOccurrenceVendors } from "@/actions/event";
+import {getEvent, getEventOccurrence, getEventOccurrenceVendors, getEventVendors} from "@/actions/event";
 import Image from 'next/image';
 import Link from "next/link";
 import React from "react";

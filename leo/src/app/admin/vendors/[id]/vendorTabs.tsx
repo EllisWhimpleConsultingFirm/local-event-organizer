@@ -63,7 +63,7 @@ export async function VendorTabs({events, vendor, vendorEvents, pendingEvents}: 
                             {pendingEvents.eventOccurrenceApplications.map(async (object) => {
                                 if (object.event.name) {
                                     return (
-                                        <BasicCard>
+                                        <BasicCard key={object.application.id}>
                                             <CardContent>
                                                 <Image src={object.event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!} alt={object.event.description ?? "Description"} width={250} height={250} className="w-full h-48 object-cover" />
                                                 <div className="p-4">
@@ -87,7 +87,7 @@ export async function VendorTabs({events, vendor, vendorEvents, pendingEvents}: 
                             {pendingEvents.eventApplications.map(async (object) => {
                                 if (object.event.name) {
                                     return (
-                                        <BasicCard>
+                                        <BasicCard key={object.application.id}>
                                             <CardContent>
                                                 <Image src={object.event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!} alt={object.event.description ?? "Description"} width={250} height={250} className="w-full h-48 object-cover" />
                                                 <div className="p-4">

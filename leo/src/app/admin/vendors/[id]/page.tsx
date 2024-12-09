@@ -27,19 +27,6 @@ export default async function VendorDetails({ params }: EventDetailsProps) {
     const vendor = await getVendor(parseInt(params.id, 10));
     const events = await getEvents();
 
-    if (!vendor || "error" in vendor) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Error Retrieving Vendor Information</h2>
-                    <Link href="/admin/vendors" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to My Shops
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
     if (data.user.id !== vendor.admin_id) {
         return (
             <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -56,30 +43,6 @@ export default async function VendorDetails({ params }: EventDetailsProps) {
 
     const vendorEvents = await getVendorEvents(vendor.id);
     const pendingVendorEvents = await getVendorPendingEvents(vendor.id);
-
-    const errorStates = {
-        events: !events || "error" in events,
-        vendorEvents: !vendorEvents || "error" in vendorEvents,
-        pendingEvents: !pendingVendorEvents || "error" in pendingVendorEvents
-    };
-
-    if (Object.values(errorStates).some(error => error)) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Error Loading Data</h2>
-                    <p className="text-gray-600 mb-4">
-                        {errorStates.events && "Error retrieving event information"}
-                        {errorStates.vendorEvents && "Error retrieving scheduled events"}
-                        {errorStates.pendingEvents && "Error retrieving pending applications"}
-                    </p>
-                    <Link href="/admin/vendors" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to My Shops
-                    </Link>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">

@@ -19,7 +19,7 @@ export class SupabaseEventOccurrenceVendorDAO implements EventOccurrenceVendorDA
             .eq('event_occurrence_id', eventOccurrenceId)
 
         if (error) { throw error }
-        return data?.map(row => row.Vendors) ?? []
+        return data?.map(row => row.Vendors as unknown as Tables<'Vendors'>) ?? []
     }
 
     async getEventOccurrencesByVendorId(vendorId: number): Promise<Tables<'Event_Occurrences'>[]> {
@@ -29,7 +29,7 @@ export class SupabaseEventOccurrenceVendorDAO implements EventOccurrenceVendorDA
             .eq('vendor_id', vendorId)
 
         if (error) { throw error }
-        return data?.map(row => row.Event_Occurrences) ?? []
+        return data?.map(row => row.Event_Occurrences as unknown as Tables<'Event_Occurrences'>) ?? []
     }
 
     async addEventOccurrenceVendor(eventOccurrenceVendor: TablesInsert<'Event_Occurrence_Vendors'>): Promise<Tables<'Event_Occurrence_Vendors'>> {

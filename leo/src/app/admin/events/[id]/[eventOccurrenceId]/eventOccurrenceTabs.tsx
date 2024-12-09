@@ -30,7 +30,7 @@ export async function EventOccurrenceTabs({eventVendors, pendingVendors, event}:
                         (<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {eventVendors.map(async (vendor) => {
                                 return (
-                                    <BasicCard>
+                                    <BasicCard key={vendor.id}>
                                         <CardContent>
                                             <Image src={vendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!} alt={vendor.description ?? "DESCRIPTION"} width={250} height={250} className="w-full h-48 object-cover" />
                                             <div className="p-4">
@@ -53,7 +53,7 @@ export async function EventOccurrenceTabs({eventVendors, pendingVendors, event}:
                         (<div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                             {pendingVendors.map(async (object) => {
                                 return (
-                                    <VendorApplicationButtonModal vendorApplication={object} event={event}>
+                                    <VendorApplicationButtonModal vendorApplication={object} event={event} key={object.application.id}>
                                         <BasicCard>
                                             <CardContent>
                                                 <Image src={object.vendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!} alt={object.vendor.description ?? "DESCRIPTION"} width={250} height={250} className="w-full h-48 object-cover" />

@@ -142,9 +142,6 @@ export class EventService {
     }
 
     async deleteEventOccurrence(id: number): Promise<void> {
-        // Get all vendors associated with this occurrence
-        const vendors = await this.eventVendorDAO.getVendorsByEventId(id);
-
         // Then delete the occurrence
         await this.eventOccurrenceDAO.deleteEventOccurrence(id);
     }

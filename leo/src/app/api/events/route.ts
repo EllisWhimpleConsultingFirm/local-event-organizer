@@ -9,7 +9,8 @@ export async function GET() {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO()
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
     const events = await eventService.getAllEvents();
 
     return NextResponse.json(events);

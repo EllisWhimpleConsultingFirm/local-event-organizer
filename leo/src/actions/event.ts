@@ -211,8 +211,6 @@ const UpdateEventOccurrenceFormSchema = z.object({
 
 export async function updateEventOccurrence(prevState: FormState, formData: FormData): Promise<FormState> {
     'use server'
-    const supabase = await createClient()
-    const { data } = await supabase.auth.getUser()
 
     const validatedFields = UpdateEventOccurrenceFormSchema.safeParse({
         id: formData.get('id'),
@@ -285,11 +283,11 @@ export async function getEvents() {
     try {
         return await eventService.getAllEvents();
     } catch (error) {
-        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -343,7 +341,12 @@ export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'E
     try {
         return await eventOccurrenceDao.getEventOccurrencesWithEvents()
     } catch (error) {
-        throw new Error(error)
+        if (error instanceof Error) {
+            console.error('Error getting event occurrences:', error.message);
+            throw new Error(error.message)
+        } else {
+            throw new Error('An unexpected error occurred while fetching event occurrences')
+        }
     }
 }
 
