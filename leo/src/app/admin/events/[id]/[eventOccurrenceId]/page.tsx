@@ -143,7 +143,7 @@ export default async function EventOccurrenceDetails({ params }: EventOccurrence
                     </div>
                 </div>
 
-                <div className="mt-8 bg-white rounded-xl shadow-lg overflow-hidden">
+                <div className="px-4 mt-8 bg-white rounded-xl shadow-lg overflow-hidden">
                     <EventOccurrenceTabs
                         eventVendors={eventVendors}
                         pendingVendors={pendingVendors}
