@@ -12,24 +12,24 @@ export class SupabaseEventOccurrenceVendorDAO implements EventOccurrenceVendorDA
         return data ?? []
     }
 
-    async getVendorsByEventOccurrenceId(eventOccurrenceId: number): Promise<Tables<'Event_Occurrence_Vendors'>[]> {
+    async getVendorsByEventOccurrenceId(eventOccurrenceId: number): Promise<Tables<'Vendors'>[]> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
-            .select('*, Vendors(*)')
+            .select('Vendors!inner(*)')
             .eq('event_occurrence_id', eventOccurrenceId)
 
         if (error) { throw error }
-        return data ?? []
+        return data?.map(row => row.Vendors) ?? []
     }
 
-    async getEventOccurrencesByVendorId(vendorId: number): Promise<Tables<'Event_Occurrence_Vendors'>[]> {
+    async getEventOccurrencesByVendorId(vendorId: number): Promise<Tables<'Event_Occurrences'>[]> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
-            .select('*, Event_Occurrences(*)')
+            .select('Event_Occurrences!inner(*)')
             .eq('vendor_id', vendorId)
 
         if (error) { throw error }
-        return data ?? []
+        return data?.map(row => row.Event_Occurrences) ?? []
     }
 
     async addEventOccurrenceVendor(eventOccurrenceVendor: TablesInsert<'Event_Occurrence_Vendors'>): Promise<Tables<'Event_Occurrence_Vendors'>> {

@@ -2,8 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { UpdateEventForm } from './updateEventForm';
-import {getEvent} from "@/actions/event";
+import {getEvent, getEventOccurrencesByEventId, getEventVendors} from "@/actions/event";
 import {DeleteEventForm} from "./deleteEventForm";
+import {EventTabs} from "@/app/admin/events/[id]/eventTabs";
+import {getEventPendingVendors} from "@/actions/applications";
 interface EventDetailsProps {
     params: {
         id: string;
@@ -15,6 +17,24 @@ export default async function EventDetails({ params }: EventDetailsProps) {
 
     if (!event || "error" in event) {
         return <div>Event not found</div>;
+    }
+
+    const eventOccurrences = await getEventOccurrencesByEventId(event.id)
+
+    const eventVendors = await getEventVendors(event.id)
+
+    const pendingVendors = await getEventPendingVendors(event.id)
+
+    if (!eventOccurrences || "error" in eventOccurrences) {
+        return <div>Error Retrieving the Event's Occurrences</div>;
+    }
+
+    if (!eventVendors || "error" in eventVendors) {
+        return <div>Vendors for this Event were not found</div>;
+    }
+
+    if (!pendingVendors || "error" in pendingVendors) {
+        return <div>Error Retrieving the pending applications for this Event</div>;
     }
 
     return (
@@ -47,6 +67,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                     </div>
                 </div>
             </div>
+            <EventTabs event={event} eventVendors={eventVendors} pendingVendors={pendingVendors} eventOccurrences={eventOccurrences}></EventTabs>
         </div>
     );
 }

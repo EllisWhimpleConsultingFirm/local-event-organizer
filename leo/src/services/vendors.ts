@@ -78,7 +78,7 @@ export class VendorService {
         await this.bucketDAO.deleteFile(filename);
     }
 
-    async getVendorEvents(vendorId: number): Promise<Tables<'Event_Vendors'>[]> {
+    async getVendorEvents(vendorId: number): Promise<Tables<'Events'>[]> {
         return await this.eventVendorDAO.getEventsByVendorId(vendorId);
     }
 

@@ -52,18 +52,15 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                 :
                 (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {vendors.map(async (vendor) => {
-                        const currentVendor = await getVendor(vendor.vendor_id)
-                        if (currentVendor && !("error" in currentVendor)) {
                             return (
-                                <Link href={`../../../vendors/${currentVendor.id}`} key={currentVendor.id}>
+                                <Link href={`../../../vendors/${vendor.id}`} key={vendor.id}>
                                     <Card
-                                        title={currentVendor.name}
-                                        description={currentVendor.description ?? "VENDOR DESCRIPTION"}
-                                        image={currentVendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                        title={vendor.name}
+                                        description={vendor.description ?? "VENDOR DESCRIPTION"}
+                                        image={vendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                                     />
                                 </Link>
                             );
-                        }
                     })}
                 </div>)}
             </div>

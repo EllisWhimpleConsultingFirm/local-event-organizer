@@ -12,6 +12,18 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
         return data ?? []
     }
 
+    async getEventOccurrencesWithEvents(): Promise<{eventOccurrence: Tables<'Event_Occurrences'>, event: Tables<'Events'>}[]> {
+        const { data, error } = await this.supabase
+            .from(this.TABLE)
+            .select('*, Events!inner(*)')
+
+        if (error) { throw error }
+        return data?.map(row => ({
+            eventOccurrence: row,
+            event: row.Events
+        })) ?? []
+    }
+
     async getEventOccurrence(id: number): Promise<Tables<'Event_Occurrences'> | null> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
