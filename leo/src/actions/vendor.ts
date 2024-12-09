@@ -195,9 +195,10 @@ export async function getVendors() {
         return await vendorService.getAllVendors();
     } catch (error) {
         if (error instanceof Error) {
-            return {error: error.message};
-        }
-        return {error: 'An unknown error occurred'};
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -213,9 +214,10 @@ export async function getAdminVendors(adminId: string) {
         return await vendorService.getAdminVendors(adminId);
     } catch (error) {
         if (error instanceof Error) {
-            return {error: error.message};
-        }
-        return {error: 'An unknown error occurred'};
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 

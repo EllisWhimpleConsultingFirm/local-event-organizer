@@ -304,11 +304,11 @@ export async function getAdminEvents(adminId: string) {
     try {
         return await eventService.getAdminEvents(adminId);
     } catch (error) {
-        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -325,11 +325,11 @@ export async function getEventOccurrences() {
     try {
         return await eventService.getAllEventOccurrences();
     } catch (error) {
-        // Error object is created, so we can check it in the components
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 

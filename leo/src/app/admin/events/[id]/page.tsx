@@ -6,6 +6,8 @@ import { UpdateEventForm } from './updateEventForm';
 import { getEvent, getEventOccurrencesByEventId, getEventVendors } from "@/actions/event";
 import { EventTabs } from "@/app/admin/events/[id]/eventTabs";
 import { getEventPendingVendors } from "@/actions/applications";
+import {createClient} from "@/utils/supabase/server";
+import {redirect} from "next/navigation";
 
 interface EventDetailsProps {
     params: {
@@ -14,21 +16,12 @@ interface EventDetailsProps {
 }
 
 export default async function EventDetails({ params }: EventDetailsProps) {
-    const event = await getEvent(parseInt(params.id, 10));
-
-    if (!event || "error" in event) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Event Not Found</h2>
-                    <Link href="/admin/events" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to Events
-                    </Link>
-                </div>
-            </div>
-        );
+    const supabase = await createClient()
+    const { data, error } = await supabase.auth.getUser()
+    if (error || !data?.user) {
+        redirect('/login')
     }
-
+    const event = await getEvent(parseInt(params.id, 10));
     const eventOccurrences = await getEventOccurrencesByEventId(event.id);
     const eventVendors = await getEventVendors(event.id);
     const pendingVendors = await getEventPendingVendors(event.id);
