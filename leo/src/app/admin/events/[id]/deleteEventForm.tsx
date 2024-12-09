@@ -27,7 +27,7 @@ export function DeleteEventForm({event}: UpdateEventFormProps) {
     const [state, action] = useFormState<FormState, FormData>(deleteEvent, {} as FormState);
 
     return (
-        <form action={action}>
+        <form className="flex flex-col gap-4" action={action}>
             <input type="hidden" name="id" value={event.id} />
             <DeleteButton />
             {state?.message && <p className="mt-2 text-sm text-green-600">{state.message}</p>}

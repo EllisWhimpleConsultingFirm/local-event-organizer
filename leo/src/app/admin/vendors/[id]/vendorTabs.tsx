@@ -17,7 +17,7 @@ interface vendorTabsProps {
 
 export async function VendorTabs({events, vendor, vendorEvents, pendingEvents}: vendorTabsProps) {
     return (
-        <Tabs defaultValue="event" className="w-full pt-5">
+        <Tabs defaultValue="events" className="w-full pt-5">
             <TabsList className="grid w-full grid-cols-3">
                 <TabsTrigger value="events">Scheduled Events</TabsTrigger>
                 <TabsTrigger value="pending">Pending Application</TabsTrigger>
