@@ -62,7 +62,8 @@ export async function addEvent(prevState: any, formData: FormData): Promise<Form
         const bucketDao = daoFactory.getBucketDAO();
         const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
         const eventVendorDao = daoFactory.getEventVendorDAO();
-        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+        const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
         const eventData: TablesInsert<'Events'> = {
             name: validatedFields.data.name,
@@ -90,7 +91,8 @@ export async function deleteEvent(state: any, formData: FormData) {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     const id = formData.get('id');
 
@@ -147,7 +149,8 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
         const bucketDao = daoFactory.getBucketDAO();
         const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
         const eventVendorDao = daoFactory.getEventVendorDAO();
-        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+        const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
         const eventData: TablesUpdate<'Events'> = {
             name: validatedFields.data.name,
@@ -174,7 +177,8 @@ export async function getEvent(id: number) {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getEvent(id);
@@ -191,7 +195,8 @@ export async function getEvents() {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getAllEvents();
@@ -211,7 +216,8 @@ export async function getAdminEvents(adminId: string) {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getAdminEvents(adminId);
@@ -231,7 +237,8 @@ export async function getEventOccurrences() {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getAllEventOccurrences();
@@ -251,7 +258,8 @@ export async function getEventOccurrencesWithEvent(filters?: Filters): Promise<{
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     console.log("fetching new events:", filters)
     try {
@@ -278,7 +286,8 @@ export async function getEventOccurrencesByEventId(id: number, filters?: Filters
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getEventOccurrencesByEventId(id, filters);
@@ -295,7 +304,8 @@ export async function getEventOccurrence(id: number) {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getEventOccurrence(id);
@@ -305,17 +315,18 @@ export async function getEventOccurrence(id: number) {
     }
 }
 
-export async function getEventVendors(eventOccurrenceId: number) {
+export async function getEventOccurrenceVendors(eventOccurrenceId: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao);
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
-        return await eventService.getEventVendors(eventOccurrenceId);
+        return await eventService.getEventOccurrenceVendors(eventOccurrenceId);
     } catch (error) {
         console.error((error as Error).message)
         return null

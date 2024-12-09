@@ -4,13 +4,15 @@ import { BucketDAO } from "@/DAO/interface/BucketDAO";
 import { EventOccurrenceDAO } from "@/DAO/interface/EventOccurrenceDAO";
 import { EventVendorDAO } from "@/DAO/interface/EventVendorDAO";
 import {Filters} from "@/utils/filter-models";
+import {EventOccurrenceVendorDAO} from "@/DAO/interface/EventOccurrenceVendorDAO";
 
 export class EventService {
     constructor(
         private eventsDAO: EventsDAO,
         private bucketDAO: BucketDAO,
         private eventOccurrenceDAO: EventOccurrenceDAO,
-        private eventVendorDAO: EventVendorDAO
+        private eventVendorDAO: EventVendorDAO,
+        private eventOccurrenceVendorDAO: EventOccurrenceVendorDAO,
     ) {}
 
     // Event Management Methods
@@ -170,6 +172,10 @@ export class EventService {
 
     async getEventVendors(eventId: number): Promise<Tables<'Event_Vendors'>[]> {
         return await this.eventVendorDAO.getVendorsByEventId(eventId)
+    }
+
+    async getEventOccurrenceVendors(eventOccurrenceId: number): Promise<Tables<'Event_Occurrence_Vendors'>[]> {
+        return await this.eventOccurrenceVendorDAO.getVendorsByEventOccurrenceId(eventOccurrenceId)
     }
 
     async updateVendorInEvent(

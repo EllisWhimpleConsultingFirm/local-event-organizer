@@ -1,4 +1,4 @@
-import { getEvent, getEventOccurrence, getEventVendors } from "@/actions/event";
+import { getEvent, getEventOccurrence, getEventOccurrenceVendors } from "@/actions/event";
 import { getVendor } from "@/actions/vendor";
 import Image from 'next/image';
 import Link from "next/link";
@@ -27,7 +27,7 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
         );
     }
 
-    const vendors = await getEventVendors(eventOccurrence.id)
+    const vendors = await getEventOccurrenceVendors(eventOccurrence.id)
 
     return (
         <>
