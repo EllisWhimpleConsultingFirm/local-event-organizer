@@ -63,14 +63,6 @@ export class VendorService {
     async deleteVendor(id: number): Promise<void> {
         const vendor = await this.vendorDAO.getVendorById(id);
 
-        // Get all event associations
-        const eventAssociations = await this.eventVendorDAO.getEventsByVendorId(id);
-
-        // Remove all event associations
-        for (const assoc of eventAssociations) {
-            await this.eventVendorDAO.deleteEventVendor(id, assoc.event_occurence_id);
-        }
-
         // Delete the vendor
         await this.vendorDAO.deleteVendor(id);
 
@@ -86,18 +78,18 @@ export class VendorService {
         await this.bucketDAO.deleteFile(filename);
     }
 
-    async getVendorEvents(vendorId: number): Promise<Tables<'Event_Vendors'>[]> {
+    async getVendorEvents(vendorId: number): Promise<Tables<'Events'>[]> {
         return await this.eventVendorDAO.getEventsByVendorId(vendorId);
     }
 
     async addVendorToEvent(
         vendorId: number,
-        eventOccurrenceId: number,
+        eventId: number,
         boothNumber: number
     ): Promise<Tables<'Event_Vendors'>> {
         return await this.eventVendorDAO.addEventVendor({
             vendor_id: vendorId,
-            event_occurence_id: eventOccurrenceId,
+            event_id: eventId,
             booth_number: boothNumber
         });
     }

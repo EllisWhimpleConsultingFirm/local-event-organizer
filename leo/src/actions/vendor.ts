@@ -2,7 +2,6 @@
 import {DAOFactory} from "@/DAO/interface/Factory";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {VendorService} from "@/services/vendors";
-import { getEventOccurrence} from "@/actions/event";
 import {z} from "zod";
 import {TablesInsert, TablesUpdate} from "../../types/database.types";
 import {revalidatePath} from "next/cache";
@@ -173,9 +172,10 @@ export async function getVendor(id: number) {
         return await vendorService.getVendor(id);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -191,9 +191,10 @@ export async function getVendors() {
         return await vendorService.getAllVendors();
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -209,13 +210,14 @@ export async function getAdminVendors(adminId: string) {
         return await vendorService.getAdminVendors(adminId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
-export async function getVendorEventOccurrences(vendorId: number) {
+export async function getVendorEvents(vendorId: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const vendorDAO = daoFactory.getVendorDAO();
@@ -224,28 +226,12 @@ export async function getVendorEventOccurrences(vendorId: number) {
     const vendorService = new VendorService(vendorDAO, bucketDao, eventVendorDao);
 
     try {
-        const vendorEvents = await vendorService.getVendorEvents(vendorId);
-        const eventPromises = vendorEvents.map(async (vendorEvent) => {
-            const currentEvent = await getEventOccurrence(vendorEvent.event_occurence_id);
-            if (currentEvent && !("error" in currentEvent)) {
-                return currentEvent;
-            }
-            return null;
-        });
-
-        // Wait for all promises to resolve
-        const resolvedEvents = await Promise.all(eventPromises);
-
-        // Filter out any null values
-        return resolvedEvents.map((event) => {
-            if (event && !("error" in event)) {
-                return event
-            }
-        });
+        return await vendorService.getVendorEvents(vendorId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }

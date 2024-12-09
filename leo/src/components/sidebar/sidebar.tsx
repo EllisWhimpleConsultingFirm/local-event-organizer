@@ -2,14 +2,13 @@
 
 import React, {useEffect, useState} from 'react';
 import Link from 'next/link';
-import {Calendar, ChevronLeft, ChevronRight, Settings, Users} from 'lucide-react';
+import { ChevronLeft, ChevronRight, Settings} from 'lucide-react';
 import {useSidebar} from './sidebarContext';
 import './sidebar.css'
 import Image from "next/image";
 import {Solway} from 'next/font/google'
 import homeIcon from '../../public/home-icon.svg'
 import vendorIcon from '../../public/vendors-icon.svg'
-import dashIcon from '../../public/dash.png'
 import eventIcon from '../../public/events.svg'
 import loginIcon from '../../public/briefcase-icon.svg'
 import logoIcon from '../../public/logo.svg'

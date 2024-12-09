@@ -4,7 +4,7 @@ import Link from "next/link";
 import React from "react";
 import {Tables} from "../../../../types/database.types";
 import {Card} from "@/components/util/card";
-import {getVendor, getVendorEventOccurrences} from "@/actions/vendor";
+import {getVendor, getVendorEvents} from "@/actions/vendor";
 
 interface VendorDetailsProps {
     params: {
@@ -15,14 +15,7 @@ const defaultImage = process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!
 
 export default async function VendorDetails({ params }: VendorDetailsProps) {
     const vendor = await getVendor(parseInt(params.id, 10))
-
-    if (!vendor || "error" in vendor) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Vendor not found</div>
-        );
-    }
-
-    const eventOccurrences = await getVendorEventOccurrences(vendor.id)
+    const eventOccurrences = await getVendorEvents(vendor.id)
 
     const eventArray: { event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] = [];
 
@@ -34,11 +27,7 @@ export default async function VendorDetails({ params }: VendorDetailsProps) {
         try {
             for (const occurrence of eventOccurrences) {
                 if (!occurrence || !occurrence.event_id) continue; // Skip invalid occurrences
-
                 const event = await getEvent(occurrence.event_id);
-                if (!event || 'error' in event) {
-                    throw new Error("Error retrieving events");
-                }
                 eventArray.push({ eventOccurrence: occurrence, event });
             }
         } catch (e) {

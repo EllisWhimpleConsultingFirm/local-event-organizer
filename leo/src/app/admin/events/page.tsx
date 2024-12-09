@@ -6,14 +6,6 @@ import {createClient} from "@/utils/supabase/server";
 import {redirect} from "next/navigation";
 import {getAdminEvents} from "@/actions/event";
 
-async function fetchEvents() {
-    const response = await fetch('/api/events');
-    if (!response.ok) {
-        throw new Error('Failed to fetch events');
-    }
-    return response.json();
-}
-
 export default async function EventsManagement() {
     const supabase = await createClient()
     const { data, error } = await supabase.auth.getUser()
@@ -34,7 +26,7 @@ export default async function EventsManagement() {
             :
             (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {events.map((currentEvent) => (
-                    <Link href={`/admin/events/${currentEvent.id}`} className="block">
+                    <Link href={`/admin/events/${currentEvent.id}`} key={currentEvent.id} className="block">
                         <Card
                             title={currentEvent.name || ""}
                             description={currentEvent.description || ""}

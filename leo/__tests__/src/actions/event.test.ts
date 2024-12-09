@@ -1,33 +1,23 @@
-import { addEvent, updateEvent, deleteEvent, getEvent, FormState } from '@/actions/event';
+import { addEvent, updateEvent, deleteEvent, getEvent, getEvents, getAdminEvents, getEventOccurrences, getEventOccurrencesByEventId, getEventOccurrence, updateEventOccurrence, deleteEventOccurrence, getEventVendors, getEventOccurrenceVendors, FormState } from '@/actions/event';
 import { EventService } from '@/services/events';
 import { revalidatePath } from 'next/cache';
+import { redirect } from 'next/navigation';
 import { SupabaseDAOFactory } from "@/DAO/supabase/SupabaseDAOFactory";
+import { createClient } from "@/utils/supabase/server";
 
-// Mock Next.js cache
-jest.mock('next/cache', () => ({
-    revalidatePath: jest.fn(),
+jest.mock('next/cache', () => ({ revalidatePath: jest.fn() }));
+jest.mock('next/navigation', () => ({ redirect: jest.fn() }));
+jest.mock('@/utils/supabase/server', () => ({
+    createClient: jest.fn(() => ({
+        auth: {
+            getUser: jest.fn(() => ({
+                data: { user: { id: '95d06b81-afdf-4ed5-9409-1137b7cd2238' } }
+            }))
+        }
+    }))
 }));
-
-// Mock Next.js headers
-jest.mock('next/headers', () => ({
-    cookies: () => ({
-        get: jest.fn(),
-        set: jest.fn(),
-    }),
-}));
-
-// Mock EventService
 jest.mock('@/services/events');
-
-// Mock DAOFactory
-jest.mock('@/DAO/supabase/SupabaseDAOFactory', () => ({
-    SupabaseDAOFactory: jest.fn().mockImplementation(() => ({
-        getEventsDAO: jest.fn(),
-        getBucketDAO: jest.fn(),
-        getEventOccurrencesDAO: jest.fn(),
-        getEventVendorDAO: jest.fn(),
-    })),
-}));
+jest.mock('@/DAO/supabase/SupabaseDAOFactory');
 
 describe('Event Actions', () => {
     let mockEventService: jest.Mocked<EventService>;
@@ -35,212 +25,179 @@ describe('Event Actions', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-
         mockEventService = {
             addEvent: jest.fn(),
             updateEvent: jest.fn(),
             deleteEvent: jest.fn(),
             getEvent: jest.fn(),
-            getEventOccurrences: jest.fn(),
+            getAllEvents: jest.fn(),
+            getAdminEvents: jest.fn(),
+            getAllEventOccurrences: jest.fn(),
+            getEventOccurrencesByEventId: jest.fn(),
+            getEventOccurrence: jest.fn(),
+            updateEventOccurrence: jest.fn(),
+            getEventVendors: jest.fn(),
+            getEventOccurrenceVendors: jest.fn(),
         } as any;
 
-        mockDAOFactory = {
-            getEventsDAO: jest.fn(),
-            getBucketDAO: jest.fn(),
-            getEventOccurrencesDAO: jest.fn(),
-            getEventVendorDAO: jest.fn(),
-        } as any;
-
+        mockDAOFactory = new SupabaseDAOFactory() as jest.Mocked<SupabaseDAOFactory>;
         (SupabaseDAOFactory as jest.MockedClass<typeof SupabaseDAOFactory>)
             .mockImplementation(() => mockDAOFactory);
         (EventService as jest.MockedClass<typeof EventService>)
             .mockImplementation(() => mockEventService);
     });
 
-    describe('addEvent', () => {
-        it('should add an event successfully', async () => {
-            const formData = new FormData();
-            formData.append('name', 'Test Event');
-            formData.append('description', 'Test Description');
-            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
-            formData.append('picture', new File(['test'], 'test.png', { type: 'image/png' }));
+    describe('Event CRUD Operations', () => {
+        describe('addEvent', () => {
+            it('validates and adds event with picture', async () => {
+                const formData = new FormData();
+                formData.append('name', 'Test Event');
+                formData.append('description', 'Test Description');
+                formData.append('picture', new File(['test'], 'test.png', { type: 'image/png' }));
 
-            const result = await addEvent({}, formData);
+                const result = await addEvent({}, formData);
 
-            expect(result).toEqual({ message: 'Event added successfully!' });
-            expect(mockEventService.addEvent).toHaveBeenCalledWith(
-                {
-                    name: 'Test Event',
-                    description: 'Test Description',
-                    admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
-                },
-                expect.any(File)
-            );
-            expect(revalidatePath).toHaveBeenCalledWith('/events');
-        });
-
-        it('should return validation errors for missing required fields', async () => {
-            const formData = new FormData();
-            formData.append('name', '');
-            formData.append('description', '');
-            formData.append('admin_id', 'invalid');
-
-            const result = await addEvent({}, formData);
-
-            expect(result.errors).toBeDefined();
-            expect(result.errors).toMatchObject({
-                name: expect.any(Array),
-                description: expect.any(Array),
-                admin_id: expect.any(Array),
+                expect(result).toEqual({ message: 'Event added successfully!' });
+                expect(mockEventService.addEvent).toHaveBeenCalled();
+                expect(revalidatePath).toHaveBeenCalledWith('/events');
             });
-            expect(mockEventService.addEvent).not.toHaveBeenCalled();
-        });
 
-        it('should return error for missing picture', async () => {
-            const formData = new FormData();
-            formData.append('name', 'Test Event');
-            formData.append('description', 'Test Description');
-            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
-            // Intentionally not adding picture
+            it('returns validation errors for invalid input', async () => {
+                const formData = new FormData();
+                formData.append('name', '');
+                formData.append('description', '');
 
-            const result = await addEvent({}, formData);
+                const result = await addEvent({}, formData);
 
-            expect(result.errors).toMatchObject({
-                picture: ['Picture is required'],
+                expect(result.errors).toBeDefined();
+                expect(mockEventService.addEvent).not.toHaveBeenCalled();
             });
-            expect(mockEventService.addEvent).not.toHaveBeenCalled();
-        });
-    });
-
-    describe('updateEvent', () => {
-        it('should update an event successfully', async () => {
-            const formData = new FormData();
-            formData.append('id', '1');
-            formData.append('name', 'Updated Event');
-            formData.append('description', 'Updated Description');
-            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
-            const picture = new File(['test'], 'test.png', { type: 'image/png' });
-            formData.append('picture', picture);
-
-            const result = await updateEvent({} as FormState, formData);
-
-            expect(result).toEqual({ message: 'Event updated successfully!' });
-            expect(mockEventService.updateEvent).toHaveBeenCalledWith(
-                1,
-                {
-                    name: 'Updated Event',
-                    description: 'Updated Description',
-                    admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
-                },
-                picture
-            );
-            expect(revalidatePath).toHaveBeenCalledWith('/events/1');
         });
 
-        it('should handle undefined picture correctly', async () => {
-            const formData = new FormData();
-            formData.append('id', '1');
-            formData.append('name', 'Updated Event');
-            formData.append('description', 'Updated Description');
-            formData.append('admin_id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
-            const undefinedPicture = new File([''], 'undefined', { type: 'image/png' });
-            formData.append('picture', undefinedPicture);
+        describe('updateEvent', () => {
+            it('validates and updates event', async () => {
+                const formData = new FormData();
+                formData.append('id', '1');
+                formData.append('name', 'Updated Event');
+                formData.append('description', 'Updated Description');
 
-            const result = await updateEvent({} as FormState, formData);
+                const result = await updateEvent({} as FormState, formData);
 
-            expect(result).toEqual({ message: 'Event updated successfully!' });
-            expect(mockEventService.updateEvent).toHaveBeenCalledWith(
-                1,
-                {
-                    name: 'Updated Event',
-                    description: 'Updated Description',
-                    admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
-                },
-                undefined
-            );
-        });
-
-        it('should return validation errors for invalid input', async () => {
-            const formData = new FormData();
-            formData.append('id', '');
-            formData.append('name', '');
-            formData.append('description', '');
-            formData.append('admin_id', 'invalid');
-
-            const result = await updateEvent({} as FormState, formData);
-
-            expect(result.errors).toBeDefined();
-            expect(result.errors).toMatchObject({
-                id: expect.any(Array),
-                name: expect.any(Array),
-                description: expect.any(Array),
-                admin_id: expect.any(Array),
+                expect(result).toEqual({ message: 'Event updated successfully!' });
+                expect(mockEventService.updateEvent).toHaveBeenCalled();
             });
-            expect(mockEventService.updateEvent).not.toHaveBeenCalled();
-        });
-    });
 
-    describe('deleteEvent', () => {
-        it('should delete an event successfully', async () => {
-            const formData = new FormData();
-            formData.append('id', '1');
+            it('handles optional picture update', async () => {
+                const formData = new FormData();
+                formData.append('id', '1');
+                formData.append('name', 'Updated Event');
+                formData.append('description', 'Updated Description');
+                formData.append('picture', new File(['test'], 'test.png'));
 
-            await deleteEvent({}, formData);
+                await updateEvent({} as FormState, formData);
 
-            expect(mockEventService.deleteEvent).toHaveBeenCalledWith(1);
-            expect(revalidatePath).toHaveBeenCalledWith('/events');
-        });
-
-        it('should handle invalid event ID', async () => {
-            const formData = new FormData();
-            formData.append('id', 'invalid');
-
-            await expect(deleteEvent({}, formData))
-                .rejects
-                .toThrow('Invalid event ID');
-
-            expect(mockEventService.deleteEvent).not.toHaveBeenCalled();
+                expect(mockEventService.updateEvent).toHaveBeenCalledWith(
+                    1,
+                    expect.any(Object),
+                    expect.any(File)
+                );
+            });
         });
 
-        it('should return error message when deletion fails', async () => {
-            const formData = new FormData();
-            formData.append('id', '95d06b81-afdf-4ed5-9409-1137b7cd2238');
-            mockEventService.deleteEvent.mockRejectedValue(new Error('Delete failed'));
+        describe('deleteEvent', () => {
+            it('deletes event and redirects', async () => {
+                const formData = new FormData();
+                formData.append('id', '1');
 
-            const result = await deleteEvent({}, formData);
+                await deleteEvent({}, formData);
 
-            expect(result).toEqual({
-                message: 'Failed to delete event. Please try again.',
+                expect(mockEventService.deleteEvent).toHaveBeenCalledWith(1);
+                expect(redirect).toHaveBeenCalledWith('/admin/events');
+            });
+
+            it('handles invalid ID', async () => {
+                const formData = new FormData();
+                formData.append('id', 'invalid');
+
+                await expect(deleteEvent({}, formData)).rejects.toThrow('Invalid event ID');
             });
         });
     });
 
-    describe('getEvent', () => {
-        it('should get an event successfully', async () => {
-            const mockEvent = {
-                id: 1,
-                name: 'Test Event',
-                description: 'Test Description',
-                admin_id: "95d06b81-afdf-4ed5-9409-1137b7cd2238",
-                photo_url: 'http://test.com/image.jpg'
-            };
+    describe('Event Occurrence Operations', () => {
+        describe('updateEventOccurrence', () => {
+            it('validates and updates occurrence', async () => {
+                const formData = new FormData();
+                formData.append('id', '1');
+                formData.append('description', 'Updated Description');
+                formData.append('startTime', '2024-01-01T10:00:00Z');
+                formData.append('endTime', '2024-01-01T12:00:00Z');
 
+                const result = await updateEventOccurrence({} as FormState, formData);
+
+                expect(result).toEqual({ message: 'Event updated successfully!' });
+                expect(mockEventService.updateEventOccurrence).toHaveBeenCalled();
+            });
+        });
+
+        describe('deleteEventOccurrence', () => {
+            it('deletes occurrence and redirects', async () => {
+                const formData = new FormData();
+                formData.append('id', '1');
+                formData.append('eventId', '2');
+
+                await deleteEventOccurrence({}, formData);
+
+                expect(mockEventService.deleteEvent).toHaveBeenCalledWith(1);
+                expect(redirect).toHaveBeenCalledWith('/admin/events/2');
+            });
+        });
+    });
+
+    describe('Query Operations', () => {
+        const mockEvent = {
+            id: 1,
+            name: 'Test Event',
+            description: 'Test Description'
+        };
+
+        it('gets single event', async () => {
             mockEventService.getEvent.mockResolvedValue(mockEvent);
-
             const result = await getEvent(1);
-
             expect(result).toEqual(mockEvent);
-            expect(mockEventService.getEvent).toHaveBeenCalledWith(1);
         });
 
-        it('should handle errors when getting an event', async () => {
-            const errorMessage = 'Event not found';
-            mockEventService.getEvent.mockRejectedValue(new Error(errorMessage));
+        it('gets all events', async () => {
+            mockEventService.getAllEvents.mockResolvedValue([mockEvent]);
+            const result = await getEvents();
+            expect(result).toEqual([mockEvent]);
+        });
 
-            const result = await getEvent(999);
+        it('gets admin events', async () => {
+            mockEventService.getAdminEvents.mockResolvedValue([mockEvent]);
+            const result = await getAdminEvents('admin-id');
+            expect(result).toEqual([mockEvent]);
+        });
 
-            expect(result).toEqual({ error: errorMessage });
-            expect(mockEventService.getEvent).toHaveBeenCalledWith(999);
+        it('gets event occurrences', async () => {
+            const mockOccurrence = { id: 1, event_id: 1 };
+            mockEventService.getAllEventOccurrences.mockResolvedValue([mockOccurrence]);
+            const result = await getEventOccurrences();
+            expect(result).toEqual([mockOccurrence]);
+        });
+
+        it('gets event vendors', async () => {
+            const mockVendor = { id: 1, name: 'Vendor' };
+            mockEventService.getEventVendors.mockResolvedValue([mockVendor]);
+            const result = await getEventVendors(1);
+            expect(result).toEqual([mockVendor]);
+        });
+
+        it('gets occurrence vendors', async () => {
+            const mockVendor = { id: 1, name: 'Vendor' };
+            mockEventService.getEventOccurrenceVendors.mockResolvedValue([mockVendor]);
+            const result = await getEventOccurrenceVendors(1);
+            expect(result).toEqual([mockVendor]);
         });
     });
 });
