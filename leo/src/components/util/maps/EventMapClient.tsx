@@ -23,7 +23,6 @@ export const EventMapClient = <T extends MapOption>({ markers, addresses, apiKey
         if (mapRef.current) {
             mapRef.current.panTo({ lat: event.latitude, lng: event.longitude });
             mapRef.current.setZoom(15);
-
         }
     };
 

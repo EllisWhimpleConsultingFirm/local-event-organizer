@@ -18,12 +18,12 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
 
     if (!eventOccurrence || "error" in eventOccurrence) {
         return (
-            <div className="text-center text-2xl text-red-600 mt-10">{ `Event Occurrence not found: ${eventOccurrence.error}` } </div>
+            <div className="text-center text-2xl text-red-600 mt-10">Event Occurrence not found</div>
         );
     }
     else if (!event || "error" in event) {
         return (
-            <div className="text-center text-2xl text-red-600 mt-10">{`Event Associated with the Event Occurrence was not found ${event.error}`}</div>
+            <div className="text-center text-2xl text-red-600 mt-10">Event Associated with the Event Occurrence was not found</div>
         );
     }
 
@@ -47,25 +47,25 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                     <h1 className="text-xl font-bold text-gray-800">Vendors </h1>
                 </div>
                 {!vendors || "error" in vendors || vendors.length === 0 ? (
-                    <div className="text-center text-2xl text-red-600 mt-10">No Vendors found</div>
-                )
-                :
-                (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {vendors.map(async (vendor) => {
-                        const currentVendor = await getVendor(vendor.vendor_id)
-                        if (currentVendor && !("error" in currentVendor)) {
-                            return (
-                                <Link href={`../../../vendors/${currentVendor.id}`} key={currentVendor.id}>
-                                    <Card
-                                        title={currentVendor.name}
-                                        description={currentVendor.description ?? "VENDOR DESCRIPTION"}
-                                        image={currentVendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
-                                    />
-                                </Link>
-                            );
-                        }
-                    })}
-                </div>)}
+                        <div className="text-center text-2xl text-red-600 mt-10">No Vendors found</div>
+                    )
+                    :
+                    (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {vendors.map(async (vendor) => {
+                            const currentVendor = await getVendor(vendor.vendor_id)
+                            if (currentVendor && !("error" in currentVendor)) {
+                                return (
+                                    <Link href={`../../../vendors/${currentVendor.id}`} key={currentVendor.id}>
+                                        <Card
+                                            title={currentVendor.name}
+                                            description={currentVendor.description ?? "VENDOR DESCRIPTION"}
+                                            image={currentVendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                        />
+                                    </Link>
+                                );
+                            }
+                        })}
+                    </div>)}
             </div>
         </>
     );

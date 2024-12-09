@@ -40,6 +40,7 @@ export async function addVendor(prevState: FormState, formData: FormData): Promi
 
     // If form validation fails, return errors early
     if (!validatedFields.success) {
+        console.error(validatedFields.error);
         return {
             errors: validatedFields.error.flatten().fieldErrors,
         };
@@ -74,6 +75,7 @@ export async function addVendor(prevState: FormState, formData: FormData): Promi
 
         return {message: "Vendor added successfully!"};
     } catch (error) {
+        console.error(error);
         return {
             message: error instanceof Error ? error.message : "Failed to add vendor. Please try again.",
         };
