@@ -27,7 +27,7 @@ export function DeleteEventOccurrenceForm({eventOccurrence}: DeleteEventOccurren
     const [state, action] = useFormState<FormState, FormData>(deleteEventOccurrence, {} as FormState);
 
     return (
-        <form action={action}>
+        <form className="flex flex-col gap-4 pt-4" action={action}>
             <input type="hidden" name="id" value={eventOccurrence.id} />
             <input type="hidden" name="eventId" value={eventOccurrence.id} />
             <DeleteButton />
