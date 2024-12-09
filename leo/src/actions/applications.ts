@@ -326,7 +326,7 @@ export async function deleteEventOccurrenceApplication(state: ApplicationFormSta
     redirect("/occurrence-applications")
 }
 
-export async function updateEventOccurrenceApplication(prevState: ApplicationFormState, formData: FormData): Promise<OccurrenceApplicationFormState> {
+export async function updateEventOccurrenceApplication(prevState: ApplicationFormState, formData: FormData): Promise<ApplicationFormState> {
     'use server'
 
     const validatedFields = OccurrenceApplicationFormSchema.safeParse({
@@ -421,9 +421,10 @@ export async function getVendorPendingEvents(vendorId: number) {
         return {eventApplications, eventOccurrenceApplications}
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -436,9 +437,10 @@ export async function getEventPendingVendors(eventId: number) {
         return await eventApplicationDao.getPendingEventsApplications(eventId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -451,8 +453,9 @@ export async function getEventOccurrencePendingVendors(eventOccurrenceId: number
         return await eventOccurrenceApplicationDao.getPendingEventsApplications(eventOccurrenceId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }

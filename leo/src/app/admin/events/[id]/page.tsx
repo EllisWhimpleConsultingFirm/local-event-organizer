@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
 import { UpdateEventForm } from './updateEventForm';
 import { getEvent, getEventOccurrencesByEventId, getEventVendors } from "@/actions/event";
-import { DeleteEventForm } from "./deleteEventForm";
 import { EventTabs } from "@/app/admin/events/[id]/eventTabs";
 import { getEventPendingVendors } from "@/actions/applications";
 
@@ -33,30 +32,6 @@ export default async function EventDetails({ params }: EventDetailsProps) {
     const eventOccurrences = await getEventOccurrencesByEventId(event.id);
     const eventVendors = await getEventVendors(event.id);
     const pendingVendors = await getEventPendingVendors(event.id);
-
-    const errorStates = {
-        occurrences: !eventOccurrences || "error" in eventOccurrences,
-        vendors: !eventVendors || "error" in eventVendors,
-        pending: !pendingVendors || "error" in pendingVendors
-    };
-
-    if (Object.values(errorStates).some(error => error)) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Error Loading Data</h2>
-                    <p className="text-gray-600 mb-4">
-                        {errorStates.occurrences && "Error retrieving event occurrences"}
-                        {errorStates.vendors && "Error retrieving event vendors"}
-                        {errorStates.pending && "Error retrieving pending applications"}
-                    </p>
-                    <Link href="/admin/events" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to Events
-                    </Link>
-                </div>
-            </div>
-        );
-    }
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">

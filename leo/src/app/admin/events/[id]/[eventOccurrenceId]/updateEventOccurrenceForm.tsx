@@ -3,10 +3,9 @@
 import React from 'react';
 import { useFormState, useFormStatus } from 'react-dom';
 import { FormState, updateEventOccurrence } from '@/actions/event';
-import { Tables } from "../../../../../../types/supabase";
 import { Clock } from 'lucide-react';
-import {DeleteEventForm} from "@/app/admin/events/[id]/deleteEventForm";
 import {DeleteEventOccurrenceForm} from "@/app/admin/events/[id]/[eventOccurrenceId]/deleteEventOccurrenceForm";
+import {Tables} from "../../../../../../types/supabase";
 
 function SubmitButton() {
     const { pending } = useFormStatus();
@@ -22,6 +21,10 @@ function SubmitButton() {
             {pending ? 'Updating...' : 'Update Event Occurrence'}
         </button>
     );
+}
+
+interface UpdateEventOccurrenceFormProps {
+    eventOccurrence: Tables<'Event_Occurrences'>
 }
 
 export function UpdateEventOccurrenceForm({ eventOccurrence }: UpdateEventOccurrenceFormProps) {

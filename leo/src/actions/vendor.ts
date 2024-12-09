@@ -2,7 +2,6 @@
 import {DAOFactory} from "@/DAO/interface/Factory";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {VendorService} from "@/services/vendors";
-import {getEvent} from "@/actions/event";
 import {z} from "zod";
 import {TablesInsert, TablesUpdate} from "../../types/database.types";
 import {revalidatePath} from "next/cache";
@@ -173,9 +172,10 @@ export async function getVendor(id: number) {
         return await vendorService.getVendor(id);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -227,8 +227,9 @@ export async function getVendorEvents(vendorId: number) {
         return await vendorService.getVendorEvents(vendorId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }

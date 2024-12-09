@@ -55,28 +55,6 @@ export default async function EventOccurrenceDetails({ params }: EventOccurrence
     const eventVendors = await getEventOccurrenceVendors(eventOccurrenceId)
     const pendingVendors = await getEventOccurrencePendingVendors(eventOccurrenceId)
 
-    const errorStates = {
-        vendors: !eventVendors || "error" in eventVendors,
-        pending: !pendingVendors || "error" in pendingVendors
-    };
-
-    if (Object.values(errorStates).some(error => error)) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Error Loading Data</h2>
-                    <p className="text-gray-600 mb-4">
-                        {errorStates.vendors && "Error retrieving event vendors"}
-                        {errorStates.pending && "Error retrieving pending applications"}
-                    </p>
-                    <Link href={`/admin/events/${eventId}`} className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to Event
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="container mx-auto px-4">

@@ -58,6 +58,11 @@ export function VendorApplicationInterface({vendorApplication, event} : VendorAp
                     <input type="hidden" name="message" value={vendorApplication.application.message ?? "Message"} />
                     <input type="hidden" name="status" value="ACCEPTED" />
                     <AcceptButton />
+                    {acceptState?.message && (
+                        <p className="text-sm text-green-600 bg-green-50 p-4 rounded-lg">
+                            {acceptState.message}
+                        </p>
+                    )}
                 </form>
                 <form className="w-1/2 p-2" action={rejectAction}>
                     {"event_occurrence_id" in vendorApplication.application && (
@@ -68,6 +73,11 @@ export function VendorApplicationInterface({vendorApplication, event} : VendorAp
                     <input type="hidden" name="message" value={vendorApplication.application.message ?? "Message"} />
                     <input type="hidden" name="status" value="REJECTED" />
                     <RejectButton />
+                    {rejectState?.message && (
+                        <p className="text-sm text-green-600 bg-green-50 p-4 rounded-lg">
+                            {rejectState.message}
+                        </p>
+                    )}
                 </form>
             </div>
         </div>
