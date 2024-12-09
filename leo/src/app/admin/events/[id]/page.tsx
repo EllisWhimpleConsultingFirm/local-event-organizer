@@ -2,8 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { UpdateEventForm } from './updateEventForm';
-import {getEvent} from "@/actions/event";
+import {getEvent, getEventOccurrences, getEventOccurrencesByEventId} from "@/actions/event";
 import {DeleteEventForm} from "./deleteEventForm";
+import {Car} from "lucide-react";
+import {Card} from "@/components/util/card";
 interface EventDetailsProps {
     params: {
         id: string;
@@ -12,6 +14,7 @@ interface EventDetailsProps {
 
 export default async function EventDetails({ params }: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));
+    const eventOccurrences = event?.id && await getEventOccurrencesByEventId(event.id);
 
     if (!event || "error" in event) {
         return <div>Event not found</div>;
@@ -46,6 +49,14 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                         <DeleteEventForm event={event} />
                     </div>
                 </div>
+            </div>
+            <h2 className="text-2xl font-bold mb-4 py-8">Event Occurrences</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {eventOccurrences && eventOccurrences.length > 0 && (
+                    eventOccurrences.map((occurrence) => {
+                        const startTime = new Date(occurrence.start_time);
+                        return <Card title={occurrence.description ?? "No Description"} description={startTime.toDateString()} />
+                }))}
             </div>
         </div>
     );

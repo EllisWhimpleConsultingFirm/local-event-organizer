@@ -13,7 +13,7 @@ type EventCardProps = {
 }
 
 export const Card = ({ image, title, description, badges = [] }: EventCardProps) => (
-    <div className="bg-white rounded-lg overflow-hidden shadow-md">
+    <div className="bg-superlightgr rounded-lg overflow-hidden shadow-md">
         {image && (
             <Image src={image} alt={title} width={250} height={250} className="w-full h-48 object-cover" />
         )}

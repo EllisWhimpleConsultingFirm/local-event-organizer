@@ -9,6 +9,7 @@ import {DeleteVendorForm} from "@/app/admin/vendors/[id]/deleteEventForm";
 import { getEvents} from "@/actions/event";
 import {VendorTabs} from "@/app/admin/vendors/[id]/vendorTabs";
 import {getVendorPendingEvents} from "@/actions/applications";
+import {Card} from "@/components/util/card";
 
 interface EventDetailsProps {
     params: {
@@ -31,7 +32,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
         return <div>Error Retrieving Vendor Information</div>;
     }
 
-    const vendorEvents = await getVendorEvents(vendor.id)
+    let vendorEvents = await getVendorEvents(vendor.id)
 
     const pendingVendorEvents = await getVendorPendingEvents(vendor.id)
 
@@ -85,21 +86,21 @@ export default async function EventDetails({ params }: EventDetailsProps) {
             <div className="p-10">
                 <h2 className="text-2xl font-bold mb-4 text-center">Apply to Events</h2>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                    {/*{eventArray.map(async ({event, eventOccurrence}) => {*/}
-                    {/*    if (event.name) {*/}
-                    {/*        return (*/}
-                    {/*            <Link href={`/events/${event.id}/eventOccurrence/${eventOccurrence.id}`} key={eventOccurrence.id}>*/}
-                    {/*                <Card*/}
-                    {/*                    key={event.id}*/}
-                    {/*                    title={event.name}*/}
-                    {/*                    description={eventOccurrence.description ?? event.description ?? "No Description"}*/}
-                    {/*                    image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}*/}
-                    {/*                />*/}
-                    {/*            </Link>*/}
-                    {/*        );*/}
-                    {/*    }*/}
-                    {/*    return null;*/}
-                    {/*})}*/}
+                    {events.map(async (event) => {
+                        if (event.name) {
+                            return (
+                                <Link href={`/events/${event.id}`} key={event.id}>
+                                    <Card
+                                        key={event.id}
+                                        title={event.name}
+                                        description={event.description ?? "No Description"}
+                                        image={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                    />
+                                </Link>
+                            );
+                        }
+                        return null;
+                    })}
                 </div>
             </div>
             <VendorTabs vendor={vendor} vendorEvents={vendorEvents} events={events} pendingEvents={pendingVendorEvents}></VendorTabs>
