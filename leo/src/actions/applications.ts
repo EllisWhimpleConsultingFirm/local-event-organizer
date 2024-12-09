@@ -218,9 +218,10 @@ export async function getPendingEventApplications() {
         return await eventApplicationDao.getEventApplications();
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -233,9 +234,10 @@ export async function getVendorEventApplications(vendorId: number) {
         return await eventApplicationDao.getVendorEventApplications(vendorId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -248,9 +250,10 @@ export async function getEventsApplications(eventId: number) {
         return await eventApplicationDao.getEventsApplications(eventId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -373,9 +376,10 @@ export async function getEventOccurrenceApplications() {
         return await eventOccurrenceApplicationDao.getEventApplications();
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -388,9 +392,10 @@ export async function getVendorEventOccurrenceApplications(vendorId: number) {
         return await eventOccurrenceApplicationDao.getVendorEventApplications(vendorId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 
@@ -403,9 +408,10 @@ export async function getEventOccurrencesApplications(eventOccurrenceId: number)
         return await eventOccurrenceApplicationDao.getEventsApplications(eventOccurrenceId);
     } catch (error) {
         if (error instanceof Error) {
-            return { error: error.message };
-        }
-        return { error: 'An unknown error occurred' };
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 

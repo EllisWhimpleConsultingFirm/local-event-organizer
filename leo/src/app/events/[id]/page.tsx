@@ -14,13 +14,6 @@ interface EventDetailsProps {
 
 export default async function EventDetails({ params }: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));
-
-    if (!event || "error" in event) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event not found</div>
-        );
-    }
-
     const eventOccurrences = await getEventOccurrencesByEventId(event.id)
 
     return (
@@ -46,7 +39,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                         </span>
                     </div>
                 </div>
-                {!eventOccurrences || "error" in eventOccurrences || eventOccurrences.length === 0 ? (
+                {!eventOccurrences || eventOccurrences.length === 0 ? (
                     <div className="text-center text-2xl text-red-600 mt-10">No Event Occurrences found</div>
                 )
                 :

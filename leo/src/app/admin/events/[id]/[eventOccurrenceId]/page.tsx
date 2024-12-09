@@ -11,6 +11,8 @@ import { getEventOccurrencePendingVendors } from "@/actions/applications";
 import { UpdateEventOccurrenceForm } from "@/app/admin/events/[id]/[eventOccurrenceId]/updateEventOccurrenceForm";
 import { EventOccurrenceTabs } from "@/app/admin/events/[id]/[eventOccurrenceId]/eventOccurrenceTabs";
 import {formatDate, formatTime, getDurationString, isSameDay} from "@/utils/app/dates";
+import {createClient} from "@/utils/supabase/server";
+import {redirect} from "next/navigation";
 
 interface EventOccurrenceDetailsProps {
     params: {
@@ -20,38 +22,15 @@ interface EventOccurrenceDetailsProps {
 }
 
 export default async function EventOccurrenceDetails({ params }: EventOccurrenceDetailsProps) {
+    const supabase = await createClient()
+    const { data, error } = await supabase.auth.getUser()
+    if (error || !data?.user) {
+        redirect('/login')
+    }
     const eventId = parseInt(params.id, 10)
     const eventOccurrenceId = parseInt(params.eventOccurrenceId, 10)
-
     const event = await getEvent(eventId);
     const eventOccurrence = await getEventOccurrence(eventOccurrenceId)
-
-    if (!event || "error" in event) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Event Not Found</h2>
-                    <Link href="/admin/events" className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to Events
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
-    if (!eventOccurrence || "error" in eventOccurrence) {
-        return (
-            <div className="min-h-screen flex items-center justify-center bg-gray-50">
-                <div className="text-center p-8 bg-white rounded-xl shadow-lg">
-                    <h2 className="text-2xl font-semibold text-gray-800 mb-2">Event Occurrence Not Found</h2>
-                    <Link href={`/admin/events/${eventId}`} className="text-blue-600 hover:text-blue-700 font-medium">
-                        Return to Event
-                    </Link>
-                </div>
-            </div>
-        );
-    }
-
     const eventVendors = await getEventOccurrenceVendors(eventOccurrenceId)
     const pendingVendors = await getEventOccurrencePendingVendors(eventOccurrenceId)
 

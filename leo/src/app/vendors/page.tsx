@@ -6,14 +6,6 @@ import React from "react";
 const VendorsPage = async () => {
     const vendors = await getVendors()
 
-    if ('error' in vendors) {
-        return (
-            <div className="container mx-auto p-6 text-gray-700">
-                <h1 className="text-3xl font-bold mb-4">An Error Occurred Retrieving Vendors</h1>
-            </div>
-        )
-    }
-
     return (
         <div className="container mx-auto p-6 text-gray-700">
             <h1 className="text-3xl font-bold mb-4">Vendors</h1>

@@ -10,12 +10,6 @@ import Link from "next/link";
 export default async function Home() {
     const eventArray = await getEventOccurrencesWithEvent()
 
-    if (!eventArray || 'error' in eventArray) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Error retrieving the Events</div>
-        );
-    }
-
     return (
         <div className="flex flex-col min-h-screen">
             <header className="relative">
