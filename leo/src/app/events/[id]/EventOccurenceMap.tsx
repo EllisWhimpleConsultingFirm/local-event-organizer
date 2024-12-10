@@ -7,14 +7,15 @@ type EventMapProps = {
     addresses:  { [p: string]: string }
 };
 
-export const EventMap: React.FC<EventMapProps> = async ({ event_occurrences, addresses }) => {
+export const EventMap: React.FC<EventMapProps> = ({ event_occurrences, addresses }) => {
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API;
     if (!apiKey) {
         return <p>Error: API key not found</p>;
     }
 
     return (
-        <EventMapClient markers={event_occurrences} addresses={addresses} apiKey={apiKey} />
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        <EventMapClient markers={event_occurrences as any[]} addresses={addresses} apiKey={apiKey} />
     );
 };
 

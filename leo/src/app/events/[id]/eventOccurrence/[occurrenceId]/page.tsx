@@ -3,6 +3,7 @@ import Image from 'next/image';
 import Link from "next/link";
 import React from "react";
 import {Card} from "@/components/util/card";
+import {redirect} from "next/navigation";
 
 interface EventDetailsProps {
     params: {
@@ -16,6 +17,10 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
     const event = await getEvent(parseInt(params.id, 10));
 
     const vendors = await getEventOccurrenceVendors(eventOccurrence.id)
+
+    if (!event) {
+        redirect("/error")
+    }
 
     return (
         <>

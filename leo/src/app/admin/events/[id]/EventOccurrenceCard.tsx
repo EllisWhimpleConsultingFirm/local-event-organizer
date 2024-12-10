@@ -1,4 +1,4 @@
-import {Tables} from "../../../../types/database.types";
+import {Tables} from "../../../../../types/database.types";
 import {Button} from "@/components/util/button";
 import React from "react";
 import {fetchAddress} from "@/components/util/maps/FetchAddressesFromCoordinates";

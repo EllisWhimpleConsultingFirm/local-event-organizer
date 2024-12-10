@@ -19,7 +19,7 @@ interface EventDetailsProps {
 
 export default async function EventDetails({params}: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));
-    const vendors = await getEventVendors(event.id)
+    const vendors = await getEventVendors(parseInt(params.id, 10))
     let eventOccurrences: Tables<'Event_Occurrences'>[] | null = null;
     const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API;
 

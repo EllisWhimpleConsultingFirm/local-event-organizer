@@ -2,12 +2,10 @@
 
 import {Button} from "@/components/util/button";
 import {IconFilterFunnel} from "@/public/icon-filter-funnel";
-import React, {useContext, useState} from "react";
+import React, { useState} from "react";
 import {Modal} from "@/components/util/modal";
 import {DistanceSlider} from "@/components/filter/distance-slider";
-import DatePicker from "react-datepicker";
 import {DatePickerLeo} from "@/components/filter/date-picker";
-import {FiltersProvider, useFilters} from "@/Contexts/filter-context";
 
 export const FilterModal = () => {
     const [isOpen, setIsOpen] = useState(false);

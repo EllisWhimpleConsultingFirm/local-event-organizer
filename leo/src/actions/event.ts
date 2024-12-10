@@ -131,6 +131,7 @@ export type EventOccurrenceFormState = {
     message?: string;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function addEventOccurrence(prevState: any, formData: FormData): Promise<EventOccurrenceFormState> {
     'use server'
     // Validate form fields
@@ -424,6 +425,11 @@ export async function getEventOccurrencesByEventId(id: number, filters?: Filters
         return await eventService.getEventOccurrencesByEventId(id, filters);
     } catch (error) {
         console.error((error as Error).message)
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
     }
 }
 

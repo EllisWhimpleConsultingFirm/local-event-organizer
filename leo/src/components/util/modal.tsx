@@ -2,7 +2,6 @@
 
 import React from 'react';
 import {Loader} from "lucide-react";
-import Error from "next/error";
 import {CustomError} from "@/components/util/Error";
 
 interface ModalProps {

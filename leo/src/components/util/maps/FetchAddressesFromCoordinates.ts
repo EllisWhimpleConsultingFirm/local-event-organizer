@@ -38,7 +38,8 @@ export async function fetchAddress(coords: { longitude: number, latitude: number
         let city = '';
         let stateOrCountry = '';
 
-        components.forEach((component: any) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        components.forEach((component : any) => {
             if (component.types.includes("locality")) {
                 city = component.long_name;
             }

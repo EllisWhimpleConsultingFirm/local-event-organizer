@@ -34,6 +34,10 @@ export default async function EventOccurrenceDetails({ params }: EventOccurrence
     const eventVendors = await getEventOccurrenceVendors(eventOccurrenceId)
     const pendingVendors = await getEventOccurrencePendingVendors(eventOccurrenceId)
 
+    if (!event || !eventVendors) {
+        redirect("/error")
+    }
+
     return (
         <div className="min-h-screen bg-gray-50 py-8">
             <div className="container mx-auto px-4">
@@ -55,7 +59,7 @@ export default async function EventOccurrenceDetails({ params }: EventOccurrence
                     <div className="grid md:grid-cols-2 gap-8 p-8">
                         <div className="space-y-6">
                             <div className="space-y-4">
-                                <h1 className="text-3xl font-bold text-gray-900">{event.name}</h1>
+                                <h1 className="text-3xl font-bold text-gray-900">{event.name ?? "Event Name"}</h1>
                                 <div className="relative aspect-video w-full overflow-hidden rounded-lg">
                                     <Image
                                         src={event.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}

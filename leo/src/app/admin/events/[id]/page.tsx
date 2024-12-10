@@ -22,9 +22,13 @@ export default async function EventDetails({ params }: EventDetailsProps) {
         redirect('/login')
     }
     const event = await getEvent(parseInt(params.id, 10));
-    const eventOccurrences = await getEventOccurrencesByEventId(event.id);
-    const eventVendors = await getEventVendors(event.id);
-    const pendingVendors = await getEventPendingVendors(event.id);
+    const eventOccurrences = await getEventOccurrencesByEventId(parseInt(params.id, 10));
+    const eventVendors = await getEventVendors(parseInt(params.id, 10));
+    const pendingVendors = await getEventPendingVendors(parseInt(params.id, 10));
+
+    if (!event || !eventVendors) {
+        redirect("/error")
+    }
 
     return (
         <div className="min-h-screen bg-gray-50 py-8">
