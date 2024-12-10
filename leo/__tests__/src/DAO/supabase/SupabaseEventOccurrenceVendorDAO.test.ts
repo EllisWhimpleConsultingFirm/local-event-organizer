@@ -1,6 +1,6 @@
 import { SupabaseEventOccurrenceVendorDAO } from '@/DAO/supabase/SupabaseEventOccurrenceVendorDAO';
 import { createClient } from '@/utils/supabase/server';
-import { Tables, TablesInsert, TablesUpdate } from '../../../types/database.types';
+import { Tables, TablesInsert, TablesUpdate } from '../../../../types/database.types';
 
 jest.mock('@/utils/supabase/server');
 
@@ -81,15 +81,33 @@ describe('SupabaseEventOccurrenceVendorDAO', () => {
     });
 
     describe('getEventOccurrencesByVendorId', () => {
-        it('returns mapped event occurrences', async () => {
-            const mockOccurrence = { id: 1, event_id: 1 };
-            mockQuery.data = [{ Event_Occurrences: mockOccurrence }];
+        it('returns mapped event occurrences with events', async () => {
+            const mockData = [{
+                id: 1,
+                name: 'Occurrence 1',
+                Events: {
+                    id: 1,
+                    name: 'Event 1'
+                },
+                Event_Occurrence_Vendors: {
+                    vendor_id: 1
+                }
+            }];
+            mockQuery.data = mockData;
 
             const result = await eventOccurrenceVendorDAO.getEventOccurrencesByVendorId(1);
 
-            expect(result).toEqual([mockOccurrence]);
-            expect(mockQuery.select).toHaveBeenCalledWith('Event_Occurrences!inner(*)');
-            expect(mockQuery.eq).toHaveBeenCalledWith('vendor_id', 1);
+            expect(result).toEqual([{
+                eventOccurrence: mockData[0],
+                event: mockData[0].Events
+            }]);
+            expect(mockSupabase.from).toHaveBeenCalledWith('Event_Occurrences');
+            expect(mockQuery.select).toHaveBeenCalledWith(`
+            *,
+            Events!inner(*),
+            Event_Occurrence_Vendors!inner(vendor_id)
+        `);
+            expect(mockQuery.eq).toHaveBeenCalledWith('Event_Occurrence_Vendors.vendor_id', 1);
         });
 
         it('returns empty array when no occurrences found', async () => {
@@ -111,6 +129,8 @@ describe('SupabaseEventOccurrenceVendorDAO', () => {
             const result = await eventOccurrenceVendorDAO.addEventOccurrenceVendor(newVendor);
             expect(result).toEqual(expect.objectContaining(newVendor));
             expect(mockQuery.insert).toHaveBeenCalledWith(newVendor);
+            expect(mockQuery.select).toHaveBeenCalled();
+            expect(mockQuery.single).toHaveBeenCalled();
         });
 
         it('throws error when no data returned', async () => {
@@ -141,6 +161,8 @@ describe('SupabaseEventOccurrenceVendorDAO', () => {
             expect(mockQuery.update).toHaveBeenCalledWith(updateData);
             expect(mockQuery.eq).toHaveBeenCalledWith('vendor_id', 1);
             expect(mockQuery.eq).toHaveBeenCalledWith('event_occurrence_id', 1);
+            expect(mockQuery.select).toHaveBeenCalled();
+            expect(mockQuery.single).toHaveBeenCalled();
         });
 
         it('throws error when no data returned', async () => {
