@@ -6,7 +6,7 @@ import {Button} from '@/components/util/button';
 import {FilterModal} from '@/components/filter/filter-modal';
 import Link from 'next/link';
 import Image from 'next/image';
-import homepageImage from '@/public/icon-home.svg';
+import homepageImage from '@/public/icon-home-page.png';
 import {getEventOccurrencesWithEvent} from "@/actions/event";
 import {Tables} from "../../types/database.types";
 import {Card} from "@/components/util/card";

@@ -114,6 +114,70 @@ export async function deleteEvent(state: any, formData: FormData) {
     redirect("/admin/events")
 }
 
+const EventOccurrenceFormSchema = z.object({
+    description: z.string().min(1, "Description is required"),
+    event_id: z.string().min(1,"Event ID is required"),
+    start_time: z.string().min(1,"Start Time is required"),
+    end_time: z.string().min(1,"Start End is required")
+});
+
+export type EventOccurrenceFormState = {
+    errors?: {
+        event_id?: string[];
+        description?: string[];
+        end_time?: string[];
+        start_time?: string[];
+    };
+    message?: string;
+};
+
+export async function addEventOccurrence(prevState: any, formData: FormData): Promise<EventOccurrenceFormState> {
+    'use server'
+    // Validate form fields
+    const validatedFields = EventOccurrenceFormSchema.safeParse({
+        description: formData.get('description'),
+        event_id: formData.get('event_id'),
+        start_time: formData.get('start_time'),
+        end_time: formData.get('end_time')
+    });
+
+    // If form validation fails, return errors early
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    try {
+        const daoFactory: DAOFactory = new SupabaseDAOFactory();
+        const eventsDao = daoFactory.getEventsDAO();
+        const bucketDao = daoFactory.getBucketDAO();
+        const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+        const eventVendorDao = daoFactory.getEventVendorDAO();
+        const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
+
+        const eventOccurrenceData: TablesInsert<'Event_Occurrences'> = {
+            event_id: parseInt(validatedFields.data.event_id, 10),
+            description: validatedFields.data.description,
+            start_time: validatedFields.data.start_time,
+            end_time: validatedFields.data.end_time,
+            latitude: 40.241164,
+            longitude: -111.648022
+        };
+
+        await eventService.addEventOccurrence(eventOccurrenceData);
+
+        revalidatePath(`/admin/events/${validatedFields.data.event_id}`);
+
+        return {message: "Event Occurrence added successfully!"};
+    } catch (error) {
+        return {
+            message: error instanceof Error ? error.message : "Failed to add event occurrence. Please try again.",
+        };
+    }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function deleteEventOccurrence(state : any, formData: FormData) {
     'use server';
@@ -266,7 +330,6 @@ export async function getEvent(id: number) {
         return await eventService.getEvent(id);
     } catch (error) {
         console.error((error as Error).message)
-        return null
     }
 }
 
@@ -333,20 +396,17 @@ export async function getEventOccurrences() {
     }
 }
 
-export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[]> {
-    'use server'
+export async function getEventOccurrencesWithEvent(filters?: Filters): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] | null> {
+    console.log("here")
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
 
+    console.log("fetching new events:", filters)
     try {
-        return await eventOccurrenceDao.getEventOccurrencesWithEvents()
+        return await eventOccurrenceDao.getEventOccurrencesWithEvents(filters);
     } catch (error) {
-        if (error instanceof Error) {
-            console.error('Error getting event occurrences:', error.message);
-            throw new Error(error.message)
-        } else {
-            throw new Error('An unexpected error occurred while fetching event occurrences')
-        }
+        console.error(error);
+        return null
     }
 }
 

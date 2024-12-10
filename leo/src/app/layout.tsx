@@ -38,15 +38,17 @@ export default async function RootLayout({children}: Readonly<{
         <html lang="en">
         <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Providers>
-            <div className="min-h-screen">
-                <Sidebar isLoggedIn={isLoggedIn} />
-                <main className="min-h-screen flex flex-col">
-                    <div className={"flex-grow"}>
-                        {children}
-                    </div>
-                    <Footer/>
-                </main>
-            </div>
+            <SidebarProvider>
+                <div className="min-h-screen">
+                    <Sidebar isLoggedIn={isLoggedIn} />
+                    <main className="min-h-screen flex flex-col">
+                        <div className={"flex-grow"}>
+                            {children}
+                        </div>
+                        <Footer/>
+                    </main>
+                </div>
+            </SidebarProvider>
         </Providers>
         </body>
         </html>

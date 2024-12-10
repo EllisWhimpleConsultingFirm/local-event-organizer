@@ -10,6 +10,7 @@ import {VendorApplicationButtonModal} from "@/app/admin/events/[id]/vendorApplic
 import Link from "next/link";
 import {ArrowRight, Calendar, Clock} from "lucide-react";
 import {formatDate, formatTime, getDurationString, isSameDay} from "@/utils/app/dates";
+import {AddEventOccurrenceButtonModal} from "@/app/admin/events/[id]/addEventOccurrenceButtonModal";
 
 interface eventTabsProps {
     eventVendors: Tables<'Vendors'>[]
@@ -28,6 +29,9 @@ export async function EventTabs({eventVendors, event, pendingVendors, eventOccur
             </TabsList>
             <TabsContent value="eventOccurrences" className="mt-6">
                 <div className="p-10">
+                    <div>
+                        <AddEventOccurrenceButtonModal eventId={event.id}></AddEventOccurrenceButtonModal>
+                    </div>
                     <h2 className="text-2xl font-bold mb-4 text-center">Your Event Occurrences</h2>
                     {!eventOccurrences || eventOccurrences.length === 0 ? (
                             <div className="text-center text-2xl text-red-600 mt-10">No Event Occurrences Found</div>

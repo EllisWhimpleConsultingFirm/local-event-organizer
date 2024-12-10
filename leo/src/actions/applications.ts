@@ -24,7 +24,7 @@ const ApplicationFormSchema = z.object({
     event_id: z.string().min(1, "Event ID is required"),
     vendor_id: z.string().min(1, "Vendor ID is required"),
     message: z.string().min(1, "Message is required"),
-    status: z.string(),
+    status: z.string().min(1, "Status is required"),
 });
 
 export async function addEventApplication(prevState: ApplicationFormState, formData: FormData): Promise<ApplicationFormState> {
@@ -35,6 +35,7 @@ export async function addEventApplication(prevState: ApplicationFormState, formD
         event_id: formData.get('event_id'),
         vendor_id: formData.get('vendor_id'),
         message: formData.get('message'),
+        status: formData.get('status')
     });
 
     if (!validatedFields.success) {
@@ -266,11 +267,17 @@ const OccurrenceApplicationFormSchema = z.object({
     status: z.string().min(1, "Status is required"),
 });
 
+const CreateOccurrenceApplicationFormSchema = z.object({
+    event_occurrence_id: z.string().min(1, "Event Occurrence ID is required"),
+    vendor_id: z.string().min(1, "Vendor ID is required"),
+    message: z.string().min(1, "Message is required"),
+});
+
 export async function addEventOccurrenceApplication(prevState: ApplicationFormState, formData: FormData): Promise<ApplicationFormState> {
     'use server'
 
     // Validate form fields
-    const validatedFields = OccurrenceApplicationFormSchema.safeParse({
+    const validatedFields = CreateOccurrenceApplicationFormSchema.safeParse({
         event_occurrence_id: formData.get('event_occurrence_id'),
         vendor_id: formData.get('vendor_id'),
         message: formData.get('message'),

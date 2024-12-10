@@ -63,14 +63,6 @@ export class VendorService {
     async deleteVendor(id: number): Promise<void> {
         const vendor = await this.vendorDAO.getVendorById(id);
 
-        // Get all event associations
-        const eventAssociations = await this.eventVendorDAO.getEventsByVendorId(id);
-
-        // Remove all event associations
-        for (const assoc of eventAssociations) {
-            await this.eventVendorDAO.deleteEventVendor(id, assoc.event_id);
-        }
-
         // Delete the vendor
         await this.vendorDAO.deleteVendor(id);
 

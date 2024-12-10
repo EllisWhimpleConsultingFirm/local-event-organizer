@@ -1,7 +1,3 @@
-interface Coordinates {
-    lat: number;
-    lng: number;
-}
 /**
  * Calculate the distance between two coordinates using the Haversine formula.
  * @param lat1 Latitude of the first point.

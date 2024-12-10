@@ -2,8 +2,6 @@
 import {DAOFactory} from "@/DAO/interface/Factory";
 import {SupabaseDAOFactory} from "@/DAO/supabase/SupabaseDAOFactory";
 import {VendorService} from "@/services/vendors";
-import {getEvent} from "@/actions/event";
-import {getEventOccurrence} from "@/actions/event";
 import {z} from "zod";
 import {TablesInsert, TablesUpdate} from "../../types/database.types";
 import {revalidatePath} from "next/cache";

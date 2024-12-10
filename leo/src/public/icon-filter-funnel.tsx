@@ -1,5 +1,3 @@
-import {Path} from "path-scurry";
-
 interface IconProps {
     height?: number;
     width?: number;

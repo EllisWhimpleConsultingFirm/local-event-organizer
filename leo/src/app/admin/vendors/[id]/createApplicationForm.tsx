@@ -112,6 +112,7 @@ function ApplicationForm({
         <form action={action} className="space-y-4">
             <input type="hidden" name="event_id" value={event.id}/>
             <input type="hidden" name="vendor_id" value={vendor.id}/>
+            <input type="hidden" name="status" value="PENDING"/>
             {eventOccurrence && (
                 <input type="hidden" name="event_occurrence_id" value={eventOccurrence.id}/>
             )}

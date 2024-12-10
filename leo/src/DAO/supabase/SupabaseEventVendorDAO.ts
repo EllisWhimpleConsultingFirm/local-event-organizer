@@ -12,26 +12,6 @@ export class SupabaseEventVendorDAO implements EventVendorDAO{
         return data ?? []
     }
 
-    async getVendorsByEventId(eventId: number): Promise<Tables<'Vendors'>[]> {
-        const { data, error } = await this.supabase
-            .from(this.TABLE)
-            .select('Vendors!inner(*)')
-            .eq('event_id', eventId)
-
-        if (error) { throw error }
-        return data?.map(row => row.Vendors as unknown as Tables<'Vendors'>) ?? []
-    }
-
-    async getEventsByVendorId(vendorId: number): Promise<Tables<'Events'>[]> {
-        const { data, error } = await this.supabase
-            .from(this.TABLE)
-            .select('Events!inner(*)')
-            .eq('vendor_id', vendorId)
-
-        if (error) { throw error }
-        return data?.map(row => row.Events as unknown as Tables<'Events'>) ?? []
-    }
-
     async addEventVendor(eventVendor: TablesInsert<'Event_Vendors'>): Promise<Tables<'Event_Vendors'>> {
         const { data, error } = await this.supabase
             .from(this.TABLE)
@@ -70,5 +50,25 @@ export class SupabaseEventVendorDAO implements EventVendorDAO{
             .eq('event_id', eventId)
 
         if (error) { throw error }
+    }
+
+    async getEventsByVendorId(vendorId: number): Promise<Tables<"Events">[]> {
+        const { data, error } = await this.supabase
+                .from(this.TABLE)
+                .select('Events!inner(*)')
+                .eq('vendor_id', vendorId)
+
+            if (error) { throw error }
+            return data?.map(row => row.Events as unknown as Tables<'Events'>) ?? []
+    }
+
+    async getVendorsByEventId(eventId: number): Promise<Tables<'Vendors'>[]> {
+        const { data, error } = await this.supabase
+                .from(this.TABLE)
+                .select('Vendors!inner(*)')
+                .eq('event_id', eventId)
+
+        if (error) { throw error }
+        return data?.map(row => row.Vendors as unknown as Tables<'Vendors'>) ?? []
     }
 }

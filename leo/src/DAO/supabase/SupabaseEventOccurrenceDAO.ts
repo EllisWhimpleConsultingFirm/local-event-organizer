@@ -25,10 +25,17 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
         return this.filterData(data, filters)
     }
 
-    async getEventOccurrencesWithEvents(): Promise<{eventOccurrence: Tables<'Event_Occurrences'>, event: Tables<'Events'>}[]> {
-        const { data, error } = await this.supabase
+    async getEventOccurrencesWithEvents(filters?: Filters): Promise<{eventOccurrence: Tables<'Event_Occurrences'>, event: Tables<'Events'>}[]> {
+        let query = this.supabase
             .from(this.TABLE)
             .select('*, Events!inner(*)')
+
+        if (filters && filters.dateRange) {
+            query = query.gte('start_time', filters.dateRange[0].toISOString());
+            query = query.lte('end_time', filters.dateRange[1].toISOString());
+        }
+
+        const {error, data} = await query
 
         if (error) { throw error }
         return data?.map(row => ({
