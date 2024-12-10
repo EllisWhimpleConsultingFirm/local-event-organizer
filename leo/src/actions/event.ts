@@ -410,7 +410,7 @@ export async function getEventOccurrencesWithEvent(filters?: Filters): Promise<{
     }
 }
 
-export async function getEventOccurrencesByEventId(id: number, filters?: Filters): Promise<Tables<'Event_Occurrences'>[] | null> {
+export async function getEventOccurrencesByEventId(id: number, filters?: Filters): Promise<Tables<'Event_Occurrences'>[]> {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
     const eventsDao = daoFactory.getEventsDAO();
@@ -424,7 +424,6 @@ export async function getEventOccurrencesByEventId(id: number, filters?: Filters
         return await eventService.getEventOccurrencesByEventId(id, filters);
     } catch (error) {
         console.error((error as Error).message)
-        return null
     }
 }
 
@@ -463,7 +462,6 @@ export async function getEventVendors(eventId: number) {
         return await eventService.getEventVendors(eventId);
     } catch (error) {
         console.error((error as Error).message)
-        return null
     }
 }
 

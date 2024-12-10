@@ -38,10 +38,11 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
         const {error, data} = await query
 
         if (error) { throw error }
-        return data?.map(row => ({
+        const unfilteredValues = data?.map(row => ({
             eventOccurrence: row,
             event: row.Events
         })) ?? []
+        return this.filterOccurrenceEventData(unfilteredValues, filters)
     }
 
     async getEventOccurrence(id: number): Promise<Tables<'Event_Occurrences'> | null> {
@@ -53,6 +54,37 @@ export class SupabaseEventOccurrenceDAO implements EventOccurrenceDAO {
 
         if (error) { throw error }
         return data
+    }
+
+    filterOccurrenceEventData(data: {eventOccurrence: Tables<'Event_Occurrences'>, event: Tables<'Events'>}[], filters?: Filters): {eventOccurrence: Tables<'Event_Occurrences'>, event: Tables<'Events'>}[] {
+        return data.filter(({eventOccurrence}) => {
+            // Apply distance filter
+            if (filters?.distance && filters.userLocation && eventOccurrence.longitude && eventOccurrence.latitude) {
+                const distance = haversineDistance(
+                    filters.userLocation.lat,
+                    filters.userLocation.lng,
+                    eventOccurrence.latitude,
+                    eventOccurrence.longitude
+                );
+                if (distance > filters.distance) {
+                    return false;
+                }
+            }
+
+            // Apply search filter
+            if (filters?.search && !eventOccurrence.description?.toLowerCase().includes(filters.search.toLowerCase())) {
+                return false;
+            }
+
+            // Apply vendor category filter
+            if (filters?.vendorCategory && filters.vendorCategory.length > 0) {
+                // if (!filters.vendorCategory.includes(event.vendorCategory)) {
+                //     return false;
+                // }
+            }
+
+            return true;
+        });
     }
 
     filterData(data: Tables<'Event_Occurrences'>[], filters?: Filters): Tables<'Event_Occurrences'>[] {

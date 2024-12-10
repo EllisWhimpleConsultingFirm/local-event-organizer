@@ -22,14 +22,22 @@ export class SupabaseEventOccurrenceVendorDAO implements EventOccurrenceVendorDA
         return data?.map(row => row.Vendors as unknown as Tables<'Vendors'>) ?? []
     }
 
-    async getEventOccurrencesByVendorId(vendorId: number): Promise<Tables<'Event_Occurrences'>[]> {
+    async getEventOccurrencesByVendorId(vendorId: number): Promise<({ eventOccurrence: Tables<'Event_Occurrences'>, event: Tables<'Events'> })[]> {
         const { data, error } = await this.supabase
-            .from(this.TABLE)
-            .select('Event_Occurrences!inner(*)')
-            .eq('vendor_id', vendorId)
+            .from('Event_Occurrences')
+            .select(`
+            *,
+            Events!inner(*),
+            Event_Occurrence_Vendors!inner(vendor_id)
+        `)
+            .eq('Event_Occurrence_Vendors.vendor_id', vendorId);
 
         if (error) { throw error }
-        return data?.map(row => row.Event_Occurrences as unknown as Tables<'Event_Occurrences'>) ?? []
+
+        return data?.map(row => ({
+            eventOccurrence: row as unknown as Tables<'Event_Occurrences'>,
+            event: row.Events as unknown as Tables<'Events'>
+        })) ?? [];
     }
 
     async addEventOccurrenceVendor(eventOccurrenceVendor: TablesInsert<'Event_Occurrence_Vendors'>): Promise<Tables<'Event_Occurrence_Vendors'>> {

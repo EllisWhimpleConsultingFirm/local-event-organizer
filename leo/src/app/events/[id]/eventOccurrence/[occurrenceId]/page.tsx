@@ -15,17 +15,6 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
     const eventOccurrence = await getEventOccurrence(parseInt(params.occurrenceId, 10));
     const event = await getEvent(parseInt(params.id, 10));
 
-    if (!eventOccurrence || "error" in eventOccurrence) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event Occurrence not found</div>
-        );
-    }
-    else if (!event || "error" in event) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event Associated with the Event Occurrence was not found</div>
-        );
-    }
-
     const vendors = await getEventOccurrenceVendors(eventOccurrence.id)
 
     return (

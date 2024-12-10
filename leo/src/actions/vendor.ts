@@ -238,6 +238,21 @@ export async function getVendorEvents(vendorId: number) {
     }
 }
 
+export async function getVendorEventOccurrences(vendorId: number) {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO()
+    try {
+        return await eventOccurrenceVendorDao.getEventOccurrencesByVendorId(vendorId)
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
+    }
+}
+
 export async function getVendorCategories(vendorId: number) {
     'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
