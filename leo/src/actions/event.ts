@@ -114,6 +114,38 @@ export async function deleteEvent(state: any, formData: FormData) {
     redirect("/admin/events")
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function deleteEventOccurrence(state : any, formData: FormData) {
+    'use server';
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO()
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
+
+    const id = formData.get('id');
+    const eventId = formData.get('eventId')
+
+    if (id && eventId && typeof id === 'string' && !isNaN(parseInt(id, 10))) {
+        try {
+            const intId = parseInt(id, 10)
+            if (intId )
+                await eventService.deleteEvent(intId);
+            revalidatePath(`/admin/events/${eventId}`);
+        } catch (error) {
+            return {
+                message: 'Failed to delete event. Please try again.',
+            }
+        }
+    } else {
+        throw new Error('Invalid event ID');
+    }
+
+    redirect(`/admin/events/${eventId}`)
+}
+
 const UpdateEventFormSchema = z.object({
     id: z.string().min(1, "Event ID is required"),
     name: z.string().min(1, "Event name is required"),
@@ -163,6 +195,58 @@ export async function updateEvent(prevState: FormState, formData: FormData): Pro
         revalidatePath(`/events/${validatedFields.data.id}`);
 
         return {message: "Event updated successfully!"};
+    } catch (error) {
+        return {
+            message: error instanceof Error ? error.message : "Failed to update event. Please try again.",
+        };
+    }
+}
+
+const UpdateEventOccurrenceFormSchema = z.object({
+    id: z.string().min(1, "Event ID is required"),
+    description: z.string().min(1, "Description is required"),
+    start_time: z.string().min(1, "Start Time is required"),
+    end_time: z.string().min(1, "End Time is required"),
+});
+
+export async function updateEventOccurrence(prevState: FormState, formData: FormData): Promise<FormState> {
+    'use server'
+    const supabase = await createClient()
+    const { data } = await supabase.auth.getUser()
+
+    const validatedFields = UpdateEventOccurrenceFormSchema.safeParse({
+        id: formData.get('id'),
+        description: formData.get('description'),
+        start_time: formData.get('startTime'),
+        end_time: formData.get('endTime'),
+    });
+
+    if (!validatedFields.success) {
+        return {
+            errors: validatedFields.error.flatten().fieldErrors,
+        };
+    }
+
+    try {
+        const daoFactory: DAOFactory = new SupabaseDAOFactory();
+        const eventsDao = daoFactory.getEventsDAO();
+        const bucketDao = daoFactory.getBucketDAO();
+        const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+        const eventVendorDao = daoFactory.getEventVendorDAO();
+        const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO()
+        const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
+
+        const eventData: TablesUpdate<'Event_Occurrences'> = {
+            description: validatedFields.data.description,
+            start_time: validatedFields.data.start_time,
+            end_time: validatedFields.data.end_time
+        };
+
+        await eventService.updateEventOccurrence(parseInt(validatedFields.data.id, 10), eventData);
+
+        revalidatePath(`/events/${validatedFields.data.id}`);
+
+        return { message: "Event updated successfully!" };
     } catch (error) {
         return {
             message: error instanceof Error ? error.message : "Failed to update event. Please try again.",
@@ -251,31 +335,15 @@ export async function getEventOccurrences() {
     }
 }
 
-export async function getEventOccurrencesWithEvent(filters?: Filters): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[] | null> {
-    console.log("here")
+export async function getEventOccurrencesWithEvent(): Promise<{ event: Tables<'Events'>, eventOccurrence: Tables<'Event_Occurrences'> }[]> {
+    'use server'
     const daoFactory: DAOFactory = new SupabaseDAOFactory();
-    const eventsDao = daoFactory.getEventsDAO();
-    const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
-    const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
-    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
-    console.log("fetching new events:", filters)
     try {
-        const eventOccurrences = await eventService.getAllEventOccurrences(filters);
-        const eventArray = []
-        for (const occurrence of eventOccurrences) {
-            if (!occurrence || !occurrence.event_id) continue; // Skip invalid occurrences
-            try {
-                const event = await eventService.getEvent(occurrence.event_id);
-                eventArray.push({ eventOccurrence: occurrence, event });
-            } catch (e) {}
-        }
-        return eventArray
+        return await eventOccurrenceDao.getEventOccurrencesWithEvents()
     } catch (error) {
-        console.error(error);
-        return null
+        throw new Error(error)
     }
 }
 
@@ -304,11 +372,32 @@ export async function getEventOccurrence(id: number) {
     const bucketDao = daoFactory.getBucketDAO();
     const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
     const eventVendorDao = daoFactory.getEventVendorDAO();
-    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO()
     const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
 
     try {
         return await eventService.getEventOccurrence(id);
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(error.message);
+        } else {
+            throw new Error('An unknown error occurred')
+        };
+    }
+}
+
+export async function getEventVendors(eventId: number) {
+    'use server'
+    const daoFactory: DAOFactory = new SupabaseDAOFactory();
+    const eventsDao = daoFactory.getEventsDAO();
+    const bucketDao = daoFactory.getBucketDAO();
+    const eventOccurrenceDao = daoFactory.getEventOccurrencesDAO();
+    const eventVendorDao = daoFactory.getEventVendorDAO();
+    const eventOccurrenceVendorDao = daoFactory.getEventOccurrenceVendorDAO();
+    const eventService = new EventService(eventsDao, bucketDao, eventOccurrenceDao, eventVendorDao, eventOccurrenceVendorDao);
+
+    try {
+        return await eventService.getEventVendors(eventId);
     } catch (error) {
         console.error((error as Error).message)
         return null

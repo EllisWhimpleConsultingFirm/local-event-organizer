@@ -145,11 +145,6 @@ export class EventService {
         // Get all vendors associated with this occurrence
         const vendors = await this.eventVendorDAO.getVendorsByEventId(id);
 
-        // Delete all vendor associations first
-        for (const vendor of vendors) {
-            await this.eventVendorDAO.deleteEventVendor(vendor.vendor_id, id);
-        }
-
         // Then delete the occurrence
         await this.eventOccurrenceDAO.deleteEventOccurrence(id);
     }
@@ -170,27 +165,43 @@ export class EventService {
         });
     }
 
-    async getEventVendors(eventId: number): Promise<Tables<'Event_Vendors'>[]> {
+    async addVendorToEventOccurrence(
+        vendorId: number,
+        eventOccurrenceId: number,
+        boothNumber: number
+    ): Promise<Tables<'Event_Occurrence_Vendors'>> {
+        return await this.eventOccurrenceVendorDAO.addEventOccurrenceVendor({
+            vendor_id: vendorId,
+            event_occurrence_id: eventOccurrenceId,
+            booth_number: boothNumber
+        });
+    }
+
+    async getEventVendors(eventId: number): Promise<Tables<'Vendors'>[]> {
         return await this.eventVendorDAO.getVendorsByEventId(eventId)
     }
 
-    async getEventOccurrenceVendors(eventOccurrenceId: number): Promise<Tables<'Event_Occurrence_Vendors'>[]> {
+    async getEventOccurrenceVendors(eventOccurrenceId: number): Promise<Tables<'Vendors'>[]> {
         return await this.eventOccurrenceVendorDAO.getVendorsByEventOccurrenceId(eventOccurrenceId)
     }
 
     async updateVendorInEvent(
         vendorId: number,
-        eventOccurrenceId: number,
+        eventId: number,
         updates: TablesUpdate<'Event_Vendors'>
     ): Promise<Tables<'Event_Vendors'>> {
         return await this.eventVendorDAO.updateEventVendor(
             vendorId,
-            eventOccurrenceId,
+            eventId,
             updates
         );
     }
 
-    async removeVendorFromEvent(vendorId: number, eventOccurrenceId: number): Promise<void> {
-        await this.eventVendorDAO.deleteEventVendor(vendorId, eventOccurrenceId);
+    async removeVendorFromEvent(vendorId: number, eventId: number): Promise<void> {
+        await this.eventVendorDAO.deleteEventVendor(vendorId, eventId);
+    }
+
+    async removeVendorFromEventOccurrence(vendorId: number, eventOccurrenceId: number): Promise<void> {
+        await this.eventOccurrenceVendorDAO.deleteEventOccurrenceVendor(vendorId, eventOccurrenceId);
     }
 }

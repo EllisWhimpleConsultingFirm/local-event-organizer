@@ -5,6 +5,6 @@ export interface EventVendorDAO {
     addEventVendor(eventVendor: TablesInsert<'Event_Vendors'>): Promise<Tables<'Event_Vendors'>>;
     updateEventVendor(vendorId: number, eventId: number, eventVendor: TablesUpdate<'Event_Vendors'>): Promise<Tables<'Event_Vendors'>>
     deleteEventVendor(vendorId: number, eventId: number): Promise<void>
-    getVendorsByEventId(eventId: number): Promise<Tables<'Event_Vendors'>[]>
-    getEventsByVendorId(vendorId: number): Promise<Tables<'Event_Vendors'>[]>
+    getVendorsByEventId(eventId: number): Promise<Tables<'Vendors'>[]>
+    getEventsByVendorId(vendorId: number): Promise<Tables<'Events'>[]>
 }

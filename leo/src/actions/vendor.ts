@@ -227,24 +227,7 @@ export async function getVendorEvents(vendorId: number) {
     const vendorService = new VendorService(vendorDAO, bucketDao, eventVendorDao);
 
     try {
-        const vendorEvents = await vendorService.getVendorEvents(vendorId);
-        const eventPromises = vendorEvents.map(async (vendorEvent) => {
-            const currentEvent = await getEvent(vendorEvent.event_id);
-            if (currentEvent && !("error" in currentEvent)) {
-                return currentEvent;
-            }
-            return null;
-        });
-
-        // Wait for all promises to resolve
-        const resolvedEvents = await Promise.all(eventPromises);
-
-        // Filter out any null values
-        return resolvedEvents.map((event) => {
-            if (event && !("error" in event)) {
-                return event
-            }
-        });
+        return await vendorService.getVendorEvents(vendorId);
     } catch (error) {
         if (error instanceof Error) {
             return {error: error.message};

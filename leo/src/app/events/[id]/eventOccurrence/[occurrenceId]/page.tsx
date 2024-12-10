@@ -1,5 +1,4 @@
 import { getEvent, getEventOccurrence, getEventOccurrenceVendors } from "@/actions/event";
-import { getVendor } from "@/actions/vendor";
 import Image from 'next/image';
 import Link from "next/link";
 import React from "react";
@@ -47,25 +46,22 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                     <h1 className="text-xl font-bold text-gray-800">Vendors </h1>
                 </div>
                 {!vendors || "error" in vendors || vendors.length === 0 ? (
-                        <div className="text-center text-2xl text-red-600 mt-10">No Vendors found</div>
-                    )
-                    :
-                    (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {vendors.map(async (vendor) => {
-                            const currentVendor = await getVendor(vendor.vendor_id)
-                            if (currentVendor && !("error" in currentVendor)) {
-                                return (
-                                    <Link href={`../../../vendors/${currentVendor.id}`} key={currentVendor.id}>
-                                        <Card
-                                            title={currentVendor.name}
-                                            description={currentVendor.description ?? "VENDOR DESCRIPTION"}
-                                            image={currentVendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
-                                        />
-                                    </Link>
-                                );
-                            }
-                        })}
-                    </div>)}
+                    <div className="text-center text-2xl text-red-600 mt-10">No Vendors found</div>
+                )
+                :
+                (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {vendors.map(async (vendor) => {
+                            return (
+                                <Link href={`../../../vendors/${vendor.id}`} key={vendor.id}>
+                                    <Card
+                                        title={vendor.name}
+                                        description={vendor.description ?? "VENDOR DESCRIPTION"}
+                                        image={vendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                    />
+                                </Link>
+                            );
+                    })}
+                </div>)}
             </div>
         </>
     );

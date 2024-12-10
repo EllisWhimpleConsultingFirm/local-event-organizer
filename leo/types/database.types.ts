@@ -13,38 +13,44 @@ export type Database = {
         Row: {
           description: string | null
           id: number
+          name: string | null
         }
         Insert: {
           description?: string | null
           id?: number
+          name?: string | null
         }
         Update: {
           description?: string | null
           id?: number
+          name?: string | null
         }
         Relationships: []
       }
       Event_Applications: {
         Row: {
           created_at: string
-          event_id: number | null
+          event_id: number
           id: number
           message: string | null
-          vendor_id: number | null
+          status: string | null
+          vendor_id: number
         }
         Insert: {
           created_at?: string
-          event_id?: number | null
+          event_id: number
           id?: number
           message?: string | null
-          vendor_id?: number | null
+          status?: string | null
+          vendor_id: number
         }
         Update: {
           created_at?: string
-          event_id?: number | null
+          event_id?: number
           id?: number
           message?: string | null
-          vendor_id?: number | null
+          status?: string | null
+          vendor_id?: number
         }
         Relationships: [
           {
@@ -66,24 +72,27 @@ export type Database = {
       Event_Occurrence_Applications: {
         Row: {
           created_at: string
-          event_occurrence_id: number | null
+          event_occurrence_id: number
           id: number
           message: string | null
-          vendor_id: number | null
+          status: string | null
+          vendor_id: number
         }
         Insert: {
           created_at?: string
-          event_occurrence_id?: number | null
+          event_occurrence_id: number
           id?: number
           message?: string | null
-          vendor_id?: number | null
+          status?: string | null
+          vendor_id: number
         }
         Update: {
           created_at?: string
-          event_occurrence_id?: number | null
+          event_occurrence_id?: number
           id?: number
           message?: string | null
-          vendor_id?: number | null
+          status?: string | null
+          vendor_id?: number
         }
         Relationships: [
           {

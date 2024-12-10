@@ -2,10 +2,10 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { UpdateEventForm } from './updateEventForm';
-import {getEvent, getEventOccurrences, getEventOccurrencesByEventId} from "@/actions/event";
+import {getEvent, getEventOccurrencesByEventId, getEventVendors} from "@/actions/event";
 import {DeleteEventForm} from "./deleteEventForm";
-import {Car} from "lucide-react";
-import {Card} from "@/components/util/card";
+import {EventTabs} from "@/app/admin/events/[id]/eventTabs";
+import {getEventPendingVendors} from "@/actions/applications";
 interface EventDetailsProps {
     params: {
         id: string;
@@ -14,10 +14,27 @@ interface EventDetailsProps {
 
 export default async function EventDetails({ params }: EventDetailsProps) {
     const event = await getEvent(parseInt(params.id, 10));
-    const eventOccurrences = event?.id && await getEventOccurrencesByEventId(event.id);
 
     if (!event || "error" in event) {
         return <div>Event not found</div>;
+    }
+
+    const eventOccurrences = await getEventOccurrencesByEventId(event.id)
+
+    const eventVendors = await getEventVendors(event.id)
+
+    const pendingVendors = await getEventPendingVendors(event.id)
+
+    if (!eventOccurrences || "error" in eventOccurrences) {
+        return <div>Error Retrieving the Event's Occurrences</div>;
+    }
+
+    if (!eventVendors || "error" in eventVendors) {
+        return <div>Vendors for this Event were not found</div>;
+    }
+
+    if (!pendingVendors || "error" in pendingVendors) {
+        return <div>Error Retrieving the pending applications for this Event</div>;
     }
 
     return (
@@ -50,14 +67,7 @@ export default async function EventDetails({ params }: EventDetailsProps) {
                     </div>
                 </div>
             </div>
-            <h2 className="text-2xl font-bold mb-4 py-8">Event Occurrences</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {eventOccurrences && eventOccurrences.length > 0 && (
-                    eventOccurrences.map((occurrence) => {
-                        const startTime = new Date(occurrence.start_time);
-                        return <Card title={occurrence.description ?? "No Description"} description={startTime.toDateString()} />
-                }))}
-            </div>
+            <EventTabs event={event} eventVendors={eventVendors} pendingVendors={pendingVendors} eventOccurrences={eventOccurrences}></EventTabs>
         </div>
     );
 }
