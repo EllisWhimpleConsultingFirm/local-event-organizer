@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {useFormState, useFormStatus} from 'react-dom';
-import {deleteVendor, FormState, updateVendor} from '@/actions/vendor';
+import {deleteVendor, FormState} from '@/actions/vendor';
 import {Tables} from "../../../../../types/supabase";
 
 interface UpdateEventFormProps {
@@ -27,9 +27,10 @@ export function DeleteVendorForm({vendor}: UpdateEventFormProps) {
     const [state, action] = useFormState<FormState, FormData>(deleteVendor, {} as FormState);
 
     return (
-        <form action={action}>
+        <form className="flex flex-col gap-4" action={action}>
             <input type="hidden" name="id" value={vendor.id} />
             <DeleteButton />
+            {state?.message && <p className="mt-2 text-sm text-green-600">{state.message}</p>}
         </form>
     );
 }

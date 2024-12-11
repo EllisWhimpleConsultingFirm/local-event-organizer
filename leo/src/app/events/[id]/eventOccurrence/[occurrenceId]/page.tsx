@@ -1,9 +1,9 @@
-import { getEvent, getEventOccurrence, getEventVendors } from "@/actions/event";
-import { getVendor } from "@/actions/vendor";
+import {getEvent, getEventOccurrence, getEventOccurrenceVendors} from "@/actions/event";
 import Image from 'next/image';
 import Link from "next/link";
 import React from "react";
 import {Card} from "@/components/util/card";
+import {redirect} from "next/navigation";
 
 interface EventDetailsProps {
     params: {
@@ -16,18 +16,11 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
     const eventOccurrence = await getEventOccurrence(parseInt(params.occurrenceId, 10));
     const event = await getEvent(parseInt(params.id, 10));
 
-    if (!eventOccurrence || "error" in eventOccurrence) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event Occurrence not found</div>
-        );
-    }
-    else if (!event || "error" in event) {
-        return (
-            <div className="text-center text-2xl text-red-600 mt-10">Event Associated with the Event Occurrence was not found</div>
-        );
-    }
+    const vendors = await getEventOccurrenceVendors(eventOccurrence.id)
 
-    const vendors = await getEventVendors(eventOccurrence.id)
+    if (!event) {
+        redirect("/error")
+    }
 
     return (
         <>
@@ -52,18 +45,15 @@ export default async function EventOccurrenceDetails({ params }: EventDetailsPro
                 :
                 (<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {vendors.map(async (vendor) => {
-                        const currentVendor = await getVendor(vendor.vendor_id)
-                        if (currentVendor && !("error" in currentVendor)) {
                             return (
-                                <Link href={`../../../vendors/${currentVendor.id}`} key={currentVendor.id}>
+                                <Link href={`../../../vendors/${vendor.id}`} key={vendor.id}>
                                     <Card
-                                        title={currentVendor.name}
-                                        description={currentVendor.description ?? "VENDOR DESCRIPTION"}
-                                        image={currentVendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                        title={vendor.name}
+                                        description={vendor.description ?? "VENDOR DESCRIPTION"}
+                                        image={vendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
                                     />
                                 </Link>
                             );
-                        }
                     })}
                 </div>)}
             </div>

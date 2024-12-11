@@ -9,6 +9,12 @@ import {VendorDAO} from "@/DAO/interface/VendorDAO";
 import {SupabaseEventOccurrenceDAO} from "@/DAO/supabase/SupabaseEventOccurrenceDAO";
 import {SupabaseEventVendorDAO} from "@/DAO/supabase/SupabaseEventVendorDAO";
 import {SupabaseVendorDAO} from "@/DAO/supabase/SupabaseVendorDAO";
+import {EventApplicationDAO} from "@/DAO/interface/EventApplicationDAO";
+import {SupabaseEventApplicationDAO} from "@/DAO/supabase/SupabaseEventApplicationDAO";
+import {EventOccurrenceApplicationDAO} from "@/DAO/interface/EventOccurrenceApplicationDAO";
+import {SupabaseEventOccurrenceApplicationDAO} from "@/DAO/supabase/SupabaseEventOccurrenceApplciationDAO";
+import {EventOccurrenceVendorDAO} from "@/DAO/interface/EventOccurrenceVendorDAO";
+import {SupabaseEventOccurrenceVendorDAO} from "@/DAO/supabase/SupabaseEventOccurrenceVendorDAO";
 
 export class SupabaseDAOFactory implements DAOFactory {
 
@@ -30,5 +36,17 @@ export class SupabaseDAOFactory implements DAOFactory {
 
     getVendorDAO(): VendorDAO {
         return new SupabaseVendorDAO();
+    }
+
+    getEventApplicationDAO(): EventApplicationDAO {
+        return new SupabaseEventApplicationDAO()
+    }
+
+    getEventOccurrenceApplicationDAO(): EventOccurrenceApplicationDAO {
+        return new SupabaseEventOccurrenceApplicationDAO()
+    }
+
+    getEventOccurrenceVendorDAO(): EventOccurrenceVendorDAO {
+        return new SupabaseEventOccurrenceVendorDAO()
     }
 }

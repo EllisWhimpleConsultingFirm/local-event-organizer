@@ -1,4 +1,4 @@
-import { getVendors} from "@/actions/vendor";
+import {getVendorCategories, getVendors} from "@/actions/vendor";
 import Link from "next/link";
 import {Card} from "@/components/util/card";
 import React from "react";
@@ -6,25 +6,20 @@ import React from "react";
 const VendorsPage = async () => {
     const vendors = await getVendors()
 
-    if ('error' in vendors) {
-        return (
-            <div className="container mx-auto p-6 text-gray-700">
-                <h1 className="text-3xl font-bold mb-4">An Error Occurred Retrieving Vendors</h1>
-            </div>
-        )
-    }
-
     return (
         <div className="container mx-auto p-6 text-gray-700">
             <h1 className="text-3xl font-bold mb-4">Vendors</h1>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {vendors.map(async (currentVendor) => {
+                    const vendorCategories = await getVendorCategories(currentVendor.id)
+                    console.log(vendorCategories);
                     return (
                         <Link href={`/vendors/${currentVendor.id}`} key={currentVendor.id}>
                             <Card
                                 title={currentVendor.name}
                                 description={currentVendor.description ?? "VENDOR DESCRIPTION"}
                                 image={currentVendor.photo_url ?? process.env.NEXT_PUBLIC_DEFAULT_IMG_URL!}
+                                badges={vendorCategories.map((category) => category.name ?? "")}
                             />
                         </Link>
                     );

@@ -1,0 +1,46 @@
+@import url('https://fonts.googleapis.com/css2?family=Solway:wght@300;400;500;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body {
+    font-family: 'Solway', serif;
+    line-height: 1.5;
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: inherit;
+}
+
+.solway-light {
+    font-family: "Solway", serif;
+    font-weight: 300;
+    font-style: normal;
+}
+
+.solway-regular {
+    font-family: "Solway", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.solway-medium {
+    font-family: "Solway", serif;
+    font-weight: 500;
+    font-style: normal;
+}
+
+.solway-bold {
+    font-family: "Solway", serif;
+    font-weight: 700;
+    font-style: normal;
+}
+
+.solway-extrabold {
+    font-family: "Solway", serif;
+    font-weight: 800;
+    font-style: normal;
+}

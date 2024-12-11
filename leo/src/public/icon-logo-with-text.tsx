@@ -1,4 +1,4 @@
-export const LogoWithText = ({width, height}: {width: number, height: number}) => {
+export const IconLogoWithText = ({width, height}: {width: number, height: number}) => {
     return (
         <svg width={width} height={height} viewBox="0 0 463 247" fill="none" xmlns="http://www.w3.org/2000/svg">
             <mask id="mask0_3_32" maskUnits="userSpaceOnUse" x="122" y="49" width="130"
